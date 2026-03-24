@@ -182,9 +182,8 @@
     </main>
 
     <!-- 新建任务弹窗 -->
-    <TaskDialog
+    <DayTaskDialog
       v-model:visible="taskDialogVisible"
-      type="day"
       @submit="addTask"
     />
 
@@ -224,12 +223,12 @@
 
 <script>
 import { Plus } from '@element-plus/icons-vue'
-import TaskDialog from '../components/TaskDialog.vue'
+import DayTaskDialog from '../components/DayTaskDialog.vue'
 
 export default {
   name: 'DayPlan',
   components: {
-    TaskDialog,
+    DayTaskDialog,
     Plus
   },
   data() {
@@ -292,8 +291,22 @@ export default {
       this.taskDialogVisible = true
     },
     addTask(form) {
+      // 转换数据格式以保持与原有结构兼容
+      // 将字符串格式的时间转换为Date对象
+      const [startHours, startMinutes] = form.startTime.split(':').map(Number)
+      const [endHours, endMinutes] = form.endTime.split(':').map(Number)
+      
+      const startDate = new Date()
+      startDate.setHours(startHours, startMinutes, 0, 0)
+      
+      const endDate = new Date()
+      endDate.setHours(endHours, endMinutes, 0, 0)
+      
       const newTask = {
-        ...form,
+        content: form.title,
+        description: form.items.filter(item => item.trim()).join('\n'),
+        startTime: startDate,
+        endTime: endDate,
         feedback: null
       }
 

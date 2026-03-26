@@ -2,6 +2,7 @@
   <div class="app-container">
     <Header />
     <div class="content-container">
+      <AsideLeft />
       <router-view></router-view>
     </div>
   </div>
@@ -9,25 +10,24 @@
 
 <script setup>
 import { getCurrentInstance } from "vue";
-import Header from "./components/Header.vue";
+import Header from "./components/layout/Header.vue";
+import AsideLeft from "@/components/layout/AsideLeft.vue";
 
 window.app = getCurrentInstance();
 </script>
 
 <style scoped>
 .app-container {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   width: 100%;
   min-width: 80rem;
 }
 
 .content-container {
-  flex: 1;
-  padding-top: var(--header-height, 4rem);
+  display: flex;
   width: 100%;
-  height: calc(100vh - var(--header-height, 4rem));
+  height: 100vh;
+  padding-top: var(--header-height, 4rem);
   overflow: hidden;
 }
 </style>

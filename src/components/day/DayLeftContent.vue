@@ -1,232 +1,74 @@
 <template>
   <div class="left-content">
     <div id="1_63" class="Pixso-frame-1_63">
-      <div id="1_64" class="Pixso-frame-1_64">
-        <div id="1_65" class="Pixso-frame-1_65">
-          <div id="1_66" class="Pixso-frame-1_66">
-            <p id="1_67" class="Pixso-paragraph-1_67">
-              {{ "年度任务" }}
-            </p>
-          </div>
-          <div id="1_68" class="Pixso-frame-1_68">
-            <p id="1_69" class="Pixso-paragraph-1_69">
-              {{ "2024" }}
-            </p>
-          </div>
-        </div>
-        <div id="5_18" class="Pixso-frame-5_18">
-          <div id="1_70" class="Pixso-frame-1_70">
-            <div id="1_71" class="Pixso-frame-1_71">
-              <div id="1_72" class="Pixso-frame-1_72">
-                <p id="1_73" class="Pixso-paragraph-1_73">
-                  {{ "完成品牌设计规范指南" }}
-                </p>
-                <div id="1_74" class="Pixso-frame-1_74">
-                  <p id="1_75" class="Pixso-paragraph-1_75">
-                    {{ "工作" }}
-                  </p>
-                </div>
-              </div>
-              <div id="1_76" class="Pixso-frame-1_76">
-                <div id="1_77" class="Pixso-frame-1_77">
-                  <div id="1_78" class="Pixso-rectangle-1_78"></div>
-                </div>
-                <div id="1_79" class="Pixso-frame-1_79">
-                  <p id="1_80" class="Pixso-paragraph-1_80">
-                    {{ "75%" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div id="1_81" class="Pixso-rectangle-1_81"></div>
-          </div>
-          <div id="5_19" class="Pixso-frame-5_19">
-            <div id="5_20" class="Pixso-frame-5_20">
-              <div id="5_21" class="Pixso-frame-5_21">
-                <p id="5_22" class="Pixso-paragraph-5_22">
-                  {{ "阅读 4 本深度学习书籍" }}
-                </p>
-                <div id="5_23" class="Pixso-frame-5_23">
-                  <p id="5_24" class="Pixso-paragraph-5_24">
-                    {{ "学习" }}
-                  </p>
-                </div>
-              </div>
-              <div id="5_25" class="Pixso-frame-5_25">
-                <div id="5_26" class="Pixso-frame-5_26">
-                  <div id="5_27" class="Pixso-rectangle-5_27"></div>
-                </div>
-                <div id="5_28" class="Pixso-frame-5_28">
-                  <p id="5_29" class="Pixso-paragraph-5_29">
-                    {{ "25%" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div id="5_30" class="Pixso-rectangle-5_30"></div>
-          </div>
-          <div id="5_31" class="Pixso-frame-5_31">
-            <div id="5_32" class="Pixso-frame-5_32">
-              <div id="5_33" class="Pixso-frame-5_33">
-                <p id="5_34" class="Pixso-paragraph-5_34">
-                  {{ "半程马拉松训练营" }}
-                </p>
-                <div id="5_35" class="Pixso-frame-5_35">
-                  <p id="5_36" class="Pixso-paragraph-5_36">
-                    {{ "健身" }}
-                  </p>
-                </div>
-              </div>
-              <div id="5_37" class="Pixso-frame-5_37">
-                <div id="5_38" class="Pixso-frame-5_38">
-                  <div id="5_39" class="Pixso-rectangle-5_39"></div>
-                </div>
-                <div id="5_40" class="Pixso-frame-5_40">
-                  <p id="5_41" class="Pixso-paragraph-5_41">
-                    {{ "60%" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div id="5_42" class="Pixso-rectangle-5_42"></div>
-          </div>
-        </div>
-      </div>
-      <div id="1_82" class="Pixso-frame-1_82">
-        <div id="7_76" class="Pixso-frame-7_76">
-          <div id="7_77" class="Pixso-frame-7_77">
-            <p id="7_85" class="Pixso-paragraph-7_85">
-              {{ "月度任务" }}
-            </p>
-          </div>
-          <div id="7_79" class="Pixso-frame-7_79">
-            <p id="7_80" class="Pixso-paragraph-7_80">
-              {{ "2024" }}
-            </p>
-          </div>
-        </div>
-        <div id="1_85" class="Pixso-frame-1_85">
-          <div id="1_86" class="Pixso-frame-1_86">
-            <div id="1_87" class="Pixso-frame-1_87">
-              <div id="1_88" class="Pixso-frame-1_88">
-                <p id="1_89" class="Pixso-paragraph-1_89">
-                  {{ "阅读 4 本深度学习书籍" }}
-                </p>
-                <div id="1_90" class="Pixso-frame-1_90">
-                  <p id="1_91" class="Pixso-paragraph-1_91">
-                    {{ "学习" }}
-                  </p>
-                </div>
-              </div>
-              <div id="1_92" class="Pixso-frame-1_92">
-                <div id="1_93" class="Pixso-frame-1_93">
-                  <div id="1_94" class="Pixso-rectangle-1_94"></div>
-                </div>
-                <div id="1_95" class="Pixso-frame-1_95">
-                  <p id="1_96" class="Pixso-paragraph-1_96">
-                    {{ "25%" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div id="1_97" class="Pixso-rectangle-1_97"></div>
-          </div>
-          <div id="1_98" class="Pixso-frame-1_98">
-            <div id="1_99" class="Pixso-frame-1_99">
-              <div id="1_100" class="Pixso-frame-1_100">
-                <p id="1_101" class="Pixso-paragraph-1_101">
-                  {{ "半程马拉松训练营" }}
-                </p>
-                <div id="1_102" class="Pixso-frame-1_102">
-                  <p id="1_103" class="Pixso-paragraph-1_103">
-                    {{ "健身" }}
-                  </p>
-                </div>
-              </div>
-              <div id="1_104" class="Pixso-frame-1_104">
-                <div id="1_105" class="Pixso-frame-1_105">
-                  <div id="1_106" class="Pixso-rectangle-1_106"></div>
-                </div>
-                <div id="1_107" class="Pixso-frame-1_107">
-                  <p id="1_108" class="Pixso-paragraph-1_108">
-                    {{ "60%" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div id="1_109" class="Pixso-rectangle-1_109"></div>
-          </div>
-        </div>
-      </div>
-      <div id="1_110" class="Pixso-frame-1_110">
-        <div id="7_87" class="Pixso-frame-7_87">
-          <div id="7_88" class="Pixso-frame-7_88">
-            <p id="1_112" class="Pixso-paragraph-1_112">
-              {{ "临时任务" }}
-            </p>
-          </div>
-          <div id="7_90" class="Pixso-frame-7_90">
-            <p id="7_91" class="Pixso-paragraph-7_91">
-              {{ "2024" }}
-            </p>
-          </div>
-        </div>
-        <div id="6_44" class="Pixso-frame-6_44">
-          <div id="6_45" class="Pixso-frame-6_45">
-            <div id="6_46" class="Pixso-frame-6_46">
-              <div id="6_47" class="Pixso-frame-6_47">
-                <p id="6_48" class="Pixso-paragraph-6_48">
-                  {{ "阅读 4 本深度学习书籍" }}
-                </p>
-                <div id="6_49" class="Pixso-frame-6_49">
-                  <p id="6_50" class="Pixso-paragraph-6_50">
-                    {{ "学习" }}
-                  </p>
-                </div>
-              </div>
-              <div id="6_51" class="Pixso-frame-6_51">
-                <div id="6_52" class="Pixso-frame-6_52">
-                  <div id="6_53" class="Pixso-rectangle-6_53"></div>
-                </div>
-                <div id="6_54" class="Pixso-frame-6_54">
-                  <p id="6_55" class="Pixso-paragraph-6_55">
-                    {{ "25%" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div id="6_56" class="Pixso-rectangle-6_56"></div>
-          </div>
-          <div id="6_57" class="Pixso-frame-6_57">
-            <div id="6_58" class="Pixso-frame-6_58">
-              <div id="6_59" class="Pixso-frame-6_59">
-                <p id="6_60" class="Pixso-paragraph-6_60">
-                  {{ "半程马拉松训练营" }}
-                </p>
-                <div id="6_61" class="Pixso-frame-6_61">
-                  <p id="6_62" class="Pixso-paragraph-6_62">
-                    {{ "健身" }}
-                  </p>
-                </div>
-              </div>
-              <div id="6_63" class="Pixso-frame-6_63">
-                <div id="6_64" class="Pixso-frame-6_64">
-                  <div id="6_65" class="Pixso-rectangle-6_65"></div>
-                </div>
-                <div id="6_66" class="Pixso-frame-6_66">
-                  <p id="6_67" class="Pixso-paragraph-6_67">
-                    {{ "60%" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div id="6_68" class="Pixso-rectangle-6_68"></div>
-          </div>
-        </div>
-      </div>
+      <TaskCard :title="'年度任务'" :year="'2024'" :tasks="yearlyTasks" />
+      <TaskCard :title="'月度任务'" :year="'2024'" :tasks="monthlyTasks" />
+      <TaskCard :title="'临时任务'" :year="'2024'" :tasks="temporaryTasks" />
     </div>
   </div>
 </template>
+
+<script setup>
+import TaskCard from "@/components/common/TaskCard.vue";
+
+const yearlyTasks = [
+  {
+    id: 1,
+    title: "完成品牌设计规范指南",
+    category: "工作",
+    progress: 75,
+    color: "rgba(74, 64, 224, 1)",
+  },
+  {
+    id: 2,
+    title: "阅读 4 本深度学习书籍",
+    category: "学习",
+    progress: 25,
+    color: "rgba(248, 160, 16, 1)",
+  },
+  {
+    id: 3,
+    title: "半程马拉松训练营",
+    category: "健身",
+    progress: 60,
+    color: "rgba(0, 105, 71, 1)",
+  },
+];
+
+const monthlyTasks = [
+  {
+    id: 1,
+    title: "阅读 4 本深度学习书籍",
+    category: "学习",
+    progress: 25,
+    color: "rgba(248, 160, 16, 1)",
+  },
+  {
+    id: 2,
+    title: "半程马拉松训练营",
+    category: "健身",
+    progress: 60,
+    color: "rgba(0, 105, 71, 1)",
+  },
+];
+
+const temporaryTasks = [
+  {
+    id: 1,
+    title: "阅读 4 本深度学习书籍",
+    category: "学习",
+    progress: 25,
+    color: "rgba(248, 160, 16, 1)",
+  },
+  {
+    id: 2,
+    title: "半程马拉松训练营",
+    category: "健身",
+    progress: 60,
+    color: "rgba(0, 105, 71, 1)",
+  },
+];
+</script>
 
 <style scoped>
 .left-content {

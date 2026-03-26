@@ -4,12 +4,22 @@
   padding: 0;
 }
 
-ol,ul,menu {
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+ol,
+ul,
+menu {
   padding-inline-start: 0;
   list-style: none;
 }
 
-ol li::marker, ul li::before {
+ol li::marker,
+ul li::before {
   letter-spacing: 0;
 }
 

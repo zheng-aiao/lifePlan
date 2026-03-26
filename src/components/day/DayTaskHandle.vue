@@ -54,7 +54,7 @@ const handleNext = () => {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-top: 1rem;
+  padding: 1rem 0;
   margin-bottom: 0.25rem;
 
   .header-content {

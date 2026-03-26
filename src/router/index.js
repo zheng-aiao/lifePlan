@@ -1,7 +1,13 @@
+import { createRouter, createWebHistory } from "vue-router";
 
-import { createRouter, createWebHistory  } from "vue-router";
-
-const routes = [{path: "/", name: "Frame12", component: () => import("@/views/Frame12.vue"), meta: { guid: "1:2" }},];
+const routes = [
+  {
+    path: "/",
+    name: "DayView",
+    component: () => import("@/views/dayView.vue"),
+    meta: { guid: "4:2" },
+  },
+];
 
 const routePathMap = new Map();
 
@@ -14,7 +20,7 @@ export const getRoutePathByGuid = (guid) => {
   routePathMap.set(guid, route.path);
 
   return route.path;
-}
+};
 
 export const router = createRouter({
   history: createWebHistory(),

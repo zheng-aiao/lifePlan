@@ -68,7 +68,7 @@
             </div>
 
             <!-- 底部留白区域 -->
-            <div class="bottom-padding-area" :style="{ height: `${topPadding}px` }">
+            <div class="bottom-padding-area" :style="{ height: `${buttomPadding}px` }">
               <div class="ending-text">你真棒，又努力了一天，祝您好梦成真！</div>
               <div class="time-scale-marker end-marker">结束</div>
             </div>
@@ -111,21 +111,51 @@ const tasks = ref(dailyTasks);
 // 视口高度（用于计算上下留白）
 const viewportHeight = ref(600);
 
-// 计算总高度（加上下留白，各为视口1/3高度）
+// 计算总高度（加上下留白，再加上所有展开任务的额外高度）
 const totalHeight = computed(() => {
   const contentHeight = (END_HOUR - START_HOUR) * HOUR_HEIGHT;
-  const paddingHeight = (viewportHeight.value * 2) / 3; // 上下各1/3，总共2/3视口高度
-  return contentHeight + paddingHeight;
+  const paddingHeight = topPadding.value + buttomPadding.value; // 顶部留白 + 底部留白
+  const lastTaskOffset = getTaskOffset(tasks.value.length);
+  return contentHeight + paddingHeight + lastTaskOffset;
 });
 
-// 获取顶部/底部留白高度（各为视口1/3）
+// 获取顶留白高度（各为视口1/3）
 const topPadding = computed(() => {
   return viewportHeight.value / 3;
 });
 
-// 时间刻度位置计算（加上顶部留白偏移）
+// 获取底部留白高度（为视口高度的0.5倍，确保可以滚动到最后的任务）
+const buttomPadding = computed(() => {
+  return viewportHeight.value / 2;
+});
+
+// 时间刻度位置计算（加上顶部留白偏移，并考虑展开任务的偏移）
 const getTickPosition = (hourIndex) => {
-  return topPadding.value + hourIndex * HOUR_HEIGHT;
+  const hour = START_HOUR + hourIndex;
+  const basePosition = topPadding.value + hourIndex * HOUR_HEIGHT;
+
+  // 计算在该整点时间之前结束的所有展开任务造成的偏移
+  let offset = 0;
+  for (let i = 0; i < tasks.value.length; i++) {
+    const task = tasks.value[i];
+    const taskBaseHeight = getTaskBaseHeight(task);
+    const taskActualHeight = getTaskActualHeight(task, i);
+
+    // 只考虑展开的任务
+    if (taskActualHeight <= taskBaseHeight) continue;
+
+    const extraHeight = taskActualHeight - taskBaseHeight;
+    const [start, end] = task.timeRange.split('-');
+    const endParsed = parseTime(end);
+    const taskEndHour = endParsed.hour + endParsed.min / 60;
+
+    // 如果任务结束时间在该整点之前，累加偏移
+    if (taskEndHour <= hour) {
+      offset += extraHeight;
+    }
+  }
+
+  return basePosition + offset;
 };
 
 // 格式化小时显示
@@ -183,12 +213,13 @@ const calculateTaskContentHeight = (task) => {
   return height;
 };
 
-// 获取任务的实际高度（考虑是否选中）
+// 获取任务的实际高度（如果内容高度超过时长高度，直接使用内容高度）
 const getTaskActualHeight = (task, index) => {
   const baseHeight = getTaskBaseHeight(task);
   const contentHeight = calculateTaskContentHeight(task);
 
-  if (activeTaskIndex.value === index && contentHeight > baseHeight) {
+  // 如果内容高度超过时长决定的高度，直接使用内容高度
+  if (contentHeight > baseHeight) {
     return contentHeight;
   }
   return baseHeight;
@@ -198,7 +229,7 @@ const getTaskActualHeight = (task, index) => {
 const isTaskExpanded = (task, index) => {
   const baseHeight = getTaskBaseHeight(task);
   const contentHeight = calculateTaskContentHeight(task);
-  return activeTaskIndex.value === index && contentHeight > baseHeight;
+  return contentHeight > baseHeight;
 };
 
 // 展开任务的起止时间刻度
@@ -208,10 +239,8 @@ const expandedTaskTicks = computed(() => {
   tasks.value.forEach((task, index) => {
     if (isTaskExpanded(task, index)) {
       const [start, end] = task.timeRange.split('-');
-      const startParsed = parseTime(start);
-      const endParsed = parseTime(end);
 
-      const startPosition = getTimePosition(startParsed.hour, startParsed.min);
+      const startPosition = getTaskStartPosition(task, index);
       const actualHeight = getTaskActualHeight(task, index);
       const endPosition = startPosition + actualHeight;
 
@@ -232,6 +261,30 @@ const expandedTaskTicks = computed(() => {
   return ticks;
 });
 
+// 计算每个任务的累积偏移量（由前面展开的任务造成的额外高度）
+const getTaskOffset = (taskIndex) => {
+  let offset = 0;
+  for (let i = 0; i < taskIndex; i++) {
+    const task = tasks.value[i];
+    const baseHeight = getTaskBaseHeight(task);
+    const actualHeight = getTaskActualHeight(task, i);
+    // 如果任务展开，累加额外高度
+    if (actualHeight > baseHeight) {
+      offset += actualHeight - baseHeight;
+    }
+  }
+  return offset;
+};
+
+// 获取任务的开始位置（考虑前面展开任务的影响）
+const getTaskStartPosition = (task, index) => {
+  const [start] = task.timeRange.split('-');
+  const { hour, min } = parseTime(start);
+  const basePosition = getTimePosition(hour, min);
+  const offset = getTaskOffset(index);
+  return basePosition + offset;
+};
+
 // 判断整点刻度是否应该隐藏（因为被展开的任务覆盖）
 const shouldHideHourTick = (hour) => {
   // 检查是否有展开的任务覆盖了该整点时间
@@ -242,30 +295,40 @@ const shouldHideHourTick = (hour) => {
     const startParsed = parseTime(start);
     const endParsed = parseTime(end);
 
+    // 使用原始时间范围的小时数（更精确）
     const startHour = startParsed.hour + startParsed.min / 60;
     const actualHeight = getTaskActualHeight(task, index);
+    // 计算实际结束时间（基于开始时间和实际高度）
     const endHour = startHour + actualHeight / HOUR_HEIGHT;
 
-    // 如果该整点时间在展开任务的时间范围内（不包括起止点），则隐藏
-    return hour > startHour && hour < endHour;
+    // 如果该整点时间在展开任务的时间范围内（包括起止点），则隐藏
+    // 使用一个小误差范围来避免浮点数精度问题
+    const epsilon = 0.01;
+    return hour + epsilon >= startHour && hour - epsilon <= endHour;
   });
 };
 
 // 判断是否是任务边界时间
 const isTaskBoundary = (hour) => {
-  return tasks.value.some((task) => {
+  return tasks.value.some((task, index) => {
     const [start, end] = task.timeRange.split('-');
-    const startHour = parseInt(start.split(':')[0]);
-    const endHour = parseInt(end.split(':')[0]);
-    return hour === startHour || hour === endHour;
+    const startParsed = parseTime(start);
+    const endParsed = parseTime(end);
+
+    // 使用原始时间范围的小时数
+    const startHour = startParsed.hour + startParsed.min / 60;
+    const actualHeight = getTaskActualHeight(task, index);
+    const endHour = startHour + actualHeight / HOUR_HEIGHT;
+
+    // 检查该整点是否接近任务的开始或结束时间（使用误差范围）
+    const epsilon = 0.01;
+    return Math.abs(hour - startHour) < epsilon || Math.abs(hour - endHour) < epsilon;
   });
 };
 
 // 任务位置和高度样式
 const getTaskStyle = (task, index) => {
-  const [start] = task.timeRange.split('-');
-  const { hour, min } = parseTime(start);
-  const top = getTimePosition(hour, min);
+  const top = getTaskStartPosition(task, index);
   const height = getTaskActualHeight(task, index);
 
   return {

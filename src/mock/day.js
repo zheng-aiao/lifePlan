@@ -57,7 +57,6 @@ export const temporaryTasks = [
   },
 ];
 
-
 // 每日任务列表（时间轴任务）
 export const dailyTasks = [
   {
@@ -76,20 +75,20 @@ export const dailyTasks = [
     borderColor: 'rgba(74, 64, 224, 1)',
     bgColor: 'rgba(255, 255, 255, 1)',
   },
-  {
-    id: 2,
-    tag: 'MEETING',
-    tagColor: 'rgba(248, 160, 16, 1)',
-    timeRange: '09:00-10:30',
-    actualDuration: '30min',
-    title: '产品策略同步会议',
-    subTasks: [
-      { text: '确认 Q3 产品路线图', completed: false },
-      { text: '讨论用户反馈优先级', completed: false },
-    ],
-    borderColor: 'rgba(248, 160, 16, 1)',
-    bgColor: 'rgba(255, 250, 240, 1)',
-  },
+  // {
+  //   id: 2,
+  //   tag: 'MEETING',
+  //   tagColor: 'rgba(248, 160, 16, 1)',
+  //   timeRange: '09:00-10:30',
+  //   actualDuration: '30min',
+  //   title: '产品策略同步会议',
+  //   subTasks: [
+  //     { text: '确认 Q3 产品路线图', completed: false },
+  //     { text: '讨论用户反馈优先级', completed: false },
+  //   ],
+  //   borderColor: 'rgba(248, 160, 16, 1)',
+  //   bgColor: 'rgba(255, 250, 240, 1)',
+  // },
   {
     id: 3,
     tag: 'WORK',
@@ -117,20 +116,20 @@ export const dailyTasks = [
     borderColor: 'rgba(0, 105, 71, 1)',
     bgColor: 'rgba(240, 255, 250, 1)',
   },
-  {
-    id: 5,
-    tag: 'WORK',
-    tagColor: 'rgba(74, 64, 224, 1)',
-    timeRange: '13:30-15:30',
-    actualDuration: '1h 45min',
-    title: '代码审查与优化',
-    subTasks: [
-      { text: '审查 PR #234', completed: true },
-      { text: '优化性能瓶颈', completed: false },
-    ],
-    borderColor: 'rgba(74, 64, 224, 1)',
-    bgColor: 'rgba(255, 255, 255, 1)',
-  },
+  // {
+  //   id: 5,
+  //   tag: 'WORK',
+  //   tagColor: 'rgba(74, 64, 224, 1)',
+  //   timeRange: '13:30-15:30',
+  //   actualDuration: '1h 45min',
+  //   title: '代码审查与优化',
+  //   subTasks: [
+  //     { text: '审查 PR #234', completed: true },
+  //     { text: '优化性能瓶颈', completed: false },
+  //   ],
+  //   borderColor: 'rgba(74, 64, 224, 1)',
+  //   bgColor: 'rgba(255, 255, 255, 1)',
+  // },
   {
     id: 6,
     tag: 'REVIEW',
@@ -146,20 +145,20 @@ export const dailyTasks = [
     bgColor: 'rgba(234, 241, 255, 1)',
     opacity: 0.6,
   },
-  {
-    id: 7,
-    tag: 'WORK',
-    tagColor: 'rgba(74, 64, 224, 1)',
-    timeRange: '17:00-19:00',
-    actualDuration: '0min',
-    title: '文档整理',
-    subTasks: [
-      { text: '更新 API 文档', completed: false },
-      { text: '整理会议纪要', completed: false },
-    ],
-    borderColor: 'rgba(74, 64, 224, 1)',
-    bgColor: 'rgba(255, 255, 255, 1)',
-  },
+  // {
+  //   id: 7,
+  //   tag: 'WORK',
+  //   tagColor: 'rgba(74, 64, 224, 1)',
+  //   timeRange: '17:00-19:00',
+  //   actualDuration: '0min',
+  //   title: '文档整理',
+  //   subTasks: [
+  //     { text: '更新 API 文档', completed: false },
+  //     { text: '整理会议纪要', completed: false },
+  //   ],
+  //   borderColor: 'rgba(74, 64, 224, 1)',
+  //   bgColor: 'rgba(255, 255, 255, 1)',
+  // },
   {
     id: 8,
     tag: 'REST',
@@ -167,7 +166,17 @@ export const dailyTasks = [
     timeRange: '19:00-20:00',
     actualDuration: '0min',
     title: '运动健身',
-    subTasks: [{ text: '跑步 30 分钟', completed: false }],
+    subTasks: [
+      { text: '跑步 30 分钟', completed: false },
+      { text: '学习新技术', completed: false },
+      { text: '写技术博客', completed: false },
+      { text: '学习新技术', completed: false },
+      { text: '写技术博客', completed: false },
+      { text: '学习新技术', completed: false },
+      { text: '写技术博客', completed: false },
+      { text: '学习新技术', completed: false },
+      { text: '写技术博客', completed: false },
+    ],
     borderColor: 'rgba(0, 105, 71, 1)',
     bgColor: 'rgba(240, 255, 250, 1)',
   },

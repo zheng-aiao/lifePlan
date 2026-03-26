@@ -1,7 +1,7 @@
 <template>
   <el-card
     class="day-task-card"
-    :class="{ 'is-active': isActive, 'is-collapsed': !isActive && hasOverflow }"
+    :class="{ 'is-active': isActive }"
     :style="{
       '--border-color': task.borderColor,
       backgroundColor: task.bgColor,
@@ -15,7 +15,9 @@
         <span class="task-tag" :style="{ color: task.tagColor }">{{ task.tag }}</span>
         <div class="time-display">
           <span v-if="task.delayedFrom" class="time-range old-time">{{ task.delayedFrom }}</span>
-          <span class="time-range" :class="{ 'new-time': task.delayedFrom }">{{ task.timeRange }}</span>
+          <span class="time-range" :class="{ 'new-time': task.delayedFrom }">{{
+            task.timeRange
+          }}</span>
         </div>
       </div>
       <div class="header-right">
@@ -35,10 +37,10 @@
     <!-- 任务标题 -->
     <p class="task-title">{{ task.title }}</p>
 
-    <!-- 子任务列表 -->
+    <!-- 子任务列表 - 默认全部展开 -->
     <div v-if="task.subTasks && task.subTasks.length" class="sub-task-list">
       <div
-        v-for="(subTask, idx) in displayedSubTasks"
+        v-for="(subTask, idx) in task.subTasks"
         :key="idx"
         class="sub-task-item"
         @click.stop="toggleSubTask(idx)"
@@ -50,15 +52,10 @@
           {{ subTask.text }}
         </span>
       </div>
-      <!-- 省略号提示 - 当未选中且有溢出时显示 -->
-      <div v-if="!isActive && hasOverflow" class="more-tasks-hint">
-        <el-icon><MoreFilled /></el-icon>
-        <span>还有 {{ task.subTasks.length - visibleSubTaskCount }} 项</span>
-      </div>
     </div>
 
     <!-- 描述/引用 -->
-    <p v-if="task.quote && (isActive || !hasOverflow)" class="task-quote">{{ task.quote }}</p>
+    <p v-if="task.quote" class="task-quote">{{ task.quote }}</p>
 
     <!-- 延时弹窗 -->
     <el-dialog
@@ -98,7 +95,7 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue';
-import { ChatDotRound, VideoPause, Check, Timer, MoreFilled } from '@element-plus/icons-vue';
+import { ChatDotRound, VideoPause, Check, Timer } from '@element-plus/icons-vue';
 
 const props = defineProps({
   task: {
@@ -147,57 +144,26 @@ const delayForm = reactive({
 // 计算内容完全展开所需的高度
 const calculateContentHeight = () => {
   let height = PADDING + HEADER_HEIGHT + TITLE_HEIGHT;
-  
+
   // 子任务列表高度
   if (props.task.subTasks && props.task.subTasks.length > 0) {
     height += props.task.subTasks.length * SUBTASK_ITEM_HEIGHT;
   }
-  
+
   // 引用文字高度
   if (props.task.quote) {
     height += QUOTE_HEIGHT;
   }
-  
+
   return height;
 };
 
 // 内容完全展开所需高度
 const contentHeight = computed(() => calculateContentHeight());
 
-// 是否有溢出（内容高度大于基础高度）
-const hasOverflow = computed(() => {
-  return contentHeight.value > props.baseHeight;
-});
-
-// 根据可用高度计算能显示多少个子任务
-const visibleSubTaskCount = computed(() => {
-  if (props.isActive) {
-    return props.task.subTasks?.length || 0;
-  }
-  
-  // 未选中时，计算在baseHeight内能显示多少个子任务
-  const availableHeight = props.baseHeight - PADDING - HEADER_HEIGHT - TITLE_HEIGHT - 20; // 20是省略号提示高度
-  if (availableHeight <= 0) return 0;
-  
-  const count = Math.floor(availableHeight / SUBTASK_ITEM_HEIGHT);
-  return Math.max(0, Math.min(count, props.task.subTasks?.length || 0));
-});
-
-// 显示的子任务列表
-const displayedSubTasks = computed(() => {
-  if (!props.task.subTasks) return [];
-  if (props.isActive) return props.task.subTasks;
-  return props.task.subTasks.slice(0, visibleSubTaskCount.value);
-});
-
-// 当前实际高度
+// 当前实际高度（始终使用内容高度，由父组件根据内容高度决定是否覆盖时长高度）
 const currentHeight = computed(() => {
-  if (props.isActive && hasOverflow.value) {
-    // 选中且有溢出时，展开到内容高度
-    return contentHeight.value;
-  }
-  // 否则使用基础高度（时长决定的高度）
-  return props.baseHeight;
+  return contentHeight.value;
 });
 
 const toggleSubTask = (idx) => {
@@ -218,7 +184,13 @@ const handleDelay = () => {
   const [endHour, endMin] = end.split(':').map(Number);
 
   const now = new Date();
-  delayForm.startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, startMin);
+  delayForm.startTime = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    startHour,
+    startMin
+  );
   delayForm.endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHour, endMin);
 
   delayDialogVisible.value = true;

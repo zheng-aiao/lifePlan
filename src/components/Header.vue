@@ -1,5 +1,5 @@
 <template>
-  <el-header class="header-wrapper">
+  <header class="header-wrapper">
     <div class="left-container">
       <div class="logo-container">
         <img src="@/assets/images/header/title.png" class="logo-image" />
@@ -30,7 +30,7 @@
         <img src="@/assets/images/header/avatar.png" class="avatar-image" />
       </el-avatar>
     </div>
-  </el-header>
+  </header>
 </template>
 
 <script setup>
@@ -40,19 +40,20 @@ const searchQuery = ref("");
 </script>
 
 <style scoped lang="scss">
+
 .header-wrapper {
   height: var(--header-height);
-  width: 100%;
+  width: 100vw;
   background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(0.75rem);
   box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 2rem;
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
   z-index: 100;
   box-sizing: border-box;
 
@@ -83,6 +84,7 @@ const searchQuery = ref("");
     justify-content: center;
     margin: 0 2rem;
     max-width: 42rem;
+    min-width: 0;
 
     .search-input {
       width: 100%;

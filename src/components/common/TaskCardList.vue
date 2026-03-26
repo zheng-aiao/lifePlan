@@ -6,7 +6,7 @@
       </div>
       <div class="header-right">
         <div class="year-badge">
-          <p class="year-text">{{ year }}</p>
+          <p class="year-text">{{ timeTag }}</p>
         </div>
       </div>
     </div>
@@ -48,16 +48,16 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed } from 'vue';
 
 const props = defineProps({
   title: {
     type: String,
-    default: "年度任务",
+    default: '年度任务',
   },
-  year: {
+  type: {
     type: String,
-    default: "2024",
+    default: 'year',
   },
   tasks: {
     type: Array,
@@ -65,16 +65,32 @@ const props = defineProps({
   },
 });
 
+const timeTag = computed(() => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const week = Math.ceil(now.getDate() / 7);
+
+  switch (props.type) {
+    case 'year':
+      return `${year}年`;
+    case 'month':
+      return `${month}月`;
+    default:
+      return `第${week}周`;
+  }
+});
+
 const getCategoryColor = (category) => {
   switch (category) {
-    case "工作":
-      return "rgba(151, 149, 255, 1)";
-    case "学习":
-      return "rgba(248, 160, 16, 1)";
-    case "健身":
-      return "rgba(105, 246, 184, 1)";
+    case '工作':
+      return 'rgba(151, 149, 255, 1)';
+    case '学习':
+      return 'rgba(248, 160, 16, 1)';
+    case '健身':
+      return 'rgba(105, 246, 184, 1)';
     default:
-      return "rgba(151, 149, 255, 1)";
+      return 'rgba(151, 149, 255, 1)';
   }
 };
 </script>
@@ -102,7 +118,7 @@ const getCategoryColor = (category) => {
     .header-left {
       .title-text {
         font-size: 0.875rem;
-        font-family: "Alibaba PuHuiTi-Regular";
+        font-family: 'Alibaba PuHuiTi-Regular';
         font-weight: 400;
         display: flex;
         flex-direction: column;
@@ -129,7 +145,7 @@ const getCategoryColor = (category) => {
 
         .year-text {
           font-size: 0.625rem;
-          font-family: "Inter-Semi Bold";
+          font-family: 'Inter-Semi Bold';
           font-weight: 700;
           display: flex;
           flex-direction: column;
@@ -190,7 +206,7 @@ const getCategoryColor = (category) => {
 
           .task-title {
             font-size: 0.875rem;
-            font-family: "Alibaba PuHuiTi-Regular";
+            font-family: 'Alibaba PuHuiTi-Regular';
             font-weight: 400;
             display: flex;
             flex-direction: column;
@@ -212,7 +228,7 @@ const getCategoryColor = (category) => {
 
             .category-text {
               font-size: 0.625rem;
-              font-family: "Alibaba PuHuiTi-Regular";
+              font-family: 'Alibaba PuHuiTi-Regular';
               font-weight: 400;
               display: flex;
               flex-direction: column;
@@ -263,7 +279,7 @@ const getCategoryColor = (category) => {
 
             .percentage-text {
               font-size: 0.625rem;
-              font-family: "Inter-Semi Bold";
+              font-family: 'Inter-Semi Bold';
               font-weight: 700;
               display: flex;
               flex-direction: column;

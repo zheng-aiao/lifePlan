@@ -133,7 +133,7 @@ const getCategoryColor = (category) => {
 
     .header-right {
       .year-badge {
-        width: 2.5975rem;
+        width: 3.5rem;
         height: 1.1875rem;
         position: relative;
         flex-shrink: 0;
@@ -148,7 +148,6 @@ const getCategoryColor = (category) => {
           font-family: 'Inter-Semi Bold';
           font-weight: 700;
           display: flex;
-          flex-direction: column;
           justify-content: center;
           line-height: 0.9375rem;
           color: rgba(74, 64, 224, 1);

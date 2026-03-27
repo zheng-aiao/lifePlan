@@ -431,7 +431,7 @@ onMounted(() => {
     padding: var(--content-padding);
 
     .day-view-left {
-      width: 20rem;
+      width: 23rem;
       padding: var(--content-padding);
     }
 
@@ -439,6 +439,7 @@ onMounted(() => {
       flex: 1;
       display: flex;
       flex-direction: column;
+      padding: var(--content-padding);
 
       .day-scroll-container {
         width: 100%;

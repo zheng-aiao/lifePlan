@@ -1,57 +1,54 @@
 <template>
   <el-dialog
     v-model="visible"
-    :title="showHeader ? '' : title"
-    :width="width"
-    :close-on-click-modal="closeOnClickModal"
-    :close-on-press-escape="closeOnPressEscape"
-    :show-close="!showHeader && showClose"
-    custom-class="base-dialog"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
     append-to-body
-    @close="handleClose"
   >
-    <div v-if="showHeader" class="dialog-header">
-      <div class="header-content">
-        <h3 class="dialog-title">{{ title }}</h3>
-        <div v-if="$slots.headerExtra" class="header-extra">
-          <slot name="headerExtra"></slot>
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <div class="header-content">
+          <h3 class="dialog-title">{{ title }}</h3>
+          <div v-if="$slots.headerExtra" class="header-extra">
+            <slot name="headerExtra"></slot>
+          </div>
         </div>
+        <button class="close-btn" @click="handleClose">
+          <el-icon><Close /></el-icon>
+        </button>
       </div>
-      <button v-if="showClose" class="close-btn" @click="handleClose">
-        <el-icon><Close /></el-icon>
-      </button>
-    </div>
 
-    <div class="dialog-body" :style="bodyStyle">
-      <slot></slot>
-    </div>
+      <div class="dialog-body" :style="bodyStyle">
+        <slot></slot>
+      </div>
 
-    <div v-if="showFooter" class="dialog-footer">
-      <slot name="footer">
-        <div class="footer-buttons">
-          <el-button v-if="showCancel" class="cancel-btn" @click="handleCancel">
-            {{ cancelText }}
-          </el-button>
-          <el-button
-            v-if="showConfirm"
-            type="primary"
-            class="confirm-btn"
-            :loading="confirmLoading"
-            @click="handleConfirm"
-          >
-            <el-icon v-if="confirmIcon && !confirmLoading" class="btn-icon">
-              <component :is="confirmIcon" />
-            </el-icon>
-            <span>{{ confirmText }}</span>
-          </el-button>
-        </div>
-      </slot>
+      <div class="dialog-footer">
+        <slot name="footer">
+          <div class="footer-buttons">
+            <el-button v-if="showCancel" class="cancel-btn" @click="handleCancel">
+              {{ cancelText }}
+            </el-button>
+            <el-button
+              v-if="showConfirm"
+              type="primary"
+              class="confirm-btn"
+              :loading="confirmLoading"
+              @click="handleConfirm"
+            >
+              <el-icon v-if="confirmIcon && !confirmLoading" class="btn-icon">
+                <component :is="confirmIcon" />
+              </el-icon>
+              <span>{{ confirmText }}</span>
+            </el-button>
+          </div>
+        </slot>
+      </div>
     </div>
   </el-dialog>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { Close } from '@element-plus/icons-vue';
 
 const props = defineProps({
@@ -63,21 +60,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  width: {
-    type: [String, Number],
-    default: '500px',
-  },
-  showHeader: {
-    type: Boolean,
-    default: true,
-  },
-  showFooter: {
-    type: Boolean,
-    default: true,
-  },
-  showClose: {
-    type: Boolean,
-    default: true,
+  size: {
+    type: String,
+    default: 'normal',
+    validator: (value) => ['large', 'normal'].includes(value),
   },
   showCancel: {
     type: Boolean,
@@ -103,14 +89,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  closeOnClickModal: {
-    type: Boolean,
-    default: false,
-  },
-  closeOnPressEscape: {
-    type: Boolean,
-    default: true,
-  },
   bodyStyle: {
     type: Object,
     default: () => ({}),
@@ -118,6 +96,42 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:modelValue', 'confirm', 'cancel', 'close']);
+
+const sizeConfig = {
+  large: {
+    width: 900 / 16 + 'rem',
+    height: 600 / 16 + 'rem',
+    headerHeight: 70 / 16 + 'rem',
+    footerHeight: 70 / 16 + 'rem',
+  },
+  normal: {
+    width: 600 / 16 + 'rem',
+    height: 400 / 16 + 'rem',
+    headerHeight: 45 / 16 + 'rem',
+    footerHeight: 45 / 16 + 'rem',
+  },
+};
+
+const config = computed(() => {
+  return sizeConfig[props.size] || sizeConfig.normal;
+});
+
+const updateRootVars = () => {
+  const root = document.documentElement;
+  root.style.setProperty('--dialog-width', config.value.width);
+  root.style.setProperty('--dialog-height', config.value.height);
+  root.style.setProperty('--dialog-header-height', config.value.headerHeight);
+  root.style.setProperty('--dialog-footer-height', config.value.footerHeight);
+};
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (newVal) {
+      updateRootVars();
+    }
+  }
+);
 
 const visible = computed({
   get: () => props.modelValue,
@@ -140,20 +154,22 @@ const handleConfirm = () => {
 </script>
 
 <style scoped lang="scss">
-:deep(.base-dialog) {
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(158, 174, 199, 0.1);
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 .dialog-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
   background: linear-gradient(180deg, rgba(244, 246, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
   border-bottom: 1px solid rgba(220, 233, 255, 1);
+  padding: 0 24px;
+  height: var(--dialog-header-height);
+  flex-shrink: 0;
 
   .header-content {
     display: flex;
@@ -206,18 +222,24 @@ const handleConfirm = () => {
 .dialog-body {
   background-color: #fff;
   position: relative;
+  flex: 1;
+  overflow: auto;
 }
 
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
-  padding: 20px 32px;
   border-top: 1px solid rgba(220, 233, 255, 1);
   background-color: #fff;
+  padding: 0 24px;
+  height: var(--dialog-footer-height);
+  flex-shrink: 0;
 
   .footer-buttons {
     display: flex;
+    align-items: center;
     gap: 12px;
+    height: 100%;
 
     .cancel-btn {
       min-width: 76px;

@@ -2,8 +2,7 @@
   <BaseDialog
     v-model="visible"
     title="任务反馈"
-    width="900px"
-    height="600px"
+    size="large"
     :confirm-text="'提交反馈'"
     @confirm="handleConfirm"
     @cancel="handleCancel"
@@ -460,72 +459,6 @@ watch(visible, (newValue) => {
             font-weight: 700;
           }
         }
-      }
-    }
-  }
-}
-
-:deep(.el-dialog) {
-  width: 900px !important;
-  height: 600px !important;
-  border-radius: 32px;
-  box-shadow: 0 8px 32px rgba(32, 48, 68, 0.08);
-  overflow: hidden;
-}
-
-:deep(.el-dialog__header) {
-  padding: 32px 40px;
-  border-bottom: 1px solid rgba(220, 233, 255, 0.4);
-
-  .el-dialog__title {
-    font-size: 20px;
-    font-weight: 600;
-    color: rgba(32, 48, 68, 1);
-    font-family: 'Inter', sans-serif;
-  }
-}
-
-:deep(.el-dialog__body) {
-  padding: 0;
-  height: calc(100% - 160px);
-}
-
-:deep(.el-dialog__footer) {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 24px 40px;
-  background-color: rgba(234, 241, 255, 0.2);
-  border-top: 1px solid rgba(220, 233, 255, 1);
-
-  .el-button {
-    border-radius: 12px;
-    font-family: 'WenQuanYi Zen Hei', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 20px;
-
-    &--primary {
-      background-color: rgba(74, 64, 224, 1);
-      border: none;
-      padding: 10px 32px;
-      box-shadow:
-        0 2px 4px rgba(74, 64, 224, 0.2),
-        0 4px 6px rgba(74, 64, 224, 0.2);
-
-      &:hover {
-        background-color: rgba(64, 54, 214, 1);
-      }
-    }
-
-    &--default {
-      color: rgba(77, 93, 115, 1);
-      border: none;
-      padding: 10px 24px;
-
-      &:hover {
-        color: rgba(67, 83, 105, 1);
-        background-color: rgba(244, 246, 255, 0.5);
       }
     }
   }

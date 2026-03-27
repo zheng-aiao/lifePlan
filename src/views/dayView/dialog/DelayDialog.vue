@@ -2,7 +2,7 @@
   <BaseDialog
     v-model="visible"
     title="延时任务"
-    width="900px"
+    size="large"
     :confirm-text="'确认延时'"
     :confirm-icon="Timer"
     @confirm="handleConfirm"
@@ -340,9 +340,10 @@ const handleClose = () => {
 .delay-content {
   display: flex;
   flex-direction: column;
-  padding: 24px 32px;
-  gap: 20px;
-  min-height: 455px;
+  gap: 10px;
+  min-height: 460px;
+  padding: 16px 32px;
+  box-sizing: border-box;
   background-color: #fff;
   position: relative;
 
@@ -363,7 +364,7 @@ const handleClose = () => {
       font-size: 14px;
       font-weight: 600;
       color: rgba(32, 48, 68, 1);
-      margin: 0 0 16px 0;
+      margin: 0 0 10px 0;
     }
 
     .timeline-visual {

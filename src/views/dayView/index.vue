@@ -59,10 +59,14 @@
                   :task="task"
                   :is-active="activeTaskIndex === index"
                   :base-height="getTaskBaseHeight(task)"
+                  :other-tasks="tasks.filter((t) => t.id !== task.id)"
                   @toggleSubTask="(idx) => toggleSubTask(index, idx)"
                   @feedback="handleFeedback(task)"
                   @pause="handlePause(task)"
-                  @delay="(newTimeRange) => handleDelay(index, newTimeRange)"
+                  @delay="(newTimeRange, reason) => handleDelay(index, newTimeRange, reason)"
+                  @resize="
+                    (newTimeRange, newHeight) => handleResize(index, newTimeRange, newHeight)
+                  "
                 />
               </div>
             </div>
@@ -84,8 +88,8 @@
 import { ref, computed, onMounted, nextTick } from 'vue';
 import AsideRight from '@/components/AsideRight.vue';
 import TaskCardList from '@/components/common/TaskCardList.vue';
-import DayTaskCard from '@/components/day/DayTaskCard.vue';
-import DayTaskHandle from '@/components/day/DayTaskHandle.vue';
+import DayTaskCard from './component/DayTaskCard.vue';
+import DayTaskHandle from './component/DayTaskHandle.vue';
 import {
   yearlyTasks,
   monthlyTasks,
@@ -374,10 +378,13 @@ const handleScroll = ({ scrollTop: st }) => {
 };
 
 // 延时处理
-const handleDelay = (taskIndex, newTimeRange) => {
+const handleDelay = (taskIndex, newTimeRange, reason) => {
   const task = tasks.value[taskIndex];
   task.delayedFrom = task.timeRange;
   task.timeRange = newTimeRange;
+  if (reason) {
+    task.delayReason = reason;
+  }
 };
 
 // 子任务切换
@@ -396,6 +403,13 @@ const handleFeedback = (task) => {
 // 暂停按钮
 const handlePause = (task) => {
   console.log('暂停任务:', task.title);
+};
+
+// 处理任务卡片 resize 事件
+const handleResize = (taskIndex, newTimeRange, newHeight) => {
+  const task = tasks.value[taskIndex];
+  task.timeRange = newTimeRange;
+  console.log('任务调整大小:', task.title, newTimeRange);
 };
 
 const handleUpdateTasks = (newDate) => {

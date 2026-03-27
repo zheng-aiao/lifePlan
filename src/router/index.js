@@ -1,11 +1,11 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
   {
-    path: "/",
-    name: "DayView",
-    component: () => import("@/views/dayView.vue"),
-    meta: { guid: "4:2" },
+    path: '/',
+    name: 'DayView',
+    component: () => import('@/views/dayView/index.vue'),
+    meta: { guid: '4:2' },
   },
 ];
 

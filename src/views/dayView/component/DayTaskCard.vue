@@ -7,7 +7,7 @@
       backgroundColor: task.bgColor,
       opacity: task.opacity || 1,
     }"
-    :body-style="{ padding: '0.75rem' }"
+    :body-style="{ padding: '0.75rem', position: 'relative' }"
   >
     <!-- 头部信息 -->
     <div class="card-header">
@@ -35,7 +35,12 @@
     </div>
 
     <!-- 任务标题 -->
-    <p class="task-title">{{ task.title }}</p>
+    <div class="task-title-container">
+      <p class="task-title">{{ task.title }}</p>
+      <el-button circle class="add-subtask-btn" @click.stop="handleAddSubTask" title="添加子任务">
+        <el-icon><Plus /></el-icon>
+      </el-button>
+    </div>
 
     <!-- 子任务列表 - 默认全部展开 -->
     <div v-if="task.subTasks && task.subTasks.length" class="sub-task-list">
@@ -57,45 +62,24 @@
     <!-- 描述/引用 -->
     <p v-if="task.quote" class="task-quote">{{ task.quote }}</p>
 
+    <!-- 拖动手柄 -->
+    <div class="resize-handle" @mousedown="startResize" title="拖动调整任务时长"></div>
+
     <!-- 延时弹窗 -->
-    <el-dialog
+    <delay-dialog
       v-model="delayDialogVisible"
-      title="延时任务"
-      width="400px"
-      :close-on-click-modal="false"
-    >
-      <div class="delay-form">
-        <p class="current-time">当前时间：{{ task.timeRange }}</p>
-        <el-form :model="delayForm" label-width="80px">
-          <el-form-item label="新的开始">
-            <el-time-picker
-              v-model="delayForm.startTime"
-              format="HH:mm"
-              placeholder="选择开始时间"
-              style="width: 100%"
-            />
-          </el-form-item>
-          <el-form-item label="新的结束">
-            <el-time-picker
-              v-model="delayForm.endTime"
-              format="HH:mm"
-              placeholder="选择结束时间"
-              style="width: 100%"
-            />
-          </el-form-item>
-        </el-form>
-      </div>
-      <template #footer>
-        <el-button @click="delayDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmDelay">确认延时</el-button>
-      </template>
-    </el-dialog>
+      :current-time-range="task.timeRange"
+      :task-title="task.title"
+      @confirm="handleDelayConfirm"
+      @cancel="handleDelayCancel"
+    />
   </el-card>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from 'vue';
-import { ChatDotRound, VideoPause, Check, Timer } from '@element-plus/icons-vue';
+import { ChatDotRound, VideoPause, Check, Timer, Plus } from '@element-plus/icons-vue';
+import DelayDialog from '../dialog/DelayDialog.vue';
 
 const props = defineProps({
   task: {
@@ -124,9 +108,21 @@ const props = defineProps({
     type: Number,
     default: 60, // 默认基础高度（时长决定的高度）
   },
+  otherTasks: {
+    type: Array,
+    default: () => [],
+  },
 });
 
-const emit = defineEmits(['toggleSubTask', 'feedback', 'pause', 'delay', 'heightChange']);
+const emit = defineEmits([
+  'toggleSubTask',
+  'feedback',
+  'pause',
+  'delay',
+  'heightChange',
+  'resize',
+  'addSubTask',
+]);
 
 // 常量
 const SUBTASK_ITEM_HEIGHT = 26; // 每个子任务项的高度
@@ -134,12 +130,16 @@ const HEADER_HEIGHT = 50; // 头部区域高度
 const TITLE_HEIGHT = 28; // 标题高度
 const QUOTE_HEIGHT = 24; // 引用文字高度
 const PADDING = 24; // 上下padding总和
+const MIN_TASK_DURATION = 30; // 最小任务时长（分钟）
+const PIXELS_PER_MINUTE = 2; // 每分钟对应的像素高度
 
+// 延时弹窗显示状态
 const delayDialogVisible = ref(false);
-const delayForm = reactive({
-  startTime: null,
-  endTime: null,
-});
+
+// 拖动相关数据
+const isResizing = ref(false);
+const startY = ref(0);
+const startHeight = ref(0);
 
 // 计算内容完全展开所需的高度
 const calculateContentHeight = () => {
@@ -179,35 +179,103 @@ const handlePause = () => {
 };
 
 const handleDelay = () => {
-  const [start, end] = props.task.timeRange.split('-');
-  const [startHour, startMin] = start.split(':').map(Number);
-  const [endHour, endMin] = end.split(':').map(Number);
-
-  const now = new Date();
-  delayForm.startTime = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    startHour,
-    startMin
-  );
-  delayForm.endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHour, endMin);
-
   delayDialogVisible.value = true;
 };
 
-const confirmDelay = () => {
-  if (!delayForm.startTime || !delayForm.endTime) {
-    return;
+const handleDelayConfirm = ({ timeRange, reason }) => {
+  emit('delay', timeRange, reason);
+  delayDialogVisible.value = false;
+};
+
+const handleDelayCancel = () => {
+  delayDialogVisible.value = false;
+};
+
+// 开始拖动调整大小
+const startResize = (e) => {
+  e.preventDefault();
+  console.log('开始拖动');
+  isResizing.value = true;
+  startY.value = e.clientY;
+  startHeight.value = currentHeight.value;
+
+  // 添加全局鼠标事件监听器
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+};
+
+// 检查时间冲突
+const checkTimeConflict = (newStart, newEnd) => {
+  // 解析当前任务的开始时间
+  const [startHour, startMin] = newStart.split(':').map(Number);
+  const startTimestamp = startHour * 60 + startMin;
+
+  // 解析当前任务的新结束时间
+  const [endHour, endMin] = newEnd.split(':').map(Number);
+  const endTimestamp = endHour * 60 + endMin;
+
+  // 检查与其他任务的冲突
+  for (const otherTask of props.otherTasks) {
+    if (otherTask.id === props.task.id) continue; // 跳过自己
+
+    const [otherStart, otherEnd] = otherTask.timeRange.split('-');
+    const [otherStartHour, otherStartMin] = otherStart.split(':').map(Number);
+    const otherStartTimestamp = otherStartHour * 60 + otherStartMin;
+
+    const [otherEndHour, otherEndMin] = otherEnd.split(':').map(Number);
+    const otherEndTimestamp = otherEndHour * 60 + otherEndMin;
+
+    // 检查时间重叠
+    if (startTimestamp < otherEndTimestamp && endTimestamp > otherStartTimestamp) {
+      return true; // 冲突
+    }
   }
 
-  const formatTime = (date) => {
-    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-  };
+  return false; // 无冲突
+};
 
-  const newTimeRange = `${formatTime(delayForm.startTime)}-${formatTime(delayForm.endTime)}`;
-  emit('delay', newTimeRange);
-  delayDialogVisible.value = false;
+// 拖动过程
+const onMouseMove = (e) => {
+  if (!isResizing.value) return;
+
+  console.log('拖动中');
+  const deltaY = e.clientY - startY.value;
+  const newHeight = Math.max(startHeight.value + deltaY, MIN_TASK_DURATION * PIXELS_PER_MINUTE);
+
+  // 计算新的时长（分钟）
+  const newDuration = Math.round(newHeight / PIXELS_PER_MINUTE);
+
+  // 计算新的结束时间
+  const [start, end] = props.task.timeRange.split('-');
+  const [startHour, startMin] = start.split(':').map(Number);
+  const startDate = new Date();
+  startDate.setHours(startHour, startMin, 0, 0);
+
+  const endDate = new Date(startDate.getTime() + newDuration * 60 * 1000);
+  const endHour = endDate.getHours().toString().padStart(2, '0');
+  const endMin = endDate.getMinutes().toString().padStart(2, '0');
+  const newEndTime = `${endHour}:${endMin}`;
+
+  // 检查时间冲突
+  if (!checkTimeConflict(start, newEndTime)) {
+    const newTimeRange = `${start}-${newEndTime}`;
+    console.log('新的时间范围:', newTimeRange);
+    emit('resize', newTimeRange, newHeight);
+  }
+};
+
+// 结束拖动
+const onMouseUp = () => {
+  console.log('结束拖动');
+  isResizing.value = false;
+  // 移除全局鼠标事件监听器
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+};
+
+// 处理添加子任务
+const handleAddSubTask = () => {
+  emit('addSubTask');
 };
 </script>
 
@@ -221,6 +289,7 @@ const confirmDelay = () => {
   box-shadow: 0 0.0625rem 0.25rem 0 rgba(0, 0, 0, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  position: relative;
 
   &.is-active {
     transform: scale(1.01);
@@ -332,17 +401,44 @@ const confirmDelay = () => {
   }
 }
 
+.task-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.375rem;
+  flex-shrink: 0;
+}
+
 .task-title {
   font-size: 0.9375rem;
   font-family: 'Alibaba PuHuiTi-Regular';
   font-weight: 400;
   line-height: 1.375rem;
   color: rgba(32, 48, 68, 1);
-  margin: 0 0 0.375rem 0;
-  flex-shrink: 0;
+  margin: 0;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-right: 0.5rem;
+}
+
+.add-subtask-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  background-color: rgba(244, 246, 255, 1);
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: rgba(74, 64, 224, 0.1);
+  }
+
+  .el-icon {
+    font-size: 0.75rem;
+    color: rgba(74, 64, 224, 1);
+  }
 }
 
 .sub-task-list {
@@ -439,18 +535,6 @@ const confirmDelay = () => {
   -webkit-box-orient: vertical;
 }
 
-// 延时弹窗样式
-.delay-form {
-  .current-time {
-    font-size: 0.875rem;
-    color: rgba(104, 120, 143, 1);
-    margin-bottom: 1rem;
-    padding: 0.75rem;
-    background-color: rgba(244, 246, 255, 1);
-    border-radius: 0.5rem;
-  }
-}
-
 :deep(.el-card__body) {
   display: flex;
   flex-direction: column;
@@ -461,5 +545,27 @@ const confirmDelay = () => {
 
 :deep(.el-button.is-circle) {
   padding: 0.25rem;
+}
+
+/* 拖动手柄样式 */
+.resize-handle {
+  width: 100%;
+  height: 12px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  cursor: ns-resize;
+  background: rgba(74, 64, 224, 0.2);
+  transition: all 0.2s ease;
+  border-radius: 0 0 0.5rem 0.5rem;
+  z-index: 10;
+
+  &:hover {
+    background: rgba(74, 64, 224, 0.3);
+  }
+
+  &:active {
+    background: rgba(74, 64, 224, 0.4);
+  }
 }
 </style>

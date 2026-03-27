@@ -11,7 +11,7 @@
   - 相关弹窗放到该文件夹下dialog文件夹下，命名为XXXDialog.vue，XXX为业务名称
   - 相关组件放到该文件夹下的components文件夹下
 
-#使用规范
+# 使用规范
 
 - 业务组件入口文件: src/views/业务文件夹/index.vue. 业务文件夹名称自定义
 - 业务组件弹窗: 放到 src/views/业务文件夹/dialog，命名为XXXDialog.vue，XXX为业务弹窗名称

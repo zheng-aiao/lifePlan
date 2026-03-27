@@ -1,0 +1,97 @@
+/* Element Plus 组件样式重置 */
+
+/* 重置 el-dialog 样式 */
+.el-dialog {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.el-dialog__header {
+  padding: 0 !important;
+  margin: 0 !important;
+  border-bottom: none !important;
+}
+
+.el-dialog__body {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+.el-dialog__footer {
+  padding: 0 !important;
+  margin: 0 !important;
+  border-top: none !important;
+  background-color: #fff !important;
+}
+
+/* 重置 el-dialog__title */
+.el-dialog__title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: rgba(32, 48, 68, 1) !important;
+  margin: 0 !important;
+}
+
+/* 重置 el-dialog__close */
+.el-dialog__close {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 16px !important;
+  line-height: 32px !important;
+  text-align: center !important;
+  color: rgba(158, 174, 199, 1) !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background-color: rgba(244, 246, 255, 1) !important;
+    color: rgba(74, 64, 224, 1) !important;
+  }
+}
+
+/* 重置其他可能影响的组件样式 */
+.el-button {
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+}
+
+.el-button--primary {
+  background: linear-gradient(
+    135deg,
+    rgba(74, 64, 224, 1) 0%,
+    rgba(61, 48, 212, 1) 100%
+  ) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0px 8px 24px rgba(32, 48, 68, 0.12) !important;
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 48, 191, 1) 0%,
+      rgba(48, 36, 180, 1) 100%
+    ) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0px 12px 28px rgba(32, 48, 68, 0.16) !important;
+  }
+}
+
+/* 确保样式优先级 */
+:root {
+  --el-dialog-padding-top: 0 !important;
+  --el-dialog-padding-bottom: 0 !important;
+  --el-dialog-padding-left: 0 !important;
+  --el-dialog-padding-right: 0 !important;
+  --el-dialog-body-padding: 0 !important;
+  --el-dialog-footer-padding: 0 !important;
+  --el-dialog-header-padding: 0 !important;
+}

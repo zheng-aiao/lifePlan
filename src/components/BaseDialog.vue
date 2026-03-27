@@ -5,7 +5,7 @@
     :width="width"
     :close-on-click-modal="closeOnClickModal"
     :close-on-press-escape="closeOnPressEscape"
-    :show-close="showClose"
+    :show-close="!showHeader && showClose"
     custom-class="base-dialog"
     append-to-body
     @close="handleClose"
@@ -29,11 +29,7 @@
     <div v-if="showFooter" class="dialog-footer">
       <slot name="footer">
         <div class="footer-buttons">
-          <el-button
-            v-if="showCancel"
-            class="cancel-btn"
-            @click="handleCancel"
-          >
+          <el-button v-if="showCancel" class="cancel-btn" @click="handleCancel">
             {{ cancelText }}
           </el-button>
           <el-button
@@ -149,20 +145,6 @@ const handleConfirm = () => {
   overflow: hidden;
   box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(158, 174, 199, 0.1);
-
-  .el-dialog__header {
-    display: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .el-dialog__body {
-    padding: 0;
-  }
-
-  .el-dialog__footer {
-    padding: 0;
-  }
 }
 
 .dialog-header {
@@ -172,50 +154,51 @@ const handleConfirm = () => {
   padding: 20px 24px;
   background: linear-gradient(180deg, rgba(244, 246, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
   border-bottom: 1px solid rgba(220, 233, 255, 1);
-}
 
-.header-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-}
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
 
-.dialog-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: rgba(32, 48, 68, 1);
-  margin: 0;
-}
+    .dialog-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(32, 48, 68, 1);
+      margin: 0;
+    }
 
-.header-extra {
-  display: flex;
-  align-items: center;
-}
-
-.close-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  padding: 0;
-  
-  &:hover {
-    background-color: rgba(244, 246, 255, 1);
+    .header-extra {
+      display: flex;
+      align-items: center;
+    }
   }
-  
-  .el-icon {
-    font-size: 16px;
-    color: rgba(158, 174, 199, 1);
-    
+
+  .close-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    padding: 0;
+
     &:hover {
-      color: rgba(74, 64, 224, 1);
+      background-color: rgba(244, 246, 255, 1);
+
+      .el-icon {
+        color: rgba(74, 64, 224, 1);
+      }
+    }
+
+    .el-icon {
+      font-size: 16px;
+      color: rgba(158, 174, 199, 1);
+      transition: color 0.2s ease;
     }
   }
 }
@@ -231,52 +214,52 @@ const handleConfirm = () => {
   padding: 20px 32px;
   border-top: 1px solid rgba(220, 233, 255, 1);
   background-color: #fff;
-}
 
-.footer-buttons {
-  display: flex;
-  gap: 12px;
-}
+  .footer-buttons {
+    display: flex;
+    gap: 12px;
 
-.cancel-btn {
-  min-width: 76px;
-  height: 40px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(77, 93, 115, 1);
-  border: none;
-  background-color: transparent;
-  
-  &:hover {
-    background-color: rgba(244, 246, 255, 1);
-    color: rgba(74, 64, 224, 1);
-  }
-}
+    .cancel-btn {
+      min-width: 76px;
+      height: 40px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(77, 93, 115, 1);
+      border: none;
+      background-color: transparent;
 
-.confirm-btn {
-  min-width: 100px;
-  height: 40px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 700;
-  color: rgba(244, 241, 255, 1);
-  background: linear-gradient(135deg, rgba(74, 64, 224, 1) 0%, rgba(61, 48, 212, 1) 100%);
-  border: none;
-  box-shadow: 0px 8px 24px rgba(32, 48, 68, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  
-  &:hover {
-    background: linear-gradient(135deg, rgba(59, 48, 191, 1) 0%, rgba(48, 36, 180, 1) 100%);
-    transform: translateY(-1px);
-    box-shadow: 0px 12px 28px rgba(32, 48, 68, 0.16);
-  }
-  
-  .btn-icon {
-    font-size: 14px;
+      &:hover {
+        background-color: rgba(244, 246, 255, 1);
+        color: rgba(74, 64, 224, 1);
+      }
+    }
+
+    .confirm-btn {
+      min-width: 100px;
+      height: 40px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(244, 241, 255, 1);
+      background: linear-gradient(135deg, rgba(74, 64, 224, 1) 0%, rgba(61, 48, 212, 1) 100%);
+      border: none;
+      box-shadow: 0px 8px 24px rgba(32, 48, 68, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      &:hover {
+        background: linear-gradient(135deg, rgba(59, 48, 191, 1) 0%, rgba(48, 36, 180, 1) 100%);
+        transform: translateY(-1px);
+        box-shadow: 0px 12px 28px rgba(32, 48, 68, 0.16);
+      }
+
+      .btn-icon {
+        font-size: 14px;
+      }
+    }
   }
 }
 </style>

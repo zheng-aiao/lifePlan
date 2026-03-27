@@ -73,6 +73,16 @@
       @confirm="handleDelayConfirm"
       @cancel="handleDelayCancel"
     />
+
+    <!-- 反馈弹窗 -->
+    <asset-dialog
+      v-model="feedbackDialogVisible"
+      :task-title="task.title"
+      :time-range="task.timeRange"
+      :actual-duration="task.actualDuration"
+      @confirm="handleFeedbackConfirm"
+      @cancel="handleFeedbackCancel"
+    />
   </el-card>
 </template>
 
@@ -80,6 +90,7 @@
 import { ref, reactive, computed } from 'vue';
 import { ChatDotRound, VideoPause, Check, Timer, Plus } from '@element-plus/icons-vue';
 import DelayDialog from '../dialog/DelayDialog.vue';
+import AssetDialog from '../dialog/AssetDialog.vue';
 
 const props = defineProps({
   task: {
@@ -136,6 +147,9 @@ const PIXELS_PER_MINUTE = 2; // 每分钟对应的像素高度
 // 延时弹窗显示状态
 const delayDialogVisible = ref(false);
 
+// 反馈弹窗显示状态
+const feedbackDialogVisible = ref(false);
+
 // 拖动相关数据
 const isResizing = ref(false);
 const startY = ref(0);
@@ -171,7 +185,16 @@ const toggleSubTask = (idx) => {
 };
 
 const handleFeedback = () => {
-  emit('feedback');
+  feedbackDialogVisible.value = true;
+};
+
+const handleFeedbackConfirm = (feedbackData) => {
+  emit('feedback', feedbackData);
+  feedbackDialogVisible.value = false;
+};
+
+const handleFeedbackCancel = () => {
+  feedbackDialogVisible.value = false;
 };
 
 const handlePause = () => {

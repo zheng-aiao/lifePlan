@@ -446,12 +446,12 @@ onMounted(() => {
     padding: var(--content-padding);
 
     .day-view-left {
-      width: pxToRem(368);
+      flex: 1;
       padding: var(--content-padding);
     }
 
     .day-view-main {
-      flex: 1;
+      flex: 3;
       display: flex;
       flex-direction: column;
       padding: var(--content-padding);

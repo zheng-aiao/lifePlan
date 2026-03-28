@@ -91,6 +91,14 @@
       @confirm="handleStopConfirm"
       @cancel="handleStopCancel"
     />
+
+    <!-- 新增子项任务弹窗 -->
+    <add-task-item-dialog
+      v-model="addTaskItemDialogVisible"
+      :task-title="task.title"
+      @confirm="handleAddTaskItemConfirm"
+      @cancel="handleAddTaskItemCancel"
+    />
   </el-card>
 </template>
 
@@ -100,6 +108,7 @@ import { ChatDotRound, VideoPause, Check, Timer, Plus } from '@element-plus/icon
 import DelayDialog from '../dialog/DelayDialog.vue';
 import AssetDialog from '../dialog/AssetDialog.vue';
 import StopDialog from '../dialog/StopDialog.vue';
+import AddTaskItemDialog from '../dialog/AddTaskItemDialog.vue';
 
 const props = defineProps({
   task: {
@@ -161,6 +170,9 @@ const feedbackDialogVisible = ref(false);
 
 // 中止弹窗显示状态
 const stopDialogVisible = ref(false);
+
+// 新增子项任务弹窗显示状态
+const addTaskItemDialogVisible = ref(false);
 
 // 拖动相关数据
 const isResizing = ref(false);
@@ -319,7 +331,18 @@ const onMouseUp = () => {
 
 // 处理添加子任务
 const handleAddSubTask = () => {
-  emit('addSubTask');
+  addTaskItemDialogVisible.value = true;
+};
+
+// 处理新增子项任务确认
+const handleAddTaskItemConfirm = (taskItemData) => {
+  emit('addSubTask', taskItemData);
+  addTaskItemDialogVisible.value = false;
+};
+
+// 处理新增子项任务取消
+const handleAddTaskItemCancel = () => {
+  addTaskItemDialogVisible.value = false;
 };
 </script>
 

@@ -1,4 +1,4 @@
-import './assets/styles/global.scss';
+import './assets/styles/global.css';
 import './assets/styles/font.css';
 import 'element-plus/dist/index.css';
 import './assets/styles/element-reset.css';

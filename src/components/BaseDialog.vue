@@ -50,7 +50,6 @@
 <script setup>
 import { computed, watch } from 'vue';
 import { Close } from '@element-plus/icons-vue';
-import { pxToRem } from '../utils/index.js';
 
 const props = defineProps({
   modelValue: {
@@ -98,31 +97,29 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'confirm', 'cancel', 'close']);
 
-const sizeConfig = {
-  large: {
-    width: pxToRem(900),
-    height: pxToRem(600),
-    headerHeight: pxToRem(70),
-    footerHeight: pxToRem(70),
-  },
-  normal: {
-    width: pxToRem(600),
-    height: pxToRem(400),
-    headerHeight: pxToRem(45),
-    footerHeight: pxToRem(45),
-  },
+// 不同尺寸的缩放比例（相对于large尺寸）
+const sizeScale = {
+  large: 1,      // large: 100%
+  normal: 0.667, // normal: 66.7% (600/900, 400/600)
 };
-
-const config = computed(() => {
-  return sizeConfig[props.size] || sizeConfig.normal;
-});
 
 const updateRootVars = () => {
   const root = document.documentElement;
-  root.style.setProperty('--dialog-width', config.value.width);
-  root.style.setProperty('--dialog-height', config.value.height);
-  root.style.setProperty('--dialog-header-height', config.value.headerHeight);
-  root.style.setProperty('--dialog-footer-height', config.value.footerHeight);
+  const styles = getComputedStyle(root);
+  const scale = sizeScale[props.size] || 1;
+
+  // 从CSS变量读取纯数字px值，按比例缩放后转换为rem
+  const widthPx = parseFloat(styles.getPropertyValue('--dialog-width').trim()) * scale;
+  const heightPx = parseFloat(styles.getPropertyValue('--dialog-height').trim()) * scale;
+  const headerHeightPx = parseFloat(styles.getPropertyValue('--dialog-header-height').trim()) * scale;   
+  const footerHeightPx = parseFloat(styles.getPropertyValue('--dialog-footer-height').trim()) * scale;
+
+
+  
+  root.style.setProperty('--dialog-width',  widthPx);
+  root.style.setProperty('--dialog-height', heightPx);
+  root.style.setProperty('--dialog-header-height', headerHeightPx);
+  root.style.setProperty('--dialog-footer-height', footerHeightPx);
 };
 
 watch(
@@ -170,7 +167,7 @@ const handleConfirm = () => {
   background: linear-gradient(180deg, rgba(244, 246, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
   border-bottom: 1px solid rgba(220, 233, 255, 1);
   padding: 0 pxToRem(24);
-  height: var(--dialog-header-height);
+  height: calc(var(--dialog-header-height) / 16 * 1rem);
   flex-shrink: 0;
 
   .header-content {
@@ -234,7 +231,7 @@ const handleConfirm = () => {
   border-top: 1px solid rgba(220, 233, 255, 1);
   background-color: #fff;
   padding: 0 pxToRem(24);
-  height: var(--dialog-footer-height);
+  height: calc(var(--dialog-footer-height) / 16 * 1rem);
   flex-shrink: 0;
 
   .footer-buttons {

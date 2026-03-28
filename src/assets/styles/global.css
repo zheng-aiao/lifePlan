@@ -1,0 +1,103 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  word-break: break-word;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+ol,
+ul,
+menu {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+ol li::marker,
+ul li::before {
+  letter-spacing: 0;
+}
+
+.scroll-container > div {
+  width: 100%;
+}
+
+.container > div {
+  width: 100%;
+}
+
+.Pixso-canvas-0_1 > div {
+  width: 100%;
+}
+
+:root {
+  --aside-left-width: calc(240 / 16 * 1rem);
+  --aside-right-width: calc(308 / 16 * 1rem);
+  --left-section-width: calc(420 / 16 * 1rem);
+  --content-gap: calc(16 / 16 * 1rem);
+  --content-padding: calc(16 / 16 * 1rem);
+  --header-height: calc(64 / 16 * 1rem);
+  --base-font-size: calc(16 / 16 * 1rem);
+  
+  /* dialog尺寸 - 纯数字px值（JS可直接读取，CSS使用calc转换） */
+  --dialog-width: 900;
+  --dialog-height: 600;
+  --dialog-header-height: 70;
+  --dialog-footer-height: 70;
+}
+
+@media (max-width: 1440px) {
+  :root {
+    --aside-left-width: calc(224 / 16 * 1rem);
+    --aside-right-width: calc(288 / 16 * 1rem);
+    --left-section-width: calc(384 / 16 * 1rem);
+    --content-gap: calc(14 / 16 * 1rem);
+    --content-padding: calc(14 / 16 * 1rem);
+    --dialog-width: 840;
+    --dialog-height: 560;
+    --dialog-header-height: 64;
+    --dialog-footer-height: 64;
+  }
+}
+
+@media (max-width: 1280px) {
+  :root {
+    --aside-left-width: calc(192 / 16 * 1rem);
+    --aside-right-width: calc(256 / 16 * 1rem);
+    --left-section-width: calc(352 / 16 * 1rem);
+    --content-gap: calc(12 / 16 * 1rem);
+    --content-padding: calc(12 / 16 * 1rem);
+    --base-font-size: calc(15 / 16 * 1rem);
+    --dialog-width: 768;
+    --dialog-height: 512;
+    --dialog-header-height: 60;
+    --dialog-footer-height: 60;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --aside-left-width: calc(160 / 16 * 1rem);
+    --aside-right-width: calc(224 / 16 * 1rem);
+    --left-section-width: calc(288 / 16 * 1rem);
+    --content-gap: calc(8 / 16 * 1rem);
+    --content-padding: calc(8 / 16 * 1rem);
+    --base-font-size: calc(14 / 16 * 1rem);
+    --dialog-width: 680;
+    --dialog-height: 448;
+    --dialog-header-height: 56;
+    --dialog-footer-height: 56;
+  }
+}

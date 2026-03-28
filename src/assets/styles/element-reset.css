@@ -1,28 +1,20 @@
 /* Element Plus 组件样式重置 */
 
-/* 弹窗尺寸 CSS 变量 */
-:root {
-  --dialog-width: 900px;
-  --dialog-height: 600px;
-  --dialog-header-height: 70px;
-  --dialog-footer-height: 70px;
-}
-
 /* 重置 el-dialog 样式 */
 .el-dialog {
   padding: 0 !important;
   overflow: hidden !important;
-  width: var(--dialog-width) !important;
-  height: var(--dialog-height) !important;
+  width: calc(var(--dialog-width) / 16 * 1rem) !important;
+  height: calc(var(--dialog-height) / 16 * 1rem) !important;
 }
-
+  
 .el-dialog__body {
   padding: 0 !important;
   margin: 0 !important;
   overflow: hidden !important;
-  width: var(--dialog-width) !important;
-  height: var(--dialog-height) !important;
-  max-height: var(--dialog-height) !important;
+  width: calc(var(--dialog-width) / 16 * 1rem) !important;
+  height: calc(var(--dialog-height) / 16 * 1rem) !important;
+  max-height: calc(var(--dialog-height) / 16 * 1rem) !important;
 }
 
 .el-dialog__header {

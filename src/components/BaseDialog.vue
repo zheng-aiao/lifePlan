@@ -108,15 +108,13 @@ const updateRootVars = () => {
   const styles = getComputedStyle(root);
   const scale = sizeScale[props.size] || 1;
 
-  // 从CSS变量读取纯数字px值，按比例缩放后转换为rem
-  const widthPx = parseFloat(styles.getPropertyValue('--dialog-width').trim()) * scale;
-  const heightPx = parseFloat(styles.getPropertyValue('--dialog-height').trim()) * scale;
-  const headerHeightPx = parseFloat(styles.getPropertyValue('--dialog-header-height').trim()) * scale;   
-  const footerHeightPx = parseFloat(styles.getPropertyValue('--dialog-footer-height').trim()) * scale;
+  // 从-base变量读取原始px值（不会被修改），按比例缩放后设置到使用变量
+  const widthPx = parseFloat(styles.getPropertyValue('--dialog-width-base').trim()) * scale;
+  const heightPx = parseFloat(styles.getPropertyValue('--dialog-height-base').trim()) * scale;
+  const headerHeightPx = parseFloat(styles.getPropertyValue('--dialog-header-height-base').trim()) * scale;
+  const footerHeightPx = parseFloat(styles.getPropertyValue('--dialog-footer-height-base').trim()) * scale;
 
-
-  
-  root.style.setProperty('--dialog-width',  widthPx);
+  root.style.setProperty('--dialog-width', widthPx);
   root.style.setProperty('--dialog-height', heightPx);
   root.style.setProperty('--dialog-header-height', headerHeightPx);
   root.style.setProperty('--dialog-footer-height', footerHeightPx);

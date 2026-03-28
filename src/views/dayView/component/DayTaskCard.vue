@@ -324,20 +324,22 @@ const handleAddSubTask = () => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
+
 .day-task-card {
   width: 100%;
   height: 100%;
-  border-radius: 0.5rem;
+  border-radius: pxToRem(8);
   border: none;
-  border-left: 0.25rem solid var(--border-color);
-  box-shadow: 0 0.0625rem 0.25rem 0 rgba(0, 0, 0, 0.08);
+  border-left: pxToRem(4) solid var(--border-color);
+  box-shadow: 0 pxToRem(1) pxToRem(4) 0 rgba(0, 0, 0, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   position: relative;
 
   &.is-active {
     transform: scale(1.01);
-    box-shadow: 0 0.5rem 1.5rem rgba(74, 64, 224, 0.2);
+    box-shadow: 0 pxToRem(8) pxToRem(24) rgba(74, 64, 224, 0.2);
     z-index: 10;
   }
 
@@ -354,40 +356,40 @@ const handleAddSubTask = () => {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.375rem;
+  margin-bottom: pxToRem(6);
   flex-shrink: 0;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: pxToRem(8);
 }
 
 .task-tag {
-  font-size: 0.625rem;
+  font-size: pxToRem(10);
   font-family: 'Alibaba PuHuiTi-Regular';
   font-weight: 400;
-  letter-spacing: 0.0625rem;
-  line-height: 0.875rem;
+  letter-spacing: pxToRem(1);
+  line-height: pxToRem(14);
   text-transform: uppercase;
-  padding: 0.125rem 0.375rem;
+  padding: pxToRem(2) pxToRem(6);
   background-color: rgba(74, 64, 224, 0.1);
-  border-radius: 0.25rem;
+  border-radius: pxToRem(4);
   white-space: nowrap;
 }
 
 .time-display {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: pxToRem(6);
 }
 
 .time-range {
-  font-size: 0.6875rem;
+  font-size: pxToRem(11);
   font-family: 'Inter-Medium';
   font-weight: 500;
-  line-height: 1rem;
+  line-height: pxToRem(16);
   color: rgba(104, 120, 143, 1);
   white-space: nowrap;
 
@@ -405,24 +407,24 @@ const handleAddSubTask = () => {
 .header-right {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: pxToRem(4);
 }
 
 .actual-duration {
-  font-size: 0.6875rem;
+  font-size: pxToRem(11);
   font-family: 'Inter-Medium';
   font-weight: 500;
-  line-height: 1rem;
+  line-height: pxToRem(16);
   color: rgba(74, 64, 224, 1);
-  padding: 0.125rem 0.375rem;
+  padding: pxToRem(2) pxToRem(6);
   background-color: rgba(74, 64, 224, 0.1);
-  border-radius: 0.25rem;
+  border-radius: pxToRem(4);
   white-space: nowrap;
 }
 
 .action-btn {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: pxToRem(24);
+  height: pxToRem(24);
   padding: 0;
   border: none;
   background-color: rgba(244, 246, 255, 1);
@@ -433,7 +435,7 @@ const handleAddSubTask = () => {
   }
 
   .el-icon {
-    font-size: 0.75rem;
+    font-size: pxToRem(12);
     color: rgba(74, 64, 224, 1);
   }
 
@@ -449,27 +451,27 @@ const handleAddSubTask = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.375rem;
+  margin-bottom: pxToRem(6);
   flex-shrink: 0;
 }
 
 .task-title {
-  font-size: 0.9375rem;
+  font-size: pxToRem(15);
   font-family: 'Alibaba PuHuiTi-Regular';
   font-weight: 400;
-  line-height: 1.375rem;
+  line-height: pxToRem(22);
   color: rgba(32, 48, 68, 1);
   margin: 0;
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-right: 0.5rem;
+  margin-right: pxToRem(8);
 }
 
 .add-subtask-btn {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: pxToRem(24);
+  height: pxToRem(24);
   padding: 0;
   border: none;
   background-color: rgba(244, 246, 255, 1);
@@ -480,7 +482,7 @@ const handleAddSubTask = () => {
   }
 
   .el-icon {
-    font-size: 0.75rem;
+    font-size: pxToRem(12);
     color: rgba(74, 64, 224, 1);
   }
 }
@@ -488,15 +490,15 @@ const handleAddSubTask = () => {
 .sub-task-list {
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
-  margin-bottom: 0.375rem;
+  gap: pxToRem(2);
+  margin-bottom: pxToRem(6);
   overflow: hidden;
 }
 
 .sub-task-item {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: pxToRem(6);
   cursor: pointer;
   height: 24px;
   flex-shrink: 0;
@@ -509,10 +511,10 @@ const handleAddSubTask = () => {
 }
 
 .checkbox {
-  width: 0.875rem;
-  height: 0.875rem;
-  border: 0.125rem solid rgba(158, 174, 199, 1);
-  border-radius: 0.25rem;
+  width: pxToRem(14);
+  height: pxToRem(14);
+  border: pxToRem(2) solid rgba(158, 174, 199, 1);
+  border-radius: pxToRem(4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -525,16 +527,16 @@ const handleAddSubTask = () => {
 
     .el-icon {
       color: white;
-      font-size: 0.625rem;
+      font-size: pxToRem(10);
     }
   }
 }
 
 .sub-task-text {
-  font-size: 0.8125rem;
+  font-size: pxToRem(13);
   font-family: 'Alibaba PuHuiTi-Regular';
   font-weight: 400;
-  line-height: 1.25rem;
+  line-height: pxToRem(20);
   color: rgba(32, 48, 68, 1);
   transition: all 0.2s ease;
   overflow: hidden;
@@ -550,27 +552,27 @@ const handleAddSubTask = () => {
 .more-tasks-hint {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: pxToRem(4);
   height: 18px;
   color: rgba(158, 174, 199, 1);
-  font-size: 0.6875rem;
-  margin-top: 0.125rem;
+  font-size: pxToRem(11);
+  margin-top: pxToRem(2);
 
   .el-icon {
-    font-size: 0.75rem;
+    font-size: pxToRem(12);
   }
 }
 
 .task-quote {
-  font-size: 0.6875rem;
+  font-size: pxToRem(11);
   font-family: 'Alibaba PuHuiTi-Regular';
   font-weight: 400;
-  line-height: 1rem;
+  line-height: pxToRem(16);
   color: rgba(158, 174, 199, 1);
   font-style: italic;
   margin: 0;
-  padding-top: 0.25rem;
-  border-top: 0.0625rem solid rgba(220, 233, 255, 1);
+  padding-top: pxToRem(4);
+  border-top: pxToRem(1) solid rgba(220, 233, 255, 1);
   flex-shrink: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -588,7 +590,7 @@ const handleAddSubTask = () => {
 }
 
 :deep(.el-button.is-circle) {
-  padding: 0.25rem;
+  padding: pxToRem(4);
 }
 
 /* 拖动手柄样式 */
@@ -601,7 +603,7 @@ const handleAddSubTask = () => {
   cursor: ns-resize;
   background: rgba(74, 64, 224, 0.2);
   transition: all 0.2s ease;
-  border-radius: 0 0 0.5rem 0.5rem;
+  border-radius: 0 0 pxToRem(8) pxToRem(8);
   z-index: 10;
 
   &:hover {

@@ -96,18 +96,19 @@ const getCategoryColor = (category) => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
 .task-card {
   width: 100%;
-  height: 19.375rem;
+  height: pxToRem(310);
   position: relative;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: pxToRem(16);
 
   .card-header {
     width: 100%;
-    height: 1.25rem;
+    height: pxToRem(20);
     position: relative;
     flex-shrink: 0;
     display: flex;
@@ -117,14 +118,14 @@ const getCategoryColor = (category) => {
 
     .header-left {
       .title-text {
-        font-size: 0.875rem;
+        font-size: pxToRem(14);
         font-family: 'Alibaba PuHuiTi-Regular';
         font-weight: 400;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        letter-spacing: 0.0875rem;
-        line-height: 1.25rem;
+        letter-spacing: pxToRem(1.4);
+        line-height: pxToRem(20);
         text-transform: uppercase;
         color: rgba(32, 48, 68, 1);
         margin: 0;
@@ -133,23 +134,23 @@ const getCategoryColor = (category) => {
 
     .header-right {
       .year-badge {
-        width: 3.5rem;
-        height: 1.1875rem;
+        width: pxToRem(56);
+        height: pxToRem(19);
         position: relative;
         flex-shrink: 0;
         display: flex;
         flex-direction: column;
-        padding: 0.125rem 0.5rem 0.125rem 0.5rem;
-        border-radius: 624.9375rem 624.9375rem 624.9375rem 624.9375rem;
+        padding: pxToRem(2) pxToRem(8);
+        border-radius: pxToRem(9999);
         background-color: rgba(210, 228, 255, 1);
 
         .year-text {
-          font-size: 0.625rem;
+          font-size: pxToRem(10);
           font-family: 'Inter-Semi Bold';
           font-weight: 700;
           display: flex;
           justify-content: center;
-          line-height: 0.9375rem;
+          line-height: pxToRem(15);
           color: rgba(74, 64, 224, 1);
           margin: 0;
         }
@@ -159,18 +160,18 @@ const getCategoryColor = (category) => {
 
   .tasks-container {
     width: 100%;
-    height: 17.5rem;
+    height: pxToRem(280);
     position: relative;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.625rem;
+    gap: pxToRem(10);
     justify-content: flex-start;
     align-items: center;
 
     .task-item {
       width: 100%;
-      height: 3.75rem;
+      height: pxToRem(60);
       overflow: hidden;
       position: relative;
       flex-shrink: 0;
@@ -178,24 +179,24 @@ const getCategoryColor = (category) => {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 1rem 1rem 1rem 1rem;
-      border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
-      box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+      padding: pxToRem(16);
+      border-radius: pxToRem(8);
+      box-shadow: 0 pxToRem(1) pxToRem(2) 0 rgba(0, 0, 0, 0.05);
       background-color: rgba(255, 255, 255, 1);
-      border-left: 0.25rem solid;
+      border-left: pxToRem(4) solid;
 
       .task-content {
-        width: calc(100% - 2rem);
-        height: 2.6875rem;
+        width: calc(100% - pxToRem(32));
+        height: pxToRem(43);
         position: relative;
         flex-shrink: 0;
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: pxToRem(8);
 
         .task-header {
           width: 100%;
-          height: 1.25rem;
+          height: pxToRem(20);
           position: relative;
           flex-shrink: 0;
           display: flex;
@@ -204,35 +205,35 @@ const getCategoryColor = (category) => {
           align-items: center;
 
           .task-title {
-            font-size: 0.875rem;
+            font-size: pxToRem(14);
             font-family: 'Alibaba PuHuiTi-Regular';
             font-weight: 400;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            line-height: 1.25rem;
+            line-height: pxToRem(20);
             color: rgba(32, 48, 68, 1);
             margin: 0;
           }
 
           .task-category {
-            width: 2.25rem;
-            height: 1.1875rem;
+            width: pxToRem(36);
+            height: pxToRem(19);
             position: relative;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            padding: 0.125rem 0.5rem 0.125rem 0.5rem;
-            border-radius: 624.9375rem 624.9375rem 624.9375rem 624.9375rem;
+            padding: pxToRem(2) pxToRem(8);
+            border-radius: pxToRem(9999);
 
             .category-text {
-              font-size: 0.625rem;
+              font-size: pxToRem(10);
               font-family: 'Alibaba PuHuiTi-Regular';
               font-weight: 400;
               display: flex;
               flex-direction: column;
               justify-content: center;
-              line-height: 0.9375rem;
+              line-height: pxToRem(15);
               text-transform: uppercase;
               color: rgba(20, 0, 126, 1);
               margin: 0;
@@ -242,21 +243,21 @@ const getCategoryColor = (category) => {
 
         .task-progress {
           width: 100%;
-          height: 0.9375rem;
+          height: pxToRem(15);
           position: relative;
           flex-shrink: 0;
           display: flex;
           flex-direction: row;
-          gap: 0.75rem;
+          gap: pxToRem(12);
           align-items: center;
 
           .progress-bar {
             flex: 1;
-            height: 0.375rem;
+            height: pxToRem(6);
             overflow: hidden;
             position: relative;
             flex-shrink: 0;
-            border-radius: 624.9375rem 624.9375rem 624.9375rem 624.9375rem;
+            border-radius: pxToRem(9999);
             background-color: rgba(220, 233, 255, 1);
 
             .progress-fill {
@@ -269,21 +270,21 @@ const getCategoryColor = (category) => {
           }
 
           .progress-percentage {
-            width: 1.365rem;
-            height: 0.9375rem;
+            width: pxToRem(21.84);
+            height: pxToRem(15);
             position: relative;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
 
             .percentage-text {
-              font-size: 0.625rem;
+              font-size: pxToRem(10);
               font-family: 'Inter-Semi Bold';
               font-weight: 700;
               display: flex;
               flex-direction: column;
               justify-content: center;
-              line-height: 0.9375rem;
+              line-height: pxToRem(15);
               color: rgba(104, 120, 143, 1);
               margin: 0;
             }

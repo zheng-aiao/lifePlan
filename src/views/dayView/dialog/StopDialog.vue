@@ -108,26 +108,27 @@ watch(visible, (newValue) => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
 .stop-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 24px;
-  padding: 8px 32px;
-  min-height: 232px;
+  gap: pxToRem(24);
+  padding: pxToRem(8) pxToRem(32);
+  min-height: pxToRem(232);
   height: 100%;
 
   .quick-selection-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
+    gap: pxToRem(12);
+    margin-top: pxToRem(20);
     .section-label {
-      font-size: 10px;
+      font-size: pxToRem(10);
       font-family: 'WenQuanYi Zen Hei', sans-serif;
       font-weight: 700;
-      letter-spacing: 1px;
-      line-height: 15px;
+      letter-spacing: pxToRem(1);
+      line-height: pxToRem(15);
       text-transform: uppercase;
       color: rgba(77, 93, 115, 1);
     }
@@ -135,23 +136,23 @@ watch(visible, (newValue) => {
     .reason-container {
       display: flex;
       flex-direction: row;
-      gap: 8px;
+      gap: pxToRem(8);
 
       .reason-button {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 8px 16px;
-        height: 36px;
-        border-radius: 12px;
+        padding: pxToRem(8) pxToRem(16);
+        height: pxToRem(36);
+        border-radius: pxToRem(12);
         background-color: rgba(234, 241, 255, 1);
         cursor: pointer;
         transition: all 0.2s ease;
-        font-size: 14px;
+        font-size: pxToRem(14);
         font-family: 'WenQuanYi Zen Hei', sans-serif;
         font-weight: 500;
-        line-height: 20px;
+        line-height: pxToRem(20);
         color: rgba(77, 93, 115, 1);
         box-sizing: border-box;
 
@@ -162,7 +163,7 @@ watch(visible, (newValue) => {
         &.active {
           background-color: rgba(74, 64, 224, 1);
           color: rgba(244, 241, 255, 1);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 pxToRem(1) pxToRem(2) rgba(0, 0, 0, 0.05);
         }
       }
     }
@@ -172,24 +173,24 @@ watch(visible, (newValue) => {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: pxToRem(12);
 
     .section-label {
-      font-size: 10px;
+      font-size: pxToRem(10);
       font-family: 'WenQuanYi Zen Hei', sans-serif;
       font-weight: 700;
-      letter-spacing: 1px;
-      line-height: 15px;
+      letter-spacing: pxToRem(1);
+      line-height: pxToRem(15);
       text-transform: uppercase;
       color: rgba(77, 93, 115, 1);
     }
 
     .textarea-wrapper {
       width: 100%;
-      height: 150px;
-      border-radius: 8px;
+      height: pxToRem(150);
+      border-radius: pxToRem(8);
       background-color: rgba(234, 241, 255, 1);
-      padding: 16px;
+      padding: pxToRem(16);
       box-sizing: border-box;
 
       .custom-textarea {
@@ -205,9 +206,9 @@ watch(visible, (newValue) => {
           outline: none;
           resize: none;
           font-family: 'WenQuanYi Zen Hei', sans-serif;
-          font-size: 14px;
+          font-size: pxToRem(14);
           font-weight: 400;
-          line-height: 20px;
+          line-height: pxToRem(20);
           color: rgba(32, 48, 68, 1);
           padding: 0;
 

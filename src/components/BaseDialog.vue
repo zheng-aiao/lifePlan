@@ -50,6 +50,7 @@
 <script setup>
 import { computed, watch } from 'vue';
 import { Close } from '@element-plus/icons-vue';
+import { pxToRem } from '../utils/index.js';
 
 const props = defineProps({
   modelValue: {
@@ -99,16 +100,16 @@ const emit = defineEmits(['update:modelValue', 'confirm', 'cancel', 'close']);
 
 const sizeConfig = {
   large: {
-    width: 900 / 16 + 'rem',
-    height: 600 / 16 + 'rem',
-    headerHeight: 70 / 16 + 'rem',
-    footerHeight: 70 / 16 + 'rem',
+    width: pxToRem(900),
+    height: pxToRem(600),
+    headerHeight: pxToRem(70),
+    footerHeight: pxToRem(70),
   },
   normal: {
-    width: 600 / 16 + 'rem',
-    height: 400 / 16 + 'rem',
-    headerHeight: 45 / 16 + 'rem',
-    footerHeight: 45 / 16 + 'rem',
+    width: pxToRem(600),
+    height: pxToRem(400),
+    headerHeight: pxToRem(45),
+    footerHeight: pxToRem(45),
   },
 };
 
@@ -154,6 +155,7 @@ const handleConfirm = () => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
 .dialog-container {
   display: flex;
   flex-direction: column;
@@ -167,18 +169,18 @@ const handleConfirm = () => {
   align-items: center;
   background: linear-gradient(180deg, rgba(244, 246, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
   border-bottom: 1px solid rgba(220, 233, 255, 1);
-  padding: 0 24px;
+  padding: 0 pxToRem(24);
   height: var(--dialog-header-height);
   flex-shrink: 0;
 
   .header-content {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: pxToRem(12);
     flex: 1;
 
     .dialog-title {
-      font-size: 16px;
+      font-size: pxToRem(16);
       font-weight: 600;
       color: rgba(32, 48, 68, 1);
       margin: 0;
@@ -191,15 +193,15 @@ const handleConfirm = () => {
   }
 
   .close-btn {
-    width: 32px;
-    height: 32px;
+    width: pxToRem(32);
+    height: pxToRem(32);
     border: none;
     background: transparent;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: pxToRem(8);
     transition: all 0.2s ease;
     padding: 0;
 
@@ -212,7 +214,7 @@ const handleConfirm = () => {
     }
 
     .el-icon {
-      font-size: 16px;
+      font-size: pxToRem(16);
       color: rgba(158, 174, 199, 1);
       transition: color 0.2s ease;
     }
@@ -231,21 +233,21 @@ const handleConfirm = () => {
   justify-content: flex-end;
   border-top: 1px solid rgba(220, 233, 255, 1);
   background-color: #fff;
-  padding: 0 24px;
+  padding: 0 pxToRem(24);
   height: var(--dialog-footer-height);
   flex-shrink: 0;
 
   .footer-buttons {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: pxToRem(12);
     height: 100%;
 
     .cancel-btn {
-      min-width: 76px;
-      height: 40px;
-      border-radius: 12px;
-      font-size: 14px;
+      min-width: pxToRem(76);
+      height: pxToRem(40);
+      border-radius: pxToRem(12);
+      font-size: pxToRem(14);
       font-weight: 500;
       color: rgba(77, 93, 115, 1);
       border: none;
@@ -258,28 +260,28 @@ const handleConfirm = () => {
     }
 
     .confirm-btn {
-      min-width: 100px;
-      height: 40px;
-      border-radius: 12px;
-      font-size: 14px;
+      min-width: pxToRem(100);
+      height: pxToRem(40);
+      border-radius: pxToRem(12);
+      font-size: pxToRem(14);
       font-weight: 700;
       color: rgba(244, 241, 255, 1);
       background: linear-gradient(135deg, rgba(74, 64, 224, 1) 0%, rgba(61, 48, 212, 1) 100%);
       border: none;
-      box-shadow: 0px 8px 24px rgba(32, 48, 68, 0.12);
+      box-shadow: 0px pxToRem(8) pxToRem(24) rgba(32, 48, 68, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: pxToRem(8);
 
       &:hover {
         background: linear-gradient(135deg, rgba(59, 48, 191, 1) 0%, rgba(48, 36, 180, 1) 100%);
-        transform: translateY(-1px);
-        box-shadow: 0px 12px 28px rgba(32, 48, 68, 0.16);
+        transform: translateY(-pxToRem(1));
+        box-shadow: 0px pxToRem(12) pxToRem(28) rgba(32, 48, 68, 0.16);
       }
 
       .btn-icon {
-        font-size: 14px;
+        font-size: pxToRem(14);
       }
     }
   }

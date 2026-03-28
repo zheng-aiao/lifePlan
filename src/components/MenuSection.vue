@@ -45,19 +45,21 @@ const handleSelect = (key) => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
+
 .menu-section {
   width: 100%;
 
   .section-label {
-    padding: 0.625rem 1rem;
+    padding: pxToRem(10) pxToRem(16);
     box-sizing: border-box;
 
     .label-text {
-      font-size: 0.625rem;
+      font-size: pxToRem(10);
       font-family: "Alibaba PuHuiTi-Regular";
       font-weight: 400;
-      letter-spacing: 0.0313rem;
-      line-height: 0.9375rem;
+      letter-spacing: pxToRem(0.5);
+      line-height: pxToRem(15);
       text-transform: uppercase;
       color: rgba(148, 163, 184, 1);
       margin: 0;
@@ -66,7 +68,7 @@ const handleSelect = (key) => {
 
   .section-menu {
     border: none;
-    padding: 0 0.5rem;
+    padding: 0 pxToRem(8);
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -74,9 +76,9 @@ const handleSelect = (key) => {
     .menu-item {
       display: flex;
       align-items: center;
-      height: 2.75rem;
-      margin-bottom: 0.625rem;
-      border-radius: 0.25rem;
+      height: pxToRem(44);
+      margin-bottom: pxToRem(10);
+      border-radius: pxToRem(4);
       transition: background-color 0.2s;
 
       &:hover {
@@ -84,18 +86,18 @@ const handleSelect = (key) => {
       }
 
       .menu-icon {
-        width: 1.875rem;
-        height: 1.25rem;
-        margin-right: 0.75rem;
+        width: pxToRem(30);
+        height: pxToRem(20);
+        margin-right: pxToRem(12);
         flex-shrink: 0;
       }
 
       .menu-text {
-        font-size: 0.75rem;
+        font-size: pxToRem(12);
         font-family: "Alibaba PuHuiTi-Regular";
         font-weight: 400;
-        letter-spacing: 0.0375rem;
-        line-height: 1rem;
+        letter-spacing: pxToRem(0.6);
+        line-height: pxToRem(16);
         text-transform: uppercase;
         color: rgba(100, 116, 139, 1);
       }

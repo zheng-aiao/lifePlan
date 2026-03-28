@@ -185,42 +185,43 @@ watch(visible, (newValue) => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
 .feedback-content {
   display: flex;
-  gap: 32px;
-  padding: 16px 40px;
-  height: 431px;
+  gap: pxToRem(32);
+  padding: pxToRem(16) pxToRem(40);
+  height: pxToRem(431);
   position: relative;
 
   .content-left {
-    width: 323px;
+    width: pxToRem(323);
     display: flex;
     flex-direction: column;
 
     .status-header {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding-bottom: 24px;
+      gap: pxToRem(8);
+      padding-bottom: pxToRem(24);
 
       .header-row {
         display: flex;
         flex-direction: row;
-        gap: 8px;
+        gap: pxToRem(8);
         align-items: center;
 
         .header-indicator {
-          width: 4px;
-          height: 20px;
-          border-radius: 12px;
+          width: pxToRem(4);
+          height: pxToRem(20);
+          border-radius: pxToRem(12);
           background-color: rgba(74, 64, 224, 1);
         }
 
         .header-title {
-          font-size: 16px;
+          font-size: pxToRem(16);
           font-family: 'WenQuanYi Zen Hei', sans-serif;
           font-weight: 700;
-          line-height: 24px;
+          line-height: pxToRem(24);
           color: rgba(32, 48, 68, 1);
           margin: 0;
         }
@@ -228,10 +229,10 @@ watch(visible, (newValue) => {
 
       .header-description {
         .description-text {
-          font-size: 12px;
+          font-size: pxToRem(12);
           font-family: 'WenQuanYi Zen Hei', sans-serif;
           font-weight: 400;
-          line-height: 19.5px;
+          line-height: pxToRem(19.5);
           color: rgba(77, 93, 115, 1);
           margin: 0;
         }
@@ -241,14 +242,14 @@ watch(visible, (newValue) => {
     .status-selectors {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: pxToRem(10);
 
       .type-option {
         width: 100%;
-        height: 68px;
+        height: pxToRem(68);
         background-color: rgba(234, 241, 255, 1);
-        border-radius: 8px;
-        padding: 14px;
+        border-radius: pxToRem(8);
+        padding: pxToRem(14);
         display: flex;
         align-items: center;
         cursor: pointer;
@@ -280,19 +281,19 @@ watch(visible, (newValue) => {
         }
 
         .option-icon-wrapper {
-          width: 40px;
-          height: 40px;
+          width: pxToRem(40);
+          height: pxToRem(40);
           background-color: rgba(255, 255, 255, 1);
-          border-radius: 12px;
+          border-radius: pxToRem(12);
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 pxToRem(1) pxToRem(2) rgba(0, 0, 0, 0.05);
           flex-shrink: 0;
 
           .option-icon {
             color: rgba(180, 19, 64, 1);
-            font-size: 20px;
+            font-size: pxToRem(20);
           }
         }
 
@@ -300,49 +301,49 @@ watch(visible, (newValue) => {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding-left: 12px;
+          padding-left: pxToRem(12);
 
           .option-title {
-            font-size: 14px;
+            font-size: pxToRem(14);
             font-weight: 700;
             color: rgba(32, 48, 68, 1);
-            line-height: 20px;
+            line-height: pxToRem(20);
             font-family: 'WenQuanYi Zen Hei', sans-serif;
           }
 
           .option-description {
-            font-size: 10px;
+            font-size: pxToRem(10);
             font-weight: 400;
             color: rgba(77, 93, 115, 1);
-            line-height: 15px;
+            line-height: pxToRem(15);
             font-family: 'WenQuanYi Zen Hei', sans-serif;
           }
         }
 
         .option-radio {
-          width: 16px;
-          height: 16px;
+          width: pxToRem(16);
+          height: pxToRem(16);
           position: relative;
           flex-shrink: 0;
 
           .radio-border {
-            width: 16px;
-            height: 16px;
+            width: pxToRem(16);
+            height: pxToRem(16);
             border: 1px solid rgba(158, 174, 199, 1);
-            border-radius: 12px;
+            border-radius: pxToRem(12);
             position: absolute;
             top: 0;
             left: 0;
           }
 
           .radio-dot {
-            width: 8px;
-            height: 8px;
+            width: pxToRem(8);
+            height: pxToRem(8);
             background-color: rgba(74, 64, 224, 1);
-            border-radius: 12px;
+            border-radius: pxToRem(12);
             position: absolute;
-            top: 4px;
-            left: 4px;
+            top: pxToRem(4);
+            left: pxToRem(4);
             opacity: 0;
             transition: opacity 0.2s ease;
           }
@@ -353,7 +354,7 @@ watch(visible, (newValue) => {
 
   .content-right {
     flex: 1;
-    width: 465px;
+    width: pxToRem(465);
     display: flex;
     flex-direction: column;
 
@@ -361,57 +362,57 @@ watch(visible, (newValue) => {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      height: 24px;
-      margin-bottom: 24px;
+      height: pxToRem(24);
+      margin-bottom: pxToRem(24);
 
       .section-title {
-        font-size: 14px;
+        font-size: pxToRem(14);
         font-weight: 600;
         color: rgba(32, 48, 68, 1);
         margin: 0;
         font-family: 'Inter', sans-serif;
-        line-height: 14px;
+        line-height: pxToRem(14);
       }
 
       .word-count-badge {
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 4px 10px;
+        gap: pxToRem(6);
+        padding: pxToRem(4) pxToRem(10);
         background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 12px;
+        border-radius: pxToRem(12);
         border: 1px solid rgba(0, 0, 0, 0.05);
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 pxToRem(1) pxToRem(2) rgba(0, 0, 0, 0.05);
 
         .dot-indicator {
-          width: 6px;
-          height: 6px;
+          width: pxToRem(6);
+          height: pxToRem(6);
           background-color: rgba(74, 64, 224, 1);
-          border-radius: 12px;
+          border-radius: pxToRem(12);
         }
 
         .count-text {
-          font-size: 10px;
+          font-size: pxToRem(10);
           font-weight: 700;
           color: rgba(77, 93, 115, 1);
           font-family: 'Inter', sans-serif;
-          line-height: 15px;
-          letter-spacing: -0.5px;
+          line-height: pxToRem(15);
+          letter-spacing: -pxToRem(0.5);
         }
       }
     }
 
     .textarea-wrapper {
       flex: 1;
-      margin-bottom: 12px;
+      margin-bottom: pxToRem(12);
 
       .feedback-textarea {
         width: 100%;
-        height: 296px;
+        height: pxToRem(296);
         background-color: rgba(234, 241, 255, 1);
-        border-radius: 16px;
+        border-radius: pxToRem(16);
         border: none;
-        padding: 19px 20px;
+        padding: pxToRem(19) pxToRem(20);
 
         :deep(.el-textarea__inner) {
           height: 100% !important;
@@ -420,8 +421,8 @@ watch(visible, (newValue) => {
           border: none;
           resize: none;
           font-family: 'WenQuanYi Zen Hei', sans-serif;
-          font-size: 14px;
-          line-height: 22.75px;
+          font-size: pxToRem(14);
+          line-height: pxToRem(22.75);
           color: rgba(32, 48, 68, 1);
           padding: 0;
 
@@ -436,24 +437,24 @@ watch(visible, (newValue) => {
       .tips-content {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 12px;
+        gap: pxToRem(12);
+        padding: pxToRem(12);
         background-color: rgba(151, 149, 255, 0.1);
-        border-radius: 8px;
+        border-radius: pxToRem(8);
         border: 1px solid rgba(74, 64, 224, 0.05);
 
         .tips-icon {
-          font-size: 10px;
+          font-size: pxToRem(10);
           color: rgba(74, 64, 224, 1);
           flex-shrink: 0;
         }
 
         .tips-text {
-          font-size: 11px;
+          font-size: pxToRem(11);
           font-weight: 700;
           color: rgba(26, 0, 153, 1);
           font-family: 'WenQuanYi Zen Hei', sans-serif;
-          line-height: 15.13px;
+          line-height: pxToRem(15.13);
 
           .tips-label {
             font-weight: 700;

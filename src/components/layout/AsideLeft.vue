@@ -103,11 +103,13 @@ const handleNewTask = () => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
+
 .aside-left-wrapper {
   width: var(--aside-left-width);
   height: 100%;
   min-height: 100%;
-  border-right: 0.0625rem solid rgba(158, 174, 199, 0.15);
+  border-right: pxToRem(1) solid rgba(158, 174, 199, 0.15);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -118,7 +120,7 @@ const handleNewTask = () => {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: pxToRem(8);
     padding: var(--content-padding);
     box-sizing: border-box;
   }

@@ -25,22 +25,24 @@ const emit = defineEmits(["click"]);
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
+
 .icon-button {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  gap: pxToRem(8);
+  padding: pxToRem(12) pxToRem(24);
   border: none;
-  border-radius: 0.5rem;
+  border-radius: pxToRem(8);
   background-color: rgba(74, 64, 224, 1);
   color: rgba(244, 241, 255, 1);
-  font-size: 0.75rem;
+  font-size: pxToRem(12);
   font-family: "Alibaba PuHuiTi-Regular";
   font-weight: 400;
-  letter-spacing: 0.075rem;
-  line-height: 1rem;
+  letter-spacing: pxToRem(1.2);
+  line-height: pxToRem(16);
   text-transform: uppercase;
 }
 </style>

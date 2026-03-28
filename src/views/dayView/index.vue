@@ -430,6 +430,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
 .view-container {
   display: flex;
   height: 100%;
@@ -445,7 +446,7 @@ onMounted(() => {
     padding: var(--content-padding);
 
     .day-view-left {
-      width: 23rem;
+      width: pxToRem(368);
       padding: var(--content-padding);
     }
 
@@ -457,7 +458,7 @@ onMounted(() => {
 
       .day-scroll-container {
         width: 100%;
-        height: calc(100% - 3.75rem);
+        height: calc(100% - pxToRem(60));
 
         .timeline-content {
           position: relative;
@@ -471,23 +472,23 @@ onMounted(() => {
             justify-content: center;
             position: relative;
             padding: 0;
-            padding-left: 0.75rem;
+            padding-left: pxToRem(12);
 
             .time-scale-marker {
-              font-size: 0.75rem;
+              font-size: pxToRem(12);
               font-family: 'Inter-Medium';
               font-weight: 500;
               color: rgba(158, 174, 199, 0.7);
               font-style: italic;
               position: absolute;
-              top: 10px;
-              left: 0.75rem;
+              top: pxToRem(10);
+              left: pxToRem(12);
               transform: translateY(0);
               margin-top: 0;
             }
 
             .greeting-text {
-              font-size: 1.25rem;
+              font-size: pxToRem(20);
               font-family: 'Alibaba PuHuiTi-Regular';
               font-weight: 400;
               color: rgba(74, 64, 224, 0.6);
@@ -507,27 +508,27 @@ onMounted(() => {
             align-items: flex-start;
             justify-content: center;
             padding: 0;
-            padding-left: 0.75rem;
+            padding-left: pxToRem(12);
 
             .ending-text {
-              font-size: 1rem;
+              font-size: pxToRem(16);
               font-family: 'Alibaba PuHuiTi-Regular';
               font-weight: 400;
               color: rgba(0, 105, 71, 0.6);
               text-align: center;
-              padding: 0 1rem;
+              padding: 0 pxToRem(16);
               align-self: center;
             }
 
             .time-scale-marker {
-              font-size: 0.75rem;
+              font-size: pxToRem(12);
               font-family: 'Inter-Medium';
               font-weight: 500;
               color: rgba(158, 174, 199, 0.7);
               font-style: italic;
               position: absolute;
-              bottom: 10px;
-              left: 0.75rem;
+              bottom: pxToRem(10);
+              left: pxToRem(12);
               transform: translateY(50%);
               margin-bottom: 0;
             }
@@ -538,7 +539,7 @@ onMounted(() => {
             position: absolute;
             left: 0;
             top: 0;
-            width: 5rem;
+            width: pxToRem(80);
             height: 100%;
 
             .time-scale-item {
@@ -550,20 +551,20 @@ onMounted(() => {
               transform: translateY(-50%);
 
               .time-label {
-                font-size: 0.75rem;
+                font-size: pxToRem(12);
                 font-family: 'Inter-Medium';
                 font-weight: 500;
                 color: rgba(158, 174, 199, 1);
-                padding-right: 0.75rem;
+                padding-right: pxToRem(12);
                 line-height: 1;
                 white-space: nowrap;
               }
 
               .time-line {
                 flex: 1;
-                height: 0.0625rem;
+                height: pxToRem(1);
                 background-color: rgba(220, 233, 255, 1);
-                margin-top: 0.375rem;
+                margin-top: pxToRem(6);
               }
 
               &.is-hidden {
@@ -585,12 +586,12 @@ onMounted(() => {
                 .time-label {
                   color: rgba(74, 64, 224, 1);
                   font-weight: 700;
-                  font-size: 0.8125rem;
+                  font-size: pxToRem(13);
                 }
 
                 .time-line {
                   background-color: rgba(74, 64, 224, 0.6);
-                  height: 0.125rem;
+                  height: pxToRem(2);
                 }
               }
             }
@@ -599,9 +600,9 @@ onMounted(() => {
           // 任务列表
           .task-list {
             position: absolute;
-            left: 6rem;
+            left: pxToRem(96);
             top: 0;
-            right: 1rem;
+            right: pxToRem(16);
             height: 100%;
 
             .task-item {

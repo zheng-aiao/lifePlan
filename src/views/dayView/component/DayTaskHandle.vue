@@ -47,15 +47,17 @@ const handleNext = () => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_mixins.scss';
+
 .timeline-header {
   width: 100%;
-  height: 3.5rem;
+  height: pxToRem(56);
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 0;
-  margin-bottom: 0.25rem;
+  padding: pxToRem(16) 0;
+  margin-bottom: pxToRem(4);
 
   .header-content {
     flex: 1;
@@ -64,11 +66,11 @@ const handleNext = () => {
     justify-content: center;
 
     .header-text {
-      font-size: 0.875rem;
+      font-size: pxToRem(14);
       font-family: 'Alibaba PuHuiTi-Regular';
       font-weight: 400;
-      letter-spacing: 0.175rem;
-      line-height: 1.25rem;
+      letter-spacing: pxToRem(2.8);
+      line-height: pxToRem(20);
       text-transform: uppercase;
       color: rgba(74, 64, 224, 1);
       margin: 0;
@@ -78,11 +80,11 @@ const handleNext = () => {
   .header-nav {
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    gap: pxToRem(8);
     .nav-btn {
-      width: 2.5rem;
-      height: 2.5rem;
-      box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+      width: pxToRem(40);
+      height: pxToRem(40);
+      box-shadow: 0 pxToRem(1) pxToRem(2) 0 rgba(0, 0, 0, 0.05);
       background-color: rgba(255, 255, 255, 1);
       border: none;
 

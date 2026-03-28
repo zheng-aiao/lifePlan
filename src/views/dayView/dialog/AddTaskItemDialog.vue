@@ -1,66 +1,52 @@
 <template>
-  <el-dialog
+  <BaseDialog
     v-model="dialogVisible"
-    :show-close="false"
-    width="600px"
-    class="add-task-item-dialog"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
+    size="normal"
+    title="新增子项任务"
+    @confirm="handleConfirm"
+    @cancel="handleCancel"
+    @close="handleCancel"
   >
-    <div class="dialog-content">
-      <div class="dialog-header">
-        <div class="header-left">
-          <p class="dialog-title">新增子项任务</p>
-        </div>
-        <div class="header-right" @click="handleCancel">
-          <el-icon class="close-icon"><Close /></el-icon>
-        </div>
+    <div class="dialog-body">
+      <div class="task-path">
+        <span class="parent-task">{{ taskTitle }}</span>
+        <el-icon class="separator-icon"><ArrowRight /></el-icon>
+        <span class="current-task">新增子项任务</span>
       </div>
 
-      <div class="dialog-body">
-        <div class="task-path">
-          <span class="parent-task">{{ taskTitle }}</span>
-          <el-icon class="separator-icon"><ArrowRight /></el-icon>
-          <span class="current-task">新增子项任务</span>
-        </div>
+      <div class="form-section">
+        <div class="form-label">子任务名称</div>
+        <el-input
+          v-model="subTaskName"
+          placeholder="例如：设计首页高保真原型"
+          class="task-input"
+        />
+      </div>
 
-        <div class="form-section">
-          <div class="form-label">子任务名称</div>
-          <el-input
-            v-model="subTaskName"
-            placeholder="例如：设计首页高保真原型"
-            class="task-input"
-          />
-        </div>
-
-        <div class="form-section">
-          <div class="form-label">优先级</div>
-          <div class="priority-options">
-            <div
-              v-for="option in priorityOptions"
-              :key="option.value"
-              class="priority-item"
-              :class="{ active: selectedPriority === option.value }"
-              @click="selectedPriority = option.value"
-            >
-              <div class="priority-dot" :style="{ backgroundColor: option.color }"></div>
-              <span class="priority-text" :style="{ color: option.textColor }">{{ option.label }}</span>
-            </div>
+      <div class="form-section">
+        <div class="form-label">优先级</div>
+        <div class="priority-options">
+          <div
+            v-for="option in priorityOptions"
+            :key="option.value"
+            class="priority-item"
+            :class="{ active: selectedPriority === option.value }"
+            :style="{ backgroundColor: option.bgColor }"
+            @click="selectedPriority = option.value"
+          >
+            <div class="priority-dot" :style="{ backgroundColor: option.color }"></div>
+            <span class="priority-text" :style="{ color: option.textColor }">{{ option.label }}</span>
           </div>
         </div>
       </div>
-
-      <div class="dialog-footer">
-        <el-button class="cancel-btn" @click="handleCancel">取消</el-button>
-        <el-button class="confirm-btn" type="primary" @click="handleConfirm">立即添加</el-button>
-      </div>
     </div>
-  </el-dialog>
+  </BaseDialog>
 </template>
 
 <script setup>
 import { ref, computed, watch } from 'vue';
-import { Close, ArrowRight } from '@element-plus/icons-vue';
+import { ArrowRight } from '@element-plus/icons-vue';
+import BaseDialog from '@/components/BaseDialog.vue';
 
 const props = defineProps({
   modelValue: {
@@ -145,73 +131,11 @@ const handleConfirm = () => {
 <style scoped lang="scss">
 @import '@/assets/styles/_mixins.scss';
 
-.add-task-item-dialog {
-  :deep(.el-dialog) {
-    border-radius: pxToRem(8);
-    box-shadow: 0 pxToRem(12) pxToRem(48) rgba(0, 15, 33, 0.12);
-    border: pxToRem(1) solid rgba(158, 174, 199, 0.2);
-  }
-
-  :deep(.el-dialog__header) {
-    display: none;
-  }
-
-  :deep(.el-dialog__body) {
-    padding: 0;
-  }
-}
-
-.dialog-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.dialog-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: pxToRem(16) pxToRem(32);
-
-  .header-left {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .dialog-title {
-    font-size: pxToRem(24);
-    font-family: 'Alibaba PuHuiTi-Regular';
-    font-weight: 800;
-    letter-spacing: pxToRem(-0.6);
-    line-height: pxToRem(32);
-    color: rgba(32, 48, 68, 1);
-    margin: 0;
-  }
-
-  .header-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-
-    .close-icon {
-      font-size: pxToRem(14);
-      color: rgba(158, 174, 199, 1);
-      transition: color 0.2s;
-
-      &:hover {
-        color: rgba(74, 64, 224, 1);
-      }
-    }
-  }
-}
-
 .dialog-body {
   display: flex;
   flex-direction: column;
   gap: pxToRem(20);
-  padding: pxToRem(15) pxToRem(32) pxToRem(16);
+  padding: pxToRem(15) pxToRem(24) pxToRem(16);
 }
 
 .task-path {
@@ -268,7 +192,7 @@ const handleConfirm = () => {
     border-radius: pxToRem(8);
     border: none;
     box-shadow: none;
-    padding: pxToRem(16);
+    padding: pxToRem(12) pxToRem(16);
   }
 
   :deep(.el-input__inner) {
@@ -296,15 +220,14 @@ const handleConfirm = () => {
   gap: pxToRem(7);
   justify-content: center;
   align-items: center;
-  padding: pxToRem(16) 0;
+  padding: pxToRem(12) 0;
   border-radius: pxToRem(8);
   cursor: pointer;
   transition: all 0.2s;
   border: pxToRem(1) solid transparent;
 
   &.active {
-    border-color: rgba(74, 64, 224, 0.2);
-    background-color: rgba(255, 255, 255, 0.002);
+    border-color: rgba(74, 64, 224, 0.3);
   }
 
   &:hover:not(.active) {
@@ -323,77 +246,6 @@ const handleConfirm = () => {
     font-weight: 700;
     line-height: pxToRem(19.5);
     text-align: center;
-  }
-}
-
-.priority-item[data-priority="urgent"] {
-  background-color: rgba(247, 75, 109, 0.1);
-
-  &.active {
-    border-color: rgba(247, 75, 109, 0.3);
-  }
-}
-
-.priority-item[data-priority="important"] {
-  background-color: rgba(151, 149, 255, 0.1);
-
-  &.active {
-    border-color: rgba(151, 149, 255, 1);
-  }
-}
-
-.priority-item[data-priority="normal"] {
-  background-color: rgba(248, 160, 16, 0.1);
-
-  &.active {
-    border-color: rgba(248, 160, 16, 0.3);
-  }
-}
-
-.priority-item[data-priority="low"] {
-  background-color: rgba(105, 246, 184, 0.1);
-
-  &.active {
-    border-color: rgba(105, 246, 184, 0.3);
-  }
-}
-
-.dialog-footer {
-  display: flex;
-  flex-direction: row;
-  gap: pxToRem(12);
-  padding: pxToRem(16) pxToRem(32);
-  justify-content: flex-end;
-
-  .cancel-btn {
-    padding: pxToRem(12) pxToRem(24);
-    border-radius: pxToRem(8);
-    border: pxToRem(1) solid rgba(158, 174, 199, 0.3);
-    background-color: transparent;
-    font-size: pxToRem(15);
-    font-family: 'Alibaba PuHuiTi-Regular';
-    font-weight: 500;
-    color: rgba(77, 93, 115, 1);
-
-    &:hover {
-      background-color: rgba(244, 246, 255, 1);
-      border-color: rgba(158, 174, 199, 0.5);
-    }
-  }
-
-  .confirm-btn {
-    padding: pxToRem(12) pxToRem(24);
-    border-radius: pxToRem(8);
-    background-color: rgba(74, 64, 224, 1);
-    border: none;
-    font-size: pxToRem(15);
-    font-family: 'Alibaba PuHuiTi-Regular';
-    font-weight: 500;
-    color: rgba(255, 255, 255, 1);
-
-    &:hover {
-      background-color: rgba(94, 84, 244, 1);
-    }
   }
 }
 </style>

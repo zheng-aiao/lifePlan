@@ -113,22 +113,22 @@ watch(visible, (newValue) => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: pxToRem(24);
-  padding: pxToRem(8) pxToRem(32);
-  min-height: pxToRem(232);
+  gap: pxToRem(16);
+  padding: pxToRem(8) pxToRem(20);
   height: 100%;
+  box-sizing: border-box;
 
   .quick-selection-section {
     display: flex;
     flex-direction: column;
-    gap: pxToRem(12);
-    margin-top: pxToRem(20);
+    gap: pxToRem(8);
+
     .section-label {
       font-size: pxToRem(10);
       font-family: 'WenQuanYi Zen Hei', sans-serif;
       font-weight: 700;
-      letter-spacing: pxToRem(1);
-      line-height: pxToRem(15);
+      letter-spacing: pxToRem(0.8);
+      line-height: pxToRem(14);
       text-transform: uppercase;
       color: rgba(77, 93, 115, 1);
     }
@@ -136,23 +136,23 @@ watch(visible, (newValue) => {
     .reason-container {
       display: flex;
       flex-direction: row;
-      gap: pxToRem(8);
+      gap: pxToRem(6);
 
       .reason-button {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: pxToRem(8) pxToRem(16);
-        height: pxToRem(36);
-        border-radius: pxToRem(12);
+        padding: pxToRem(6) pxToRem(12);
+        height: pxToRem(32);
+        border-radius: pxToRem(8);
         background-color: rgba(234, 241, 255, 1);
         cursor: pointer;
         transition: all 0.2s ease;
-        font-size: pxToRem(14);
+        font-size: pxToRem(12);
         font-family: 'WenQuanYi Zen Hei', sans-serif;
         font-weight: 500;
-        line-height: pxToRem(20);
+        line-height: pxToRem(18);
         color: rgba(77, 93, 115, 1);
         box-sizing: border-box;
 
@@ -173,24 +173,25 @@ watch(visible, (newValue) => {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: pxToRem(12);
+    gap: pxToRem(8);
 
     .section-label {
       font-size: pxToRem(10);
       font-family: 'WenQuanYi Zen Hei', sans-serif;
       font-weight: 700;
-      letter-spacing: pxToRem(1);
-      line-height: pxToRem(15);
+      letter-spacing: pxToRem(0.8);
+      line-height: pxToRem(14);
       text-transform: uppercase;
       color: rgba(77, 93, 115, 1);
     }
 
     .textarea-wrapper {
+      flex: 1;
       width: 100%;
-      height: pxToRem(150);
-      border-radius: pxToRem(8);
+      min-height: pxToRem(100);
+      border-radius: pxToRem(6);
       background-color: rgba(234, 241, 255, 1);
-      padding: pxToRem(16);
+      padding: pxToRem(12);
       box-sizing: border-box;
 
       .custom-textarea {
@@ -206,9 +207,9 @@ watch(visible, (newValue) => {
           outline: none;
           resize: none;
           font-family: 'WenQuanYi Zen Hei', sans-serif;
-          font-size: pxToRem(14);
+          font-size: pxToRem(12);
           font-weight: 400;
-          line-height: pxToRem(20);
+          line-height: pxToRem(18);
           color: rgba(32, 48, 68, 1);
           padding: 0;
 

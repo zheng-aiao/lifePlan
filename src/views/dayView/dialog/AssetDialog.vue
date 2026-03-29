@@ -188,40 +188,41 @@ watch(visible, (newValue) => {
 @import '@/assets/styles/_mixins.scss';
 .feedback-content {
   display: flex;
-  gap: pxToRem(32);
-  padding: pxToRem(16) pxToRem(40);
-  height: pxToRem(431);
+  gap: pxToRem(24);
+  padding: pxToRem(12) pxToRem(24);
+  height: 100%;
+  box-sizing: border-box;
   position: relative;
 
   .content-left {
-    width: pxToRem(323);
+    width: pxToRem(280);
     display: flex;
     flex-direction: column;
 
     .status-header {
       display: flex;
       flex-direction: column;
-      gap: pxToRem(8);
-      padding-bottom: pxToRem(24);
+      gap: pxToRem(6);
+      padding-bottom: pxToRem(16);
 
       .header-row {
         display: flex;
         flex-direction: row;
-        gap: pxToRem(8);
+        gap: pxToRem(6);
         align-items: center;
 
         .header-indicator {
-          width: pxToRem(4);
-          height: pxToRem(20);
-          border-radius: pxToRem(12);
+          width: pxToRem(3);
+          height: pxToRem(16);
+          border-radius: pxToRem(8);
           background-color: rgba(74, 64, 224, 1);
         }
 
         .header-title {
-          font-size: pxToRem(16);
+          font-size: pxToRem(14);
           font-family: 'WenQuanYi Zen Hei', sans-serif;
           font-weight: 700;
-          line-height: pxToRem(24);
+          line-height: pxToRem(20);
           color: rgba(32, 48, 68, 1);
           margin: 0;
         }
@@ -229,10 +230,10 @@ watch(visible, (newValue) => {
 
       .header-description {
         .description-text {
-          font-size: pxToRem(12);
+          font-size: pxToRem(11);
           font-family: 'WenQuanYi Zen Hei', sans-serif;
           font-weight: 400;
-          line-height: pxToRem(19.5);
+          line-height: pxToRem(16);
           color: rgba(77, 93, 115, 1);
           margin: 0;
         }
@@ -242,14 +243,14 @@ watch(visible, (newValue) => {
     .status-selectors {
       display: flex;
       flex-direction: column;
-      gap: pxToRem(10);
+      gap: pxToRem(8);
 
       .type-option {
         width: 100%;
-        height: pxToRem(68);
+        height: pxToRem(56);
         background-color: rgba(234, 241, 255, 1);
-        border-radius: pxToRem(8);
-        padding: pxToRem(14);
+        border-radius: pxToRem(6);
+        padding: pxToRem(10);
         display: flex;
         align-items: center;
         cursor: pointer;
@@ -281,10 +282,10 @@ watch(visible, (newValue) => {
         }
 
         .option-icon-wrapper {
-          width: pxToRem(40);
-          height: pxToRem(40);
+          width: pxToRem(32);
+          height: pxToRem(32);
           background-color: rgba(255, 255, 255, 1);
-          border-radius: pxToRem(12);
+          border-radius: pxToRem(8);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -293,7 +294,7 @@ watch(visible, (newValue) => {
 
           .option-icon {
             color: rgba(180, 19, 64, 1);
-            font-size: pxToRem(20);
+            font-size: pxToRem(16);
           }
         }
 
@@ -301,46 +302,46 @@ watch(visible, (newValue) => {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding-left: pxToRem(12);
+          padding-left: pxToRem(10);
 
           .option-title {
-            font-size: pxToRem(14);
+            font-size: pxToRem(12);
             font-weight: 700;
             color: rgba(32, 48, 68, 1);
-            line-height: pxToRem(20);
+            line-height: pxToRem(16);
             font-family: 'WenQuanYi Zen Hei', sans-serif;
           }
 
           .option-description {
-            font-size: pxToRem(10);
+            font-size: pxToRem(9);
             font-weight: 400;
             color: rgba(77, 93, 115, 1);
-            line-height: pxToRem(15);
+            line-height: pxToRem(12);
             font-family: 'WenQuanYi Zen Hei', sans-serif;
           }
         }
 
         .option-radio {
-          width: pxToRem(16);
-          height: pxToRem(16);
+          width: pxToRem(14);
+          height: pxToRem(14);
           position: relative;
           flex-shrink: 0;
 
           .radio-border {
-            width: pxToRem(16);
-            height: pxToRem(16);
+            width: pxToRem(14);
+            height: pxToRem(14);
             border: 1px solid rgba(158, 174, 199, 1);
-            border-radius: pxToRem(12);
+            border-radius: pxToRem(8);
             position: absolute;
             top: 0;
             left: 0;
           }
 
           .radio-dot {
-            width: pxToRem(8);
-            height: pxToRem(8);
+            width: pxToRem(6);
+            height: pxToRem(6);
             background-color: rgba(74, 64, 224, 1);
-            border-radius: pxToRem(12);
+            border-radius: pxToRem(8);
             position: absolute;
             top: pxToRem(4);
             left: pxToRem(4);
@@ -354,7 +355,7 @@ watch(visible, (newValue) => {
 
   .content-right {
     flex: 1;
-    width: pxToRem(465);
+    width: pxToRem(400);
     display: flex;
     flex-direction: column;
 
@@ -362,57 +363,57 @@ watch(visible, (newValue) => {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      height: pxToRem(24);
-      margin-bottom: pxToRem(24);
+      height: pxToRem(20);
+      margin-bottom: pxToRem(16);
 
       .section-title {
-        font-size: pxToRem(14);
+        font-size: pxToRem(12);
         font-weight: 600;
         color: rgba(32, 48, 68, 1);
         margin: 0;
         font-family: 'Inter', sans-serif;
-        line-height: pxToRem(14);
+        line-height: pxToRem(12);
       }
 
       .word-count-badge {
         display: flex;
         align-items: center;
-        gap: pxToRem(6);
-        padding: pxToRem(4) pxToRem(10);
+        gap: pxToRem(4);
+        padding: pxToRem(3) pxToRem(8);
         background-color: rgba(255, 255, 255, 0.9);
-        border-radius: pxToRem(12);
+        border-radius: pxToRem(10);
         border: 1px solid rgba(0, 0, 0, 0.05);
         box-shadow: 0 pxToRem(1) pxToRem(2) rgba(0, 0, 0, 0.05);
 
         .dot-indicator {
-          width: pxToRem(6);
-          height: pxToRem(6);
+          width: pxToRem(5);
+          height: pxToRem(5);
           background-color: rgba(74, 64, 224, 1);
-          border-radius: pxToRem(12);
+          border-radius: pxToRem(8);
         }
 
         .count-text {
-          font-size: pxToRem(10);
+          font-size: pxToRem(9);
           font-weight: 700;
           color: rgba(77, 93, 115, 1);
           font-family: 'Inter', sans-serif;
-          line-height: pxToRem(15);
-          letter-spacing: -pxToRem(0.5);
+          line-height: pxToRem(12);
+          letter-spacing: -pxToRem(0.4);
         }
       }
     }
 
     .textarea-wrapper {
       flex: 1;
-      margin-bottom: pxToRem(12);
+      margin-bottom: pxToRem(8);
 
       .feedback-textarea {
         width: 100%;
-        height: pxToRem(296);
+        height: 100%;
         background-color: rgba(234, 241, 255, 1);
-        border-radius: pxToRem(16);
+        border-radius: pxToRem(12);
         border: none;
-        padding: pxToRem(19) pxToRem(20);
+        padding: pxToRem(14) pxToRem(16);
 
         :deep(.el-textarea__inner) {
           height: 100% !important;
@@ -421,8 +422,8 @@ watch(visible, (newValue) => {
           border: none;
           resize: none;
           font-family: 'WenQuanYi Zen Hei', sans-serif;
-          font-size: pxToRem(14);
-          line-height: pxToRem(22.75);
+          font-size: pxToRem(12);
+          line-height: pxToRem(18);
           color: rgba(32, 48, 68, 1);
           padding: 0;
 
@@ -437,10 +438,10 @@ watch(visible, (newValue) => {
       .tips-content {
         display: flex;
         align-items: center;
-        gap: pxToRem(12);
-        padding: pxToRem(12);
+        gap: pxToRem(8);
+        padding: pxToRem(8);
         background-color: rgba(151, 149, 255, 0.1);
-        border-radius: pxToRem(8);
+        border-radius: pxToRem(6);
         border: 1px solid rgba(74, 64, 224, 0.05);
 
         .tips-icon {
@@ -450,11 +451,11 @@ watch(visible, (newValue) => {
         }
 
         .tips-text {
-          font-size: pxToRem(11);
+          font-size: pxToRem(10);
           font-weight: 700;
           color: rgba(26, 0, 153, 1);
           font-family: 'WenQuanYi Zen Hei', sans-serif;
-          line-height: pxToRem(15.13);
+          line-height: pxToRem(14);
 
           .tips-label {
             font-weight: 700;

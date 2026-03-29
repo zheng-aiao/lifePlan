@@ -324,15 +324,15 @@ const handleClose = () => {
 .task-info {
   display: flex;
   align-items: center;
-  gap: pxToRem(8);
+  gap: pxToRem(6);
 
   .task-icon {
-    font-size: pxToRem(16);
+    font-size: pxToRem(14);
     color: rgba(74, 64, 224, 1);
   }
 
   .task-name {
-    font-size: pxToRem(14);
+    font-size: pxToRem(12);
     color: rgba(104, 120, 143, 1);
     font-weight: 500;
   }
@@ -341,9 +341,9 @@ const handleClose = () => {
 .delay-content {
   display: flex;
   flex-direction: column;
-  gap: pxToRem(10);
-  min-height: pxToRem(460);
-  padding: pxToRem(16) pxToRem(32);
+  gap: pxToRem(8);
+  height: 100%;
+  padding: pxToRem(12) pxToRem(24);
   box-sizing: border-box;
   background-color: #fff;
   position: relative;
@@ -362,20 +362,20 @@ const handleClose = () => {
 
   .top-section {
     .section-title {
-      font-size: pxToRem(14);
+      font-size: pxToRem(12);
       font-weight: 600;
       color: rgba(32, 48, 68, 1);
-      margin: 0 0 pxToRem(10) 0;
+      margin: 0 0 pxToRem(8) 0;
     }
 
     .timeline-visual {
-      padding: pxToRem(56) pxToRem(24) pxToRem(40) pxToRem(24);
+      padding: pxToRem(44) pxToRem(20) pxToRem(32) pxToRem(20);
       background-color: rgba(220, 233, 255, 0.5);
-      border-radius: pxToRem(8);
+      border-radius: pxToRem(6);
 
       .timeline-track {
         position: relative;
-        height: pxToRem(24);
+        height: pxToRem(20);
         display: flex;
         align-items: center;
         gap: 0;
@@ -388,30 +388,30 @@ const handleClose = () => {
           flex-shrink: 0;
 
           .node-point {
-            width: pxToRem(24);
-            height: pxToRem(24);
-            border-radius: pxToRem(12);
+            width: pxToRem(20);
+            height: pxToRem(20);
+            border-radius: pxToRem(10);
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: rgba(74, 64, 224, 0.2);
 
             .node-inner {
-              width: pxToRem(12);
-              height: pxToRem(12);
-              border-radius: pxToRem(12);
+              width: pxToRem(10);
+              height: pxToRem(10);
+              border-radius: pxToRem(10);
               background-color: rgba(74, 64, 224, 1);
             }
           }
 
           .node-label {
             position: absolute;
-            top: pxToRem(28);
+            top: pxToRem(24);
             white-space: nowrap;
-            font-size: pxToRem(11);
+            font-size: pxToRem(10);
             font-weight: 600;
             color: rgba(77, 93, 115, 1);
-            line-height: pxToRem(16.5);
+            line-height: pxToRem(14);
           }
 
           &.start-node {
@@ -458,9 +458,9 @@ const handleClose = () => {
         }
 
         .timeline-line {
-          height: pxToRem(4);
+          height: pxToRem(3);
           flex: 1;
-          min-width: pxToRem(20);
+          min-width: pxToRem(16);
 
           &.solid-line {
             background: linear-gradient(
@@ -475,9 +475,9 @@ const handleClose = () => {
             background: repeating-linear-gradient(
               90deg,
               rgba(74, 64, 224, 1) 0px,
-              rgba(74, 64, 224, 1) 6px,
-              transparent 6px,
-              transparent 10px
+              rgba(74, 64, 224, 1) 5px,
+              transparent 5px,
+              transparent 8px
             );
             position: relative;
 
@@ -485,9 +485,9 @@ const handleClose = () => {
               background: repeating-linear-gradient(
                 90deg,
                 rgba(74, 64, 224, 1) 0px,
-                rgba(74, 64, 224, 1) 6px,
-                transparent 6px,
-                transparent 10px
+                rgba(74, 64, 224, 1) 5px,
+                transparent 5px,
+                transparent 8px
               );
             }
           }
@@ -498,8 +498,8 @@ const handleClose = () => {
               rgba(151, 149, 255, 0.4) 0%,
               rgba(151, 149, 255, 0) 100%
             );
-            border-radius: 0 pxToRem(12) pxToRem(12) 0;
-            flex: 0 0 pxToRem(120);
+            border-radius: 0 pxToRem(10) pxToRem(10) 0;
+            flex: 0 0 pxToRem(100);
           }
         }
 
@@ -507,7 +507,7 @@ const handleClose = () => {
           display: flex;
           align-items: center;
           flex: 1;
-          min-width: pxToRem(80);
+          min-width: pxToRem(60);
 
           .delay-line-container {
             position: relative;
@@ -517,20 +517,20 @@ const handleClose = () => {
 
             .delay-badge {
               position: absolute;
-              top: -pxToRem(38);
+              top: -pxToRem(30);
               left: 50%;
               transform: translateX(-50%);
-              padding: pxToRem(4) pxToRem(12);
+              padding: pxToRem(3) pxToRem(10);
               background-color: rgba(74, 64, 224, 1);
-              border-radius: pxToRem(6);
+              border-radius: pxToRem(5);
               box-shadow: 0 pxToRem(1) pxToRem(2) rgba(0, 0, 0, 0.05);
               white-space: nowrap;
 
               span {
-                font-size: pxToRem(10);
+                font-size: pxToRem(9);
                 font-weight: 500;
                 color: rgba(255, 255, 255, 1);
-                line-height: pxToRem(15);
+                line-height: pxToRem(12);
               }
 
               &.active {
@@ -544,9 +544,9 @@ const handleClose = () => {
               background: repeating-linear-gradient(
                 90deg,
                 rgba(74, 64, 224, 1) 0px,
-                rgba(74, 64, 224, 1) 6px,
-                transparent 6px,
-                transparent 10px
+                rgba(74, 64, 224, 1) 5px,
+                transparent 5px,
+                transparent 8px
               );
             }
           }
@@ -557,53 +557,53 @@ const handleClose = () => {
 
   .bottom-section {
     display: flex;
-    gap: pxToRem(32);
+    gap: pxToRem(24);
     flex: 1;
 
     .left-section {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: pxToRem(24);
+      gap: pxToRem(16);
       position: relative;
       z-index: 1;
 
       .section-title {
-        font-size: pxToRem(14);
+        font-size: pxToRem(12);
         font-weight: 600;
         color: rgba(32, 48, 68, 1);
-        margin: 0 0 pxToRem(16) 0;
+        margin: 0 0 pxToRem(10) 0;
       }
 
       .quick-delay-section {
         .section-title {
-          margin-bottom: pxToRem(12);
+          margin-bottom: pxToRem(8);
         }
 
         .quick-buttons {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: pxToRem(12);
+          gap: pxToRem(8);
 
           .quick-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: pxToRem(8);
-            height: pxToRem(40);
+            gap: pxToRem(6);
+            height: pxToRem(32);
             background-color: rgba(234, 241, 255, 1);
-            border-radius: pxToRem(8);
+            border-radius: pxToRem(6);
             cursor: pointer;
             transition: all 0.2s ease;
             border: none;
-            padding: pxToRem(10) pxToRem(10);
+            padding: pxToRem(8);
 
             &:hover {
               background-color: rgba(74, 64, 224, 0.1);
             }
 
             &.active {
-              height: pxToRem(42);
+              height: pxToRem(34);
               background-color: rgba(151, 149, 255, 1);
               box-shadow:
                 0 pxToRem(1) pxToRem(2) rgba(0, 0, 0, 0.05),
@@ -620,12 +620,12 @@ const handleClose = () => {
             }
 
             .el-icon {
-              font-size: pxToRem(15);
+              font-size: pxToRem(12);
               color: rgba(77, 93, 115, 1);
             }
 
             span {
-              font-size: pxToRem(14);
+              font-size: pxToRem(12);
               font-weight: 600;
               color: rgba(77, 93, 115, 1);
             }
@@ -635,50 +635,50 @@ const handleClose = () => {
 
       .custom-time-section {
         .section-title {
-          margin-bottom: pxToRem(12);
+          margin-bottom: pxToRem(8);
         }
 
         .time-display-container {
           display: flex;
           align-items: center;
-          padding: pxToRem(16);
+          padding: pxToRem(12);
           background-color: rgba(234, 241, 255, 1);
-          border-radius: pxToRem(8);
-          gap: pxToRem(16);
+          border-radius: pxToRem(6);
+          gap: pxToRem(12);
 
           .time-display-left,
           .time-display-right {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: pxToRem(4);
+            gap: pxToRem(3);
 
             .time-label {
-              font-size: pxToRem(10);
+              font-size: pxToRem(9);
               font-weight: 500;
               color: rgba(77, 93, 115, 1);
-              line-height: pxToRem(15);
+              line-height: pxToRem(12);
               text-transform: uppercase;
             }
 
             .time-value {
-              font-size: pxToRem(20);
+              font-size: pxToRem(16);
               font-weight: 400;
               color: rgba(32, 48, 68, 1);
-              line-height: pxToRem(28);
+              line-height: pxToRem(22);
             }
           }
 
           .time-divider {
             width: pxToRem(1);
-            height: pxToRem(32);
+            height: pxToRem(28);
             background-color: rgba(158, 174, 199, 0.3);
             flex-shrink: 0;
           }
 
           .time-picker-btn {
-            width: pxToRem(36);
-            height: pxToRem(36);
+            width: pxToRem(30);
+            height: pxToRem(30);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -695,7 +695,7 @@ const handleClose = () => {
             }
 
             .el-icon {
-              font-size: pxToRem(20);
+              font-size: pxToRem(16);
               color: rgba(74, 64, 224, 1);
             }
           }
@@ -712,7 +712,7 @@ const handleClose = () => {
     }
 
     .right-section {
-      width: pxToRem(474);
+      width: pxToRem(400);
       display: flex;
       flex-direction: column;
       position: relative;
@@ -724,26 +724,26 @@ const handleClose = () => {
         flex-direction: column;
 
         .section-title {
-          font-size: pxToRem(14);
+          font-size: pxToRem(12);
           font-weight: 600;
           color: rgba(32, 48, 68, 1);
-          margin: 0 0 pxToRem(16) 0;
+          margin: 0 0 pxToRem(10) 0;
         }
 
         .reason-input-wrapper {
           flex: 1;
-          margin-bottom: pxToRem(8);
+          margin-bottom: pxToRem(6);
 
           .reason-input {
             height: 100%;
 
             :deep(.el-textarea__inner) {
-              border-radius: pxToRem(8);
+              border-radius: pxToRem(6);
               resize: none;
-              padding: pxToRem(16);
-              font-size: pxToRem(14);
-              line-height: 1.6;
-              min-height: pxToRem(180) !important;
+              padding: pxToRem(12);
+              font-size: pxToRem(12);
+              line-height: 1.5;
+              min-height: pxToRem(140) !important;
               border: 1px solid rgba(220, 233, 255, 1);
               background-color: rgba(244, 246, 255, 1);
 
@@ -762,7 +762,7 @@ const handleClose = () => {
             }
 
             :deep(.el-input__count) {
-              font-size: pxToRem(12);
+              font-size: pxToRem(10);
               color: rgba(158, 174, 199, 1);
               background: transparent;
             }
@@ -772,18 +772,18 @@ const handleClose = () => {
         .reason-hint {
           display: flex;
           align-items: center;
-          gap: pxToRem(8);
-          padding: pxToRem(12) pxToRem(16);
+          gap: pxToRem(6);
+          padding: pxToRem(10) pxToRem(12);
           background-color: rgba(244, 246, 255, 1);
-          border-radius: pxToRem(8);
+          border-radius: pxToRem(6);
 
           .el-icon {
-            font-size: pxToRem(16);
+            font-size: pxToRem(14);
             color: rgba(74, 64, 224, 1);
           }
 
           span {
-            font-size: pxToRem(12);
+            font-size: pxToRem(10);
             color: rgba(104, 120, 143, 1);
           }
         }

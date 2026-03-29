@@ -134,8 +134,10 @@ const handleConfirm = () => {
 .dialog-body {
   display: flex;
   flex-direction: column;
-  gap: pxToRem(20);
-  padding: pxToRem(15) pxToRem(24) pxToRem(16);
+  gap: pxToRem(16);
+  padding: pxToRem(12) pxToRem(20);
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .task-path {
@@ -145,26 +147,26 @@ const handleConfirm = () => {
   align-items: center;
 
   .parent-task {
-    font-size: pxToRem(11);
+    font-size: pxToRem(10);
     font-family: 'Inter-Medium';
     font-weight: 700;
-    letter-spacing: pxToRem(0.55);
-    line-height: pxToRem(16.5);
+    letter-spacing: pxToRem(0.5);
+    line-height: pxToRem(14);
     text-transform: uppercase;
     color: rgba(104, 120, 143, 1);
   }
 
   .separator-icon {
-    font-size: pxToRem(7);
+    font-size: pxToRem(6);
     color: rgba(158, 174, 199, 1);
   }
 
   .current-task {
-    font-size: pxToRem(11);
+    font-size: pxToRem(10);
     font-family: 'Inter-Medium';
     font-weight: 700;
-    letter-spacing: pxToRem(0.55);
-    line-height: pxToRem(16.5);
+    letter-spacing: pxToRem(0.5);
+    line-height: pxToRem(14);
     text-transform: uppercase;
     color: rgba(77, 93, 115, 1);
   }
@@ -173,15 +175,15 @@ const handleConfirm = () => {
 .form-section {
   display: flex;
   flex-direction: column;
-  gap: pxToRem(6);
+  gap: pxToRem(4);
 }
 
 .form-label {
-  font-size: pxToRem(13);
+  font-size: pxToRem(11);
   font-family: 'Inter-Medium';
   font-weight: 700;
-  letter-spacing: pxToRem(0.65);
-  line-height: pxToRem(19.5);
+  letter-spacing: pxToRem(0.5);
+  line-height: pxToRem(16);
   text-transform: uppercase;
   color: rgba(77, 93, 115, 1);
 }
@@ -189,14 +191,14 @@ const handleConfirm = () => {
 .task-input {
   :deep(.el-input__wrapper) {
     background-color: rgba(234, 241, 255, 1);
-    border-radius: pxToRem(8);
+    border-radius: pxToRem(6);
     border: none;
     box-shadow: none;
-    padding: pxToRem(12) pxToRem(16);
+    padding: pxToRem(8) pxToRem(12);
   }
 
   :deep(.el-input__inner) {
-    font-size: pxToRem(15);
+    font-size: pxToRem(13);
     font-family: 'Alibaba PuHuiTi-Regular';
     font-weight: 500;
     color: rgba(32, 48, 68, 1);
@@ -210,18 +212,18 @@ const handleConfirm = () => {
 .priority-options {
   display: flex;
   flex-direction: row;
-  gap: pxToRem(12);
+  gap: pxToRem(8);
 }
 
 .priority-item {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: pxToRem(7);
+  gap: pxToRem(4);
   justify-content: center;
   align-items: center;
-  padding: pxToRem(12) 0;
-  border-radius: pxToRem(8);
+  padding: pxToRem(8) 0;
+  border-radius: pxToRem(6);
   cursor: pointer;
   transition: all 0.2s;
   border: pxToRem(1) solid transparent;
@@ -235,16 +237,16 @@ const handleConfirm = () => {
   }
 
   .priority-dot {
-    width: pxToRem(10);
-    height: pxToRem(10);
+    width: pxToRem(8);
+    height: pxToRem(8);
     border-radius: 50%;
   }
 
   .priority-text {
-    font-size: pxToRem(13);
+    font-size: pxToRem(11);
     font-family: 'Inter-Medium';
     font-weight: 700;
-    line-height: pxToRem(19.5);
+    line-height: pxToRem(16);
     text-align: center;
   }
 }

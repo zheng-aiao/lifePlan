@@ -7,90 +7,96 @@
       backgroundColor: task.bgColor,
       opacity: task.opacity || 1,
     }"
-    :body-style="{ padding: '0.75rem', position: 'relative' }"
+    :body-style="{ padding: 0, position: 'relative' }"
   >
-    <!-- 头部信息 -->
-    <div class="card-header">
-      <div class="header-top">
+    <div class="card-wrapper">
+      <div class="card-header">
         <div class="header-left">
-          <div class="time-display">
-            <span v-if="task.delayedFrom" class="time-range old-time">{{ task.delayedFrom }}</span>
-            <span class="time-range" :class="{ 'new-time': task.delayedFrom }">{{
-              task.timeRange
-            }}</span>
+          <div class="title-row">
+            <el-icon class="title-icon"><Document /></el-icon>
+            <span class="task-title">{{ task.title }}</span>
           </div>
-          <span class="task-tag" :style="{ color: task.tagColor }">{{ task.tag }}</span>
-          <span class="actual-duration">已用时 {{ task.actualDuration }}</span>
+          <div class="meta-row">
+            <el-icon class="time-icon"><Clock /></el-icon>
+            <span class="time-range">{{ task.timeRange }}</span>
+            <span class="status-tag" :class="task.status">{{ task.statusText || '进行中' }}</span>
+          </div>
         </div>
-
         <div class="header-right">
-          <el-button circle class="action-btn delay-btn" @click.stop="handleDelay" title="延时">
-            <el-icon><Timer /></el-icon>
-          </el-button>
-          <el-button circle class="action-btn feedback-btn" @click.stop="handleFeedback" title="反馈">
+          <div class="action-btn" @click.stop="handleAddSubTask">
+            <el-icon><Plus /></el-icon>
+            <span>新增</span>
+          </div>
+          <div class="action-btn" @click.stop="handleFeedback">
             <el-icon><ChatDotRound /></el-icon>
-          </el-button>
-          <el-button circle class="action-btn pause-btn" @click.stop="handlePause" title="暂停">
-            <el-icon><VideoPause /></el-icon>
-          </el-button>
+            <span>反馈</span>
+          </div>
+          <div class="action-btn" @click.stop="handleDelay">
+            <el-icon><Timer /></el-icon>
+            <span>延时</span>
+          </div>
         </div>
       </div>
-      <div class="header-bottom">
-        <p class="task-title">{{ task.title }}</p>
-        <el-button circle class="add-subtask-btn" @click.stop="handleAddSubTask" title="添加子任务">
-          <el-icon><Plus /></el-icon>
-        </el-button>
-      </div>
-    </div>
 
-    <!-- 内容区域 -->
-    <div class="card-container">
-      <!-- 左侧：子任务列表 -->
-      <div class="left-section">
-        <div v-if="task.subTasks && task.subTasks.length" class="sub-task-list">
-          <div
-            v-for="(subTask, idx) in task.subTasks"
-            :key="idx"
-            class="sub-task-item"
-            @click.stop="toggleSubTask(idx)"
-          >
-            <div class="checkbox" :class="{ checked: subTask.completed }">
-              <el-icon v-if="subTask.completed"><Check /></el-icon>
+      <div class="card-content">
+        <div class="left-section">
+          <div class="section-header">
+            <el-icon><List /></el-icon>
+            <span>任务清单</span>
+          </div>
+          <div class="sub-task-list">
+            <div
+              v-for="(subTask, idx) in task.subTasks"
+              :key="idx"
+              class="sub-task-item"
+              @click.stop="toggleSubTask(idx)"
+            >
+              <div class="checkbox" :class="{ checked: subTask.completed }">
+                <el-icon v-if="subTask.completed"><Check /></el-icon>
+              </div>
+              <span class="sub-task-text" :class="{ completed: subTask.completed }">
+                {{ subTask.text }}
+              </span>
             </div>
-            <span class="sub-task-text" :class="{ completed: subTask.completed }">
-              {{ subTask.text }}
-            </span>
+            <div v-if="!task.subTasks || !task.subTasks.length" class="empty-list">
+              暂无子任务
+            </div>
+          </div>
+        </div>
+
+        <div class="right-section">
+          <div class="section-header">
+            <el-icon><Memo /></el-icon>
+            <span>活动日志</span>
+          </div>
+          <div class="activity-list">
+            <div v-for="(activity, idx) in task.activities" :key="idx" class="activity-item">
+              <div class="activity-indicator" :class="activity.type"></div>
+              <div class="activity-content">
+                <div class="activity-time">{{ activity.time }} - {{ activity.typeText }}</div>
+                <div class="activity-desc">{{ activity.description }}</div>
+              </div>
+            </div>
+            <div v-if="!task.activities || !task.activities.length" class="empty-list">
+              暂无活动日志
+            </div>
           </div>
         </div>
       </div>
-      <!-- 右侧：反馈列表 -->
-      <div class="right-section">
-        <div v-if="task.feedbacks && task.feedbacks.length" class="feedback-list">
-          <div
-            v-for="(feedback, idx) in task.feedbacks"
-            :key="idx"
-            class="feedback-item"
-          >
-            <div class="feedback-time">{{ feedback.time }}</div>
-            <div class="feedback-content">{{ feedback.content }}</div>
-          </div>
+
+      <div class="card-footer">
+        <div class="duration-info">
+          <span class="duration-label">已用时:</span>
+          <span class="duration-value">{{ task.actualDuration }}</span>
         </div>
-        <div v-else class="empty-feedback">
-          <el-icon><ChatDotRound /></el-icon>
-          <span>暂无反馈</span>
+        <div class="complete-btn" @click.stop="handlePause">
+          <el-icon><Check /></el-icon>
         </div>
       </div>
     </div>
 
-
-
-    <!-- 描述/引用 -->
-    <p v-if="task.quote" class="task-quote">{{ task.quote }}</p>
-
-    <!-- 拖动手柄 -->
     <div class="resize-handle" @mousedown="startResize" title="拖动调整任务时长"></div>
 
-    <!-- 延时弹窗 -->
     <delay-dialog
       v-model="delayDialogVisible"
       :current-time-range="task.timeRange"
@@ -99,7 +105,6 @@
       @cancel="handleDelayCancel"
     />
 
-    <!-- 反馈弹窗 -->
     <asset-dialog
       v-model="feedbackDialogVisible"
       :task-title="task.title"
@@ -109,7 +114,6 @@
       @cancel="handleFeedbackCancel"
     />
 
-    <!-- 中止弹窗 -->
     <stop-dialog
       v-model="stopDialogVisible"
       :task-title="task.title"
@@ -117,7 +121,6 @@
       @cancel="handleStopCancel"
     />
 
-    <!-- 新增子项任务弹窗 -->
     <add-task-item-dialog
       v-model="addTaskItemDialogVisible"
       :task-title="task.title"
@@ -128,8 +131,18 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
-import { ChatDotRound, VideoPause, Check, Timer, Plus } from '@element-plus/icons-vue';
+import { ref, computed } from 'vue';
+import {
+  ChatDotRound,
+  VideoPause,
+  Check,
+  Timer,
+  Plus,
+  Document,
+  Clock,
+  List,
+  Memo,
+} from '@element-plus/icons-vue';
 import DelayDialog from '../dialog/DelayDialog.vue';
 import AssetDialog from '../dialog/AssetDialog.vue';
 import StopDialog from '../dialog/StopDialog.vue';
@@ -141,27 +154,21 @@ const props = defineProps({
     required: true,
     default: () => ({
       id: 0,
-      tag: '',
-      tagColor: '',
-      timeRange: '',
-      delayedFrom: '',
-      actualDuration: '',
       title: '',
+      timeRange: '',
+      status: 'in-progress',
+      statusText: '进行中',
+      actualDuration: '',
       subTasks: [],
-      feedbacks: [],
-      quote: '',
-      borderColor: '',
-      bgColor: '',
+      activities: [],
+      borderColor: 'rgba(74, 64, 224, 1)',
+      bgColor: 'rgba(255, 255, 255, 1)',
       opacity: 1,
     }),
   },
   isActive: {
     type: Boolean,
     default: false,
-  },
-  baseHeight: {
-    type: Number,
-    default: 60, // 默认基础高度（时长决定的高度）
   },
   otherTasks: {
     type: Array,
@@ -174,61 +181,22 @@ const emit = defineEmits([
   'feedback',
   'pause',
   'delay',
-  'heightChange',
   'resize',
   'addSubTask',
 ]);
 
-// 常量
-const SUBTASK_ITEM_HEIGHT = 26; // 每个子任务项的高度
-const HEADER_HEIGHT = 50; // 头部区域高度
-const TITLE_HEIGHT = 28; // 标题高度
-const QUOTE_HEIGHT = 24; // 引用文字高度
-const PADDING = 24; // 上下padding总和
-const MIN_TASK_DURATION = 30; // 最小任务时长（分钟）
-const PIXELS_PER_MINUTE = 2; // 每分钟对应的像素高度
+const MIN_TASK_DURATION = 30;
+const PIXELS_PER_MINUTE = 2;
 
-// 延时弹窗显示状态
 const delayDialogVisible = ref(false);
-
-// 反馈弹窗显示状态
 const feedbackDialogVisible = ref(false);
-
-// 中止弹窗显示状态
 const stopDialogVisible = ref(false);
-
-// 新增子项任务弹窗显示状态
 const addTaskItemDialogVisible = ref(false);
-
-// 拖动相关数据
 const isResizing = ref(false);
 const startY = ref(0);
 const startHeight = ref(0);
 
-// 计算内容完全展开所需的高度
-const calculateContentHeight = () => {
-  let height = PADDING + HEADER_HEIGHT + TITLE_HEIGHT;
-
-  // 子任务列表高度
-  if (props.task.subTasks && props.task.subTasks.length > 0) {
-    height += props.task.subTasks.length * SUBTASK_ITEM_HEIGHT;
-  }
-
-  // 引用文字高度
-  if (props.task.quote) {
-    height += QUOTE_HEIGHT;
-  }
-
-  return height;
-};
-
-// 内容完全展开所需高度
-const contentHeight = computed(() => calculateContentHeight());
-
-// 当前实际高度（始终使用内容高度，由父组件根据内容高度决定是否覆盖时长高度）
-const currentHeight = computed(() => {
-  return contentHeight.value;
-});
+const currentHeight = computed(() => 200);
 
 const toggleSubTask = (idx) => {
   emit('toggleSubTask', idx);
@@ -273,100 +241,69 @@ const handleDelayCancel = () => {
   delayDialogVisible.value = false;
 };
 
-// 开始拖动调整大小
 const startResize = (e) => {
   e.preventDefault();
-  console.log('开始拖动');
   isResizing.value = true;
   startY.value = e.clientY;
   startHeight.value = currentHeight.value;
-
-  // 添加全局鼠标事件监听器
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
 };
 
-// 检查时间冲突
 const checkTimeConflict = (newStart, newEnd) => {
-  // 解析当前任务的开始时间
   const [startHour, startMin] = newStart.split(':').map(Number);
   const startTimestamp = startHour * 60 + startMin;
-
-  // 解析当前任务的新结束时间
   const [endHour, endMin] = newEnd.split(':').map(Number);
   const endTimestamp = endHour * 60 + endMin;
 
-  // 检查与其他任务的冲突
   for (const otherTask of props.otherTasks) {
-    if (otherTask.id === props.task.id) continue; // 跳过自己
-
+    if (otherTask.id === props.task.id) continue;
     const [otherStart, otherEnd] = otherTask.timeRange.split('-');
     const [otherStartHour, otherStartMin] = otherStart.split(':').map(Number);
     const otherStartTimestamp = otherStartHour * 60 + otherStartMin;
-
     const [otherEndHour, otherEndMin] = otherEnd.split(':').map(Number);
     const otherEndTimestamp = otherEndHour * 60 + otherEndMin;
-
-    // 检查时间重叠
     if (startTimestamp < otherEndTimestamp && endTimestamp > otherStartTimestamp) {
-      return true; // 冲突
+      return true;
     }
   }
-
-  return false; // 无冲突
+  return false;
 };
 
-// 拖动过程
 const onMouseMove = (e) => {
   if (!isResizing.value) return;
-
-  console.log('拖动中');
   const deltaY = e.clientY - startY.value;
   const newHeight = Math.max(startHeight.value + deltaY, MIN_TASK_DURATION * PIXELS_PER_MINUTE);
-
-  // 计算新的时长（分钟）
   const newDuration = Math.round(newHeight / PIXELS_PER_MINUTE);
-
-  // 计算新的结束时间
-  const [start, end] = props.task.timeRange.split('-');
+  const [start] = props.task.timeRange.split('-');
   const [startHour, startMin] = start.split(':').map(Number);
   const startDate = new Date();
   startDate.setHours(startHour, startMin, 0, 0);
-
   const endDate = new Date(startDate.getTime() + newDuration * 60 * 1000);
   const endHour = endDate.getHours().toString().padStart(2, '0');
   const endMin = endDate.getMinutes().toString().padStart(2, '0');
   const newEndTime = `${endHour}:${endMin}`;
-
-  // 检查时间冲突
   if (!checkTimeConflict(start, newEndTime)) {
     const newTimeRange = `${start}-${newEndTime}`;
-    console.log('新的时间范围:', newTimeRange);
     emit('resize', newTimeRange, newHeight);
   }
 };
 
-// 结束拖动
 const onMouseUp = () => {
-  console.log('结束拖动');
   isResizing.value = false;
-  // 移除全局鼠标事件监听器
   document.removeEventListener('mousemove', onMouseMove);
   document.removeEventListener('mouseup', onMouseUp);
 };
 
-// 处理添加子任务
 const handleAddSubTask = () => {
   addTaskItemDialogVisible.value = true;
 };
 
-// 处理新增子项任务确认
 const handleAddTaskItemConfirm = (taskItemData) => {
   emit('addSubTask', taskItemData);
   addTaskItemDialogVisible.value = false;
 };
 
-// 处理新增子项任务取消
 const handleAddTaskItemCancel = () => {
   addTaskItemDialogVisible.value = false;
 };
@@ -378,198 +315,185 @@ const handleAddTaskItemCancel = () => {
 .day-task-card {
   width: 100%;
   height: 100%;
-  border-radius: pxToRem(8);
+  border-radius: pxToRem(16);
   border: none;
-  border-left: pxToRem(4) solid var(--border-color);
-  box-shadow: 0 pxToRem(1) pxToRem(4) 0 rgba(0, 0, 0, 0.08);
+  border-left: pxToRem(8) solid var(--border-color);
+  box-shadow:
+    0 pxToRem(20) pxToRem(25) - pxToRem(5) rgba(224, 231, 255, 0.4),
+    0 pxToRem(8) pxToRem(10) - pxToRem(6) rgba(224, 231, 255, 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   position: relative;
 
   &.is-active {
-    transform: scale(1.01);
-    box-shadow: 0 pxToRem(8) pxToRem(24) rgba(74, 64, 224, 0.2);
+    box-shadow:
+      0 pxToRem(20) pxToRem(25) - pxToRem(5) rgba(224, 231, 255, 0.6),
+      0 pxToRem(8) pxToRem(10) - pxToRem(6) rgba(224, 231, 255, 0.6);
     z-index: 10;
   }
+}
 
-  &.is-collapsed {
-    .sub-task-list {
-      mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-    }
-  }
+.card-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .card-header {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: pxToRem(6);
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: pxToRem(10) pxToRem(24);
+  border-bottom: pxToRem(1) solid rgba(248, 250, 252, 1);
   flex-shrink: 0;
-  border-bottom: pxToRem(1) solid rgba(220, 233, 255, 1);
 
-
-  .header-top {
+  .header-left {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: pxToRem(8);
-    width: 100%;
+    flex-direction: column;
+    gap: pxToRem(4);
 
-    .header-left {
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: pxToRem(12);
+
+      .title-icon {
+        font-size: pxToRem(16);
+        color: rgba(74, 64, 224, 1);
+      }
+
+      .task-title {
+        font-size: pxToRem(20);
+        font-family: 'Alibaba PuHuiTi-Medium';
+        font-weight: 500;
+        line-height: pxToRem(28);
+        color: rgba(32, 48, 68, 1);
+      }
+    }
+
+    .meta-row {
       display: flex;
       align-items: center;
       gap: pxToRem(8);
 
-      .time-display {
-        display: flex;
-        align-items: center;
-        gap: pxToRem(6);
-
-        .time-range {
-          font-size: pxToRem(11);
-          font-family: 'Inter-Medium';
-          font-weight: 500;
-          line-height: pxToRem(16);
-          color: rgba(104, 120, 143, 1);
-          white-space: nowrap;
-
-          &.old-time {
-            text-decoration: line-through;
-            color: rgba(158, 174, 199, 1);
-          }
-
-          &.new-time {
-            color: rgba(74, 64, 224, 1);
-            font-weight: 600;
-          }
-        }
+      .time-icon {
+        font-size: pxToRem(13);
+        color: rgba(100, 116, 139, 1);
       }
 
-      .task-tag {
-        font-size: pxToRem(10);
-        font-family: 'Alibaba PuHuiTi-Regular';
-        font-weight: 400;
-        letter-spacing: pxToRem(1);
-        line-height: pxToRem(14);
-        text-transform: uppercase;
-        padding: pxToRem(2) pxToRem(6);
-        background-color: rgba(74, 64, 224, 0.1);
-        border-radius: pxToRem(4);
-        white-space: nowrap;
-      }
-
-      .actual-duration {
-        font-size: pxToRem(11);
+      .time-range {
+        font-size: pxToRem(14);
         font-family: 'Inter-Medium';
         font-weight: 500;
-        line-height: pxToRem(16);
-        color: rgba(74, 64, 224, 1);
-        padding: pxToRem(2) pxToRem(6);
-        background-color: rgba(74, 64, 224, 0.1);
-        border-radius: pxToRem(4);
-        white-space: nowrap;
+        line-height: pxToRem(20);
+        color: rgba(100, 116, 139, 1);
       }
-    }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: pxToRem(4);
+      .status-tag {
+        font-size: pxToRem(10);
+        font-family: 'Inter-SemiBold';
+        font-weight: 600;
+        line-height: pxToRem(15);
+        color: rgba(74, 64, 224, 1);
+        padding: pxToRem(2) pxToRem(8);
+        border-radius: pxToRem(9999);
+        background-color: rgba(210, 228, 255, 1);
 
-      .action-btn {
-        width: pxToRem(24);
-        height: pxToRem(24);
-        padding: 0;
-        border: none;
-        background-color: rgba(244, 246, 255, 1);
-        flex-shrink: 0;
-
-        &:hover {
-          background-color: rgba(74, 64, 224, 0.1);
+        &.completed {
+          color: rgba(34, 197, 94, 1);
+          background-color: rgba(220, 252, 231, 1);
         }
 
-        .el-icon {
-          font-size: pxToRem(12);
-          color: rgba(74, 64, 224, 1);
-        }
-
-        &.delay-btn:hover {
-          background-color: rgba(248, 160, 16, 0.1);
-          .el-icon {
-            color: rgba(248, 160, 16, 1);
-          }
+        &.delayed {
+          color: rgba(249, 115, 22, 1);
+          background-color: rgba(255, 237, 213, 1);
         }
       }
     }
   }
 
-  .header-bottom {
+  .header-right {
     display: flex;
     align-items: center;
-    gap: pxToRem(4);
-    width: 100%;
+    gap: pxToRem(8);
 
-    .task-title {
-      font-size: pxToRem(15);
-      font-family: 'Alibaba PuHuiTi-Regular';
-      font-weight: 400;
-      line-height: pxToRem(22);
-      color: rgba(32, 48, 68, 1);
-      margin: 0;
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .add-subtask-btn {
-      width: pxToRem(24);
-      height: pxToRem(24);
-      padding: 0;
-      border: none;
-      background-color: rgba(244, 246, 255, 1);
-      flex-shrink: 0;
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: pxToRem(8);
+      padding: pxToRem(8) pxToRem(12);
+      border-radius: pxToRem(4);
+      background-color: rgba(248, 250, 252, 1);
+      cursor: pointer;
+      transition: all 0.2s ease;
 
       &:hover {
         background-color: rgba(74, 64, 224, 0.1);
       }
 
       .el-icon {
+        font-size: pxToRem(14);
+        color: rgba(71, 85, 105, 1);
+      }
+
+      span {
         font-size: pxToRem(12);
-        color: rgba(74, 64, 224, 1);
+        font-family: 'Alibaba PuHuiTi-Medium';
+        font-weight: 500;
+        line-height: pxToRem(16);
+        color: rgba(71, 85, 105, 1);
       }
     }
   }
 }
 
-.card-container {
+.card-content {
   display: flex;
   flex-direction: row;
-  gap: pxToRem(12);
   flex: 1;
-  overflow: hidden;
+  padding: 0 pxToRem(24);
   min-height: 0;
 
   .left-section {
     flex: 1;
-    min-width: 0;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: pxToRem(16) pxToRem(24) pxToRem(24);
+    border-right: pxToRem(1) solid rgba(248, 250, 252, 1);
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: pxToRem(8);
+      margin-bottom: pxToRem(16);
+
+      .el-icon {
+        font-size: pxToRem(16);
+        color: rgba(74, 64, 224, 1);
+      }
+
+      span {
+        font-size: pxToRem(14);
+        font-family: 'Alibaba PuHuiTi-Medium';
+        font-weight: 500;
+        line-height: pxToRem(20);
+        color: rgba(32, 48, 68, 1);
+      }
+    }
 
     .sub-task-list {
       display: flex;
       flex-direction: column;
-      gap: pxToRem(2);
+      gap: pxToRem(12);
+      flex: 1;
       overflow-y: auto;
-      max-height: 100%;
 
       .sub-task-item {
         display: flex;
         align-items: center;
-        gap: pxToRem(6);
+        gap: pxToRem(12);
         cursor: pointer;
-        height: 24px;
-        flex-shrink: 0;
 
         &:hover {
           .sub-task-text {
@@ -578,15 +502,15 @@ const handleAddTaskItemCancel = () => {
         }
 
         .checkbox {
-          width: pxToRem(14);
-          height: pxToRem(14);
-          border: pxToRem(2) solid rgba(158, 174, 199, 1);
+          width: pxToRem(16);
+          height: pxToRem(16);
+          border: pxToRem(1) solid rgba(148, 163, 184, 1);
           border-radius: pxToRem(4);
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.2s ease;
           flex-shrink: 0;
+          transition: all 0.2s ease;
 
           &.checked {
             background-color: rgba(74, 64, 224, 1);
@@ -600,99 +524,173 @@ const handleAddTaskItemCancel = () => {
         }
 
         .sub-task-text {
-          font-size: pxToRem(13);
+          font-size: pxToRem(14);
           font-family: 'Alibaba PuHuiTi-Regular';
           font-weight: 400;
           line-height: pxToRem(20);
           color: rgba(32, 48, 68, 1);
           transition: all 0.2s ease;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
 
           &.completed {
             text-decoration: line-through;
-            color: rgba(158, 174, 199, 1);
+            color: rgba(148, 163, 184, 1);
           }
         }
+      }
+
+      .empty-list {
+        font-size: pxToRem(12);
+        color: rgba(148, 163, 184, 1);
+        text-align: center;
+        padding: pxToRem(16);
       }
     }
   }
 
   .right-section {
     flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    border-left: pxToRem(1) solid rgba(220, 233, 255, 1);
-    padding-left: pxToRem(12);
+    display: flex;
+    flex-direction: column;
+    padding: pxToRem(16) pxToRem(24) pxToRem(24);
+    background-color: rgba(248, 250, 252, 0.5);
 
-    .feedback-list {
+    .section-header {
       display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: pxToRem(8);
-      overflow-y: auto;
-      max-height: 100%;
+      margin-bottom: pxToRem(16);
 
-      .feedback-item {
-        display: flex;
-        flex-direction: column;
-        gap: pxToRem(2);
-        padding: pxToRem(6);
-        background-color: rgba(244, 246, 255, 0.5);
-        border-radius: pxToRem(4);
+      .el-icon {
+        font-size: pxToRem(16);
+        color: rgba(74, 64, 224, 1);
+      }
 
-        .feedback-time {
-          font-size: pxToRem(10);
-          font-family: 'Inter-Medium';
-          font-weight: 500;
-          color: rgba(158, 174, 199, 1);
-        }
-
-        .feedback-content {
-          font-size: pxToRem(12);
-          font-family: 'Alibaba PuHuiTi-Regular';
-          font-weight: 400;
-          line-height: pxToRem(18);
-          color: rgba(32, 48, 68, 1);
-          word-break: break-word;
-        }
+      span {
+        font-size: pxToRem(14);
+        font-family: 'Alibaba PuHuiTi-Medium';
+        font-weight: 500;
+        line-height: pxToRem(20);
+        color: rgba(32, 48, 68, 1);
       }
     }
 
-    .empty-feedback {
+    .activity-list {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: pxToRem(4);
-      height: 100%;
-      color: rgba(158, 174, 199, 1);
-      font-size: pxToRem(12);
+      gap: pxToRem(16);
+      flex: 1;
+      overflow-y: auto;
 
-      .el-icon {
-        font-size: pxToRem(20);
-        opacity: 0.5;
+      .activity-item {
+        display: flex;
+        gap: pxToRem(12);
+
+        .activity-indicator {
+          width: pxToRem(8);
+          height: pxToRem(8);
+          border-radius: 50%;
+          margin-top: pxToRem(6);
+          flex-shrink: 0;
+
+          &.interruption {
+            background-color: rgba(249, 115, 22, 1);
+          }
+
+          &.delay {
+            background-color: rgba(234, 179, 8, 1);
+          }
+
+          &.feedback {
+            background-color: rgba(74, 64, 224, 1);
+          }
+        }
+
+        .activity-content {
+          flex: 1;
+
+          .activity-time {
+            font-size: pxToRem(12);
+            font-family: 'Inter-Medium';
+            font-weight: 500;
+            line-height: pxToRem(16);
+            color: rgba(100, 116, 139, 1);
+            margin-bottom: pxToRem(2);
+          }
+
+          .activity-desc {
+            font-size: pxToRem(14);
+            font-family: 'Alibaba PuHuiTi-Regular';
+            font-weight: 400;
+            line-height: pxToRem(20);
+            color: rgba(32, 48, 68, 1);
+          }
+        }
+      }
+
+      .empty-list {
+        font-size: pxToRem(12);
+        color: rgba(148, 163, 184, 1);
+        text-align: center;
+        padding: pxToRem(16);
       }
     }
   }
 }
 
-.task-quote {
-  font-size: pxToRem(11);
-  font-family: 'Alibaba PuHuiTi-Regular';
-  font-weight: 400;
-  line-height: pxToRem(16);
-  color: rgba(158, 174, 199, 1);
-  font-style: italic;
-  margin: 0;
-  padding-top: pxToRem(4);
-  border-top: pxToRem(1) solid rgba(220, 233, 255, 1);
+.card-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: pxToRem(16) pxToRem(24);
+  background-color: rgba(248, 250, 252, 0.8);
   flex-shrink: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+
+  .duration-info {
+    display: flex;
+    align-items: center;
+    gap: pxToRem(8);
+
+    .duration-label {
+      font-size: pxToRem(12);
+      font-family: 'Alibaba PuHuiTi-Medium';
+      font-weight: 500;
+      line-height: pxToRem(16);
+      color: rgba(148, 163, 184, 1);
+    }
+
+    .duration-value {
+      font-size: pxToRem(14);
+      font-family: 'Alibaba PuHuiTi-Regular';
+      font-weight: 400;
+      line-height: pxToRem(20);
+      color: rgba(74, 64, 224, 1);
+    }
+  }
+
+  .complete-btn {
+    width: pxToRem(40);
+    height: pxToRem(40);
+    border-radius: pxToRem(12);
+    background: linear-gradient(135deg, rgba(74, 64, 224, 1) 0%, rgba(151, 149, 255, 1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow:
+      0 pxToRem(4) pxToRem(6) - pxToRem(4) rgba(199, 210, 254, 1),
+      0 pxToRem(10) pxToRem(15) - pxToRem(3) rgba(199, 210, 254, 1);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    .el-icon {
+      font-size: pxToRem(14);
+      color: white;
+    }
+  }
 }
 
 :deep(.el-card__body) {
@@ -701,30 +699,25 @@ const handleAddTaskItemCancel = () => {
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
-}
-
-:deep(.el-button.is-circle) {
-  padding: pxToRem(4);
+  padding: 0;
 }
 
 .resize-handle {
   width: 100%;
-  height: 12px;
+  height: pxToRem(12);
   position: absolute;
   bottom: 0;
   left: 0;
   cursor: ns-resize;
-  background: rgba(74, 64, 224, 0.2);
-  transition: all 0.2s ease;
-  border-radius: 0 0 pxToRem(8) pxToRem(8);
+  background: transparent;
   z-index: 10;
 
   &:hover {
-    background: rgba(74, 64, 224, 0.3);
+    background: rgba(74, 64, 224, 0.1);
   }
 
   &:active {
-    background: rgba(74, 64, 224, 0.4);
+    background: rgba(74, 64, 224, 0.2);
   }
 }
 </style>

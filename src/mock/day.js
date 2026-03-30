@@ -97,7 +97,7 @@ export const dailyTasks = [
   {
     id: 4,
     title: '午休与恢复',
-    timeRange: '12:00 - 13:30',
+    timeRange: '12:30 - 13:30',
     status: 'pending',
     statusText: '待开始',
     actualDuration: '0min',

@@ -15,11 +15,11 @@
           <div class="title-row">
             <el-icon class="title-icon"><Document /></el-icon>
             <span class="task-title">{{ task.title }}</span>
-          </div>
-          <div class="meta-row">
-            <el-icon class="time-icon"><Clock /></el-icon>
-            <span class="time-range">{{ task.timeRange }}</span>
-            <span class="status-tag" :class="task.status">{{ task.statusText || '进行中' }}</span>
+            <div class="meta-row">
+              <el-icon class="time-icon"><Clock /></el-icon>
+              <span class="time-range">{{ task.timeRange }}</span>
+              <span class="status-tag" :class="task.status">{{ task.statusText || '进行中' }}</span>
+            </div>
           </div>
         </div>
         <div class="header-right">
@@ -38,7 +38,7 @@
         </div>
       </div>
 
-      <div v-if="hasContent" class="card-content">
+      <div class="card-content">
         <div class="left-section">
           <div class="section-header">
             <el-icon><List /></el-icon>
@@ -187,7 +187,40 @@ const isResizing = ref(false);
 const startY = ref(0);
 const startHeight = ref(0);
 
-const currentHeight = computed(() => 200);
+const currentHeight = computed(() => {
+  // 基于任务内容动态计算高度（与父组件保持一致）
+  const HEADER_HEIGHT = 60; // 头部高度（包含内边距）
+  const FOOTER_HEIGHT = 72; // 底部高度（包含内边距）
+  const SECTION_HEADER_HEIGHT = 36; // 区域头部高度
+  const SUBTASK_ITEM_HEIGHT = 32; // 子任务项高度
+  const ACTIVITY_ITEM_HEIGHT = 36; // 活动项高度
+  const CONTENT_PADDING = 24; // 内容区域上下内边距总和
+  const SECTION_PADDING = 40; // 区域内边距总和（上下各16px + 底部24px）
+  const SECTION_GAP = 12; // 子任务/活动项之间的间距
+
+  let height = HEADER_HEIGHT + FOOTER_HEIGHT;
+
+  const subTaskCount = props.task.subTasks?.length || 0;
+  const activityCount = props.task.activities?.length || 0;
+
+  if (subTaskCount > 0 || activityCount > 0) {
+    const leftSectionHeight =
+      SECTION_HEADER_HEIGHT +
+      SECTION_PADDING +
+      subTaskCount * SUBTASK_ITEM_HEIGHT +
+      (subTaskCount - 1) * SECTION_GAP;
+    const rightSectionHeight =
+      SECTION_HEADER_HEIGHT +
+      SECTION_PADDING +
+      activityCount * ACTIVITY_ITEM_HEIGHT +
+      (activityCount - 1) * SECTION_GAP;
+
+    const contentHeight = Math.max(leftSectionHeight, rightSectionHeight);
+    height += contentHeight + CONTENT_PADDING;
+  }
+
+  return height + 40; // 添加安全边距
+});
 
 const hasContent = computed(() => {
   return (
@@ -320,7 +353,7 @@ const handleAddTaskItemCancel = () => {
     0 pxToRem(20) pxToRem(25) - pxToRem(5) rgba(224, 231, 255, 0.4),
     0 pxToRem(8) pxToRem(10) - pxToRem(6) rgba(224, 231, 255, 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  overflow: visible;
   position: relative;
 
   &.is-active {
@@ -343,7 +376,7 @@ const handleAddTaskItemCancel = () => {
   justify-content: space-between;
   align-items: center;
   padding: pxToRem(10) pxToRem(24);
-  border-bottom: pxToRem(1) solid rgba(248, 250, 252, 1);
+  border-bottom: pxToRem(1) solid rgb(229, 234, 238);
   flex-shrink: 0;
 
   .header-left {
@@ -368,44 +401,43 @@ const handleAddTaskItemCancel = () => {
         line-height: pxToRem(28);
         color: rgba(32, 48, 68, 1);
       }
-    }
+      .meta-row {
+        display: flex;
+        align-items: center;
+        gap: pxToRem(8);
 
-    .meta-row {
-      display: flex;
-      align-items: center;
-      gap: pxToRem(8);
-
-      .time-icon {
-        font-size: pxToRem(13);
-        color: rgba(100, 116, 139, 1);
-      }
-
-      .time-range {
-        font-size: pxToRem(14);
-        font-family: 'Inter-Medium';
-        font-weight: 500;
-        line-height: pxToRem(20);
-        color: rgba(100, 116, 139, 1);
-      }
-
-      .status-tag {
-        font-size: pxToRem(10);
-        font-family: 'Inter-SemiBold';
-        font-weight: 600;
-        line-height: pxToRem(15);
-        color: rgba(74, 64, 224, 1);
-        padding: pxToRem(2) pxToRem(8);
-        border-radius: pxToRem(9999);
-        background-color: rgba(210, 228, 255, 1);
-
-        &.completed {
-          color: rgba(34, 197, 94, 1);
-          background-color: rgba(220, 252, 231, 1);
+        .time-icon {
+          font-size: pxToRem(13);
+          color: rgba(100, 116, 139, 1);
         }
 
-        &.delayed {
-          color: rgba(249, 115, 22, 1);
-          background-color: rgba(255, 237, 213, 1);
+        .time-range {
+          font-size: pxToRem(14);
+          font-family: 'Inter-Medium';
+          font-weight: 500;
+          line-height: pxToRem(20);
+          color: rgba(100, 116, 139, 1);
+        }
+
+        .status-tag {
+          font-size: pxToRem(10);
+          font-family: 'Inter-SemiBold';
+          font-weight: 600;
+          line-height: pxToRem(15);
+          color: rgba(74, 64, 224, 1);
+          padding: pxToRem(2) pxToRem(8);
+          border-radius: pxToRem(9999);
+          background-color: rgba(210, 228, 255, 1);
+
+          &.completed {
+            color: rgba(34, 197, 94, 1);
+            background-color: rgba(220, 252, 231, 1);
+          }
+
+          &.delayed {
+            color: rgba(249, 115, 22, 1);
+            background-color: rgba(255, 237, 213, 1);
+          }
         }
       }
     }
@@ -639,6 +671,7 @@ const handleAddTaskItemCancel = () => {
   align-items: center;
   padding: pxToRem(16) pxToRem(24);
   background-color: rgba(248, 250, 252, 0.8);
+  border-top: pxToRem(1) solid rgb(229, 234, 238);
   flex-shrink: 0;
 
   .duration-info {
@@ -693,7 +726,7 @@ const handleAddTaskItemCancel = () => {
   flex-direction: column;
   height: 100%;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
   padding: 0;
 }
 

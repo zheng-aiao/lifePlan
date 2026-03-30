@@ -5,6 +5,10 @@
   word-break: break-word;
 }
 
+html {
+  font-size: var(--base-font-size);
+}
+
 body {
   height: 100vh;
   width: 100vw;
@@ -49,8 +53,8 @@ ul li::before {
   --content-gap: calc(16 / 16 * 1rem);
   --content-padding: calc(16 / 16 * 1rem);
   --header-height: calc(64 / 16 * 1rem);
-  --base-font-size: calc(16 / 16 * 1rem);
-  
+  --base-font-size: calc(1920 / 100 * 1px); /* 19.2px for 1920px screen */
+
   /* dialog尺寸 - 原始px值（JS读取用，不会被修改） */
   --dialog-width-base: 900;
   --dialog-height-base: 600;
@@ -63,6 +67,25 @@ ul li::before {
   --dialog-footer-height: 70;
 }
 
+@media (min-width: 2040px) {
+  :root {
+    --aside-left-width: calc(280 / 16 * 1rem);
+    --aside-right-width: calc(360 / 16 * 1rem);
+    --left-section-width: calc(480 / 16 * 1rem);
+    --content-gap: calc(20 / 16 * 1rem);
+    --content-padding: calc(20 / 16 * 1rem);
+    --base-font-size: calc(2040 / 100 * 1px); /* 20.4px for 2040px screen */
+    --dialog-width-base: 1024;
+    --dialog-height-base: 680;
+    --dialog-header-height-base: 80;
+    --dialog-footer-height-base: 80;
+    --dialog-width: 1024;
+    --dialog-height: 680;
+    --dialog-header-height: 80;
+    --dialog-footer-height: 80;
+  }
+}
+
 @media (max-width: 1440px) {
   :root {
     --aside-left-width: calc(224 / 16 * 1rem);
@@ -70,6 +93,7 @@ ul li::before {
     --left-section-width: calc(384 / 16 * 1rem);
     --content-gap: calc(14 / 16 * 1rem);
     --content-padding: calc(14 / 16 * 1rem);
+    --base-font-size: calc(1440 / 100 * 1px); /* 14.4px for 1440px screen */
     --dialog-width-base: 840;
     --dialog-height-base: 560;
     --dialog-header-height-base: 64;
@@ -88,7 +112,7 @@ ul li::before {
     --left-section-width: calc(352 / 16 * 1rem);
     --content-gap: calc(12 / 16 * 1rem);
     --content-padding: calc(12 / 16 * 1rem);
-    --base-font-size: calc(15 / 16 * 1rem);
+    --base-font-size: calc(1280 / 100 * 1px); /* 12.8px for 1280px screen */
     --dialog-width-base: 768;
     --dialog-height-base: 512;
     --dialog-header-height-base: 60;
@@ -107,7 +131,7 @@ ul li::before {
     --left-section-width: calc(288 / 16 * 1rem);
     --content-gap: calc(8 / 16 * 1rem);
     --content-padding: calc(8 / 16 * 1rem);
-    --base-font-size: calc(14 / 16 * 1rem);
+    --base-font-size: calc(1024 / 100 * 1px); /* 10.24px for 1024px screen */
     --dialog-width-base: 680;
     --dialog-height-base: 448;
     --dialog-header-height-base: 56;

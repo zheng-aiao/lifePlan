@@ -63,14 +63,19 @@ export const dailyTasks = [
     timeRange: '07:00 - 09:30',
     status: 'in-progress',
     statusText: '进行中',
-    actualDuration: '1h 30min',
+    actualDuration: '2h 30min',
     subTasks: [
       { text: '色彩心理学研究', completed: false },
       { text: '构建原子化组件库', completed: true },
       { text: '高保真交互原型', completed: false },
     ],
     activities: [
-      { time: '07:45', type: 'interruption', typeText: '干扰', description: '突发团队电话会议 (15min)' },
+      {
+        time: '07:45',
+        type: 'interruption',
+        typeText: '干扰',
+        description: '突发团队电话会议 (15min)',
+      },
       { time: '08:10', type: 'delay', typeText: '延迟', description: '资产渲染等待' },
     ],
     borderColor: 'rgba(74, 64, 224, 1)',
@@ -79,36 +84,16 @@ export const dailyTasks = [
   {
     id: 2,
     title: '产品策略同步会议',
-    timeRange: '09:00 - 10:30',
+    timeRange: '10:00 - 12:00',
     status: 'completed',
     statusText: '已完成',
     actualDuration: '1h 30min',
-    subTasks: [
-      { text: '确认 Q3 产品路线图', completed: true },
-      { text: '讨论用户反馈优先级', completed: true },
-    ],
+    subTasks: [],
     activities: [],
     borderColor: 'rgba(248, 160, 16, 1)',
     bgColor: 'rgba(255, 255, 255, 1)',
   },
-  {
-    id: 3,
-    title: '组件库开发',
-    timeRange: '10:30 - 12:00',
-    status: 'in-progress',
-    statusText: '进行中',
-    actualDuration: '45min',
-    subTasks: [
-      { text: '完成 Button 组件', completed: true },
-      { text: '编写单元测试', completed: false },
-      { text: '更新文档', completed: false },
-    ],
-    activities: [
-      { time: '11:20', type: 'feedback', typeText: '反馈', description: '代码审查意见已处理' },
-    ],
-    borderColor: 'rgba(74, 64, 224, 1)',
-    bgColor: 'rgba(255, 255, 255, 1)',
-  },
+
   {
     id: 4,
     title: '午休与恢复',
@@ -121,25 +106,11 @@ export const dailyTasks = [
     borderColor: 'rgba(0, 105, 71, 1)',
     bgColor: 'rgba(255, 255, 255, 1)',
   },
-  {
-    id: 5,
-    title: '代码审查与优化',
-    timeRange: '13:30 - 15:30',
-    status: 'pending',
-    statusText: '待开始',
-    actualDuration: '0min',
-    subTasks: [
-      { text: '审查 PR #234', completed: false },
-      { text: '优化性能瓶颈', completed: false },
-    ],
-    activities: [],
-    borderColor: 'rgba(74, 64, 224, 1)',
-    bgColor: 'rgba(255, 255, 255, 1)',
-  },
+
   {
     id: 6,
     title: '设计稿评审',
-    timeRange: '15:30 - 17:00',
+    timeRange: '14:30 - 17:00',
     status: 'delayed',
     statusText: '已延迟',
     actualDuration: '0min',
@@ -157,7 +128,7 @@ export const dailyTasks = [
   {
     id: 7,
     title: '文档整理',
-    timeRange: '17:00 - 19:00',
+    timeRange: '17:30 - 19:00',
     status: 'pending',
     statusText: '待开始',
     actualDuration: '0min',
@@ -187,7 +158,7 @@ export const dailyTasks = [
   {
     id: 9,
     title: '个人项目开发',
-    timeRange: '20:00 - 22:00',
+    timeRange: '20:30 - 22:00',
     status: 'pending',
     statusText: '待开始',
     actualDuration: '0min',
@@ -202,7 +173,7 @@ export const dailyTasks = [
   {
     id: 10,
     title: '明日计划',
-    timeRange: '22:00 - 23:00',
+    timeRange: '22:30 - 23:00',
     status: 'pending',
     statusText: '待开始',
     actualDuration: '0min',

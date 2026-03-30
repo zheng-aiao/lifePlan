@@ -38,7 +38,7 @@
         </div>
       </div>
 
-      <div class="card-content">
+      <div v-if="hasContent" class="card-content">
         <div class="left-section">
           <div class="section-header">
             <el-icon><List /></el-icon>
@@ -58,9 +58,7 @@
                 {{ subTask.text }}
               </span>
             </div>
-            <div v-if="!task.subTasks || !task.subTasks.length" class="empty-list">
-              暂无子任务
-            </div>
+            <div v-if="!task.subTasks || !task.subTasks.length" class="empty-list">暂无子任务</div>
           </div>
         </div>
 
@@ -176,14 +174,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits([
-  'toggleSubTask',
-  'feedback',
-  'pause',
-  'delay',
-  'resize',
-  'addSubTask',
-]);
+const emit = defineEmits(['toggleSubTask', 'feedback', 'pause', 'delay', 'resize', 'addSubTask']);
 
 const MIN_TASK_DURATION = 30;
 const PIXELS_PER_MINUTE = 2;
@@ -197,6 +188,13 @@ const startY = ref(0);
 const startHeight = ref(0);
 
 const currentHeight = computed(() => 200);
+
+const hasContent = computed(() => {
+  return (
+    (props.task.subTasks && props.task.subTasks.length > 0) ||
+    (props.task.activities && props.task.activities.length > 0)
+  );
+});
 
 const toggleSubTask = (idx) => {
   emit('toggleSubTask', idx);
@@ -453,7 +451,6 @@ const handleAddTaskItemCancel = () => {
   flex-direction: row;
   flex: 1;
   padding: 0 pxToRem(24);
-  min-height: 0;
 
   .left-section {
     flex: 1;
@@ -487,7 +484,6 @@ const handleAddTaskItemCancel = () => {
       flex-direction: column;
       gap: pxToRem(12);
       flex: 1;
-      overflow-y: auto;
 
       .sub-task-item {
         display: flex;
@@ -579,7 +575,6 @@ const handleAddTaskItemCancel = () => {
       flex-direction: column;
       gap: pxToRem(16);
       flex: 1;
-      overflow-y: auto;
 
       .activity-item {
         display: flex;

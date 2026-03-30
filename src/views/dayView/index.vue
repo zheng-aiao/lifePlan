@@ -198,20 +198,27 @@ const getTaskBaseHeight = (task) => {
 
 // 计算任务内容完全展开所需的高度
 const calculateTaskContentHeight = (task) => {
-  const SUBTASK_ITEM_HEIGHT = 26;
-  const HEADER_HEIGHT = 50;
-  const TITLE_HEIGHT = 28;
-  const QUOTE_HEIGHT = 24;
-  const PADDING = 24;
+  const HEADER_HEIGHT = 60;
+  const FOOTER_HEIGHT = 56;
+  const SECTION_HEADER_HEIGHT = 36;
+  const SUBTASK_ITEM_HEIGHT = 32;
+  const ACTIVITY_ITEM_HEIGHT = 36;
+  const CONTENT_PADDING = 24;
+  const SECTION_PADDING = 24;
 
-  let height = PADDING + HEADER_HEIGHT + TITLE_HEIGHT;
+  let height = HEADER_HEIGHT + FOOTER_HEIGHT;
 
-  if (task.subTasks && task.subTasks.length > 0) {
-    height += task.subTasks.length * SUBTASK_ITEM_HEIGHT;
-  }
+  const subTaskCount = task.subTasks?.length || 0;
+  const activityCount = task.activities?.length || 0;
 
-  if (task.quote) {
-    height += QUOTE_HEIGHT;
+  if (subTaskCount > 0 || activityCount > 0) {
+    const leftSectionHeight =
+      SECTION_HEADER_HEIGHT + SECTION_PADDING + subTaskCount * SUBTASK_ITEM_HEIGHT;
+    const rightSectionHeight =
+      SECTION_HEADER_HEIGHT + SECTION_PADDING + activityCount * ACTIVITY_ITEM_HEIGHT;
+
+    const contentHeight = Math.max(leftSectionHeight, rightSectionHeight);
+    height += contentHeight + CONTENT_PADDING;
   }
 
   return height;

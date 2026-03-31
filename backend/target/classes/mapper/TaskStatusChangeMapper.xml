@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lifeplan.mapper.TaskStatusChangeMapper">
+
+    <resultMap id="BaseResultMap" type="com.lifeplan.entity.TaskStatusChange">
+        <id column="id" property="id"/>
+        <result column="task_id" property="taskId"/>
+        <result column="change_type" property="changeType"/>
+        <result column="feedback_content" property="feedbackContent"/>
+        <result column="duration" property="duration"/>
+        <result column="user_id" property="userId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, task_id, change_type, feedback_content, duration, user_id, created_at, updated_at
+    </sql>
+
+    <select id="selectByTaskId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM task_status_change
+        WHERE task_id = #{taskId}
+        ORDER BY created_at ASC
+    </select>
+
+</mapper>

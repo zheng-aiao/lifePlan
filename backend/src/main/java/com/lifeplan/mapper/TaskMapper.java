@@ -1,0 +1,21 @@
+package com.lifeplan.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lifeplan.entity.Task;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Mapper
+public interface TaskMapper extends BaseMapper<Task> {
+    
+    List<Task> selectByDate(@Param("date") LocalDate date, @Param("userId") Long userId);
+    
+    List<Task> selectByTypeAndStatus(@Param("taskType") Integer taskType, 
+                                     @Param("taskStatus") Integer taskStatus,
+                                     @Param("userId") Long userId);
+    
+    int updateTaskStatus(@Param("id") Long id, @Param("taskStatus") Integer taskStatus);
+}

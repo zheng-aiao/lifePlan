@@ -1,0 +1,35 @@
+package com.lifeplan.entity;
+
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+@Data
+@TableName("user")
+public class User implements Serializable {
+    
+    @TableId(type = IdType.AUTO)
+    private Long id;
+    
+    private String username;
+    
+    private String email;
+    
+    private String phone;
+    
+    private String passwordHash;
+    
+    private String nickname;
+    
+    private String avatarUrl;
+    
+    private Integer status;
+    
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createdAt;
+    
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updatedAt;
+}

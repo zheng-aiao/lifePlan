@@ -27,7 +27,7 @@ public class SubTaskController {
     }
     
     @DeleteMapping("/{id}")
-    public Result<Void> deleteSubTask(@PathVariable Long id) {
+    public Result<String> deleteSubTask(@PathVariable Long id) {
         subTaskService.deleteSubTask(id);
         return Result.success("删除成功");
     }

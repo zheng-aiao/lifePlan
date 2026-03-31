@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lifeplan.dto.TaskCreateDTO;
 import com.lifeplan.dto.TaskUpdateDTO;
 import com.lifeplan.entity.Task;
+import com.lifeplan.vo.TaskInfoVO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +20,8 @@ public interface TaskService extends IService<Task> {
     Task getTaskById(Long id);
     
     List<Task> getTasksByDate(LocalDate date, Long userId);
+    
+    List<TaskInfoVO> getTaskDetailsByDate(LocalDate date, Long userId);
     
     Task startTask(Long id, Long userId);
     

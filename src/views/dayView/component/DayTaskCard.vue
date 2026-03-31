@@ -141,10 +141,12 @@ import {
   List,
   Memo,
 } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 import DelayDialog from '../dialog/DelayDialog.vue';
 import AssetDialog from '../dialog/AssetDialog.vue';
 import StopDialog from '../dialog/StopDialog.vue';
 import AddTaskItemDialog from '../dialog/AddTaskItemDialog.vue';
+import bizService from '@/utils/bizService';
 
 const props = defineProps({
   task: {
@@ -186,6 +188,8 @@ const addTaskItemDialogVisible = ref(false);
 const isResizing = ref(false);
 const startY = ref(0);
 const startHeight = ref(0);
+
+// 注意：子任务和活动日志数据由父组件提供，组件内不再主动加载
 
 const currentHeight = computed(() => {
   // 基于任务内容动态计算高度（与父组件保持一致）
@@ -229,17 +233,36 @@ const hasContent = computed(() => {
   );
 });
 
-const toggleSubTask = (idx) => {
-  emit('toggleSubTask', idx);
+const toggleSubTask = async (idx) => {
+  try {
+    const subTask = props.task.subTasks[idx];
+    if (subTask.completed) {
+      await bizService.subTask.uncompleteSubTask(subTask.id);
+    } else {
+      await bizService.subTask.completeSubTask(subTask.id);
+    }
+    ElMessage.success('操作成功');
+    // 通知父组件刷新子任务数据
+    emit('toggleSubTask', idx);
+  } catch (error) {
+    console.error('切换子任务状态失败:', error);
+  }
 };
 
 const handleFeedback = () => {
   feedbackDialogVisible.value = true;
 };
 
-const handleFeedbackConfirm = (feedbackData) => {
-  emit('feedback', feedbackData);
-  feedbackDialogVisible.value = false;
+const handleFeedbackConfirm = async (feedbackData) => {
+  try {
+    await bizService.task.completeTask(props.task.id, feedbackData.feedback);
+    ElMessage.success('反馈提交成功');
+    feedbackDialogVisible.value = false;
+    // 通知父组件刷新数据
+    emit('feedback');
+  } catch (error) {
+    console.error('提交反馈失败:', error);
+  }
 };
 
 const handleFeedbackCancel = () => {
@@ -250,9 +273,16 @@ const handlePause = () => {
   stopDialogVisible.value = true;
 };
 
-const handleStopConfirm = (stopData) => {
-  emit('pause', stopData);
-  stopDialogVisible.value = false;
+const handleStopConfirm = async (stopData) => {
+  try {
+    await bizService.task.pauseTask(props.task.id, stopData.reason);
+    ElMessage.success('任务已暂停');
+    stopDialogVisible.value = false;
+    // 通知父组件刷新数据
+    emit('pause');
+  } catch (error) {
+    console.error('暂停任务失败:', error);
+  }
 };
 
 const handleStopCancel = () => {
@@ -263,9 +293,16 @@ const handleDelay = () => {
   delayDialogVisible.value = true;
 };
 
-const handleDelayConfirm = ({ timeRange, reason }) => {
-  emit('delay', timeRange, reason);
-  delayDialogVisible.value = false;
+const handleDelayConfirm = async ({ timeRange, reason }) => {
+  try {
+    await bizService.task.delayTask(props.task.id, reason);
+    ElMessage.success('任务已延时');
+    delayDialogVisible.value = false;
+    // 通知父组件刷新数据
+    emit('delay', timeRange, reason);
+  } catch (error) {
+    console.error('延时任务失败:', error);
+  }
 };
 
 const handleDelayCancel = () => {
@@ -330,9 +367,21 @@ const handleAddSubTask = () => {
   addTaskItemDialogVisible.value = true;
 };
 
-const handleAddTaskItemConfirm = (taskItemData) => {
-  emit('addSubTask', taskItemData);
-  addTaskItemDialogVisible.value = false;
+const handleAddTaskItemConfirm = async (taskItemData) => {
+  try {
+    const subTaskData = {
+      subTaskGroup: taskItemData.group || '默认',
+      title: taskItemData.text,
+      sortOrder: 0,
+    };
+    await bizService.subTask.createSubTask(subTaskData);
+    ElMessage.success('子任务添加成功');
+    addTaskItemDialogVisible.value = false;
+    // 重新加载子任务列表
+    await loadSubTasks();
+  } catch (error) {
+    console.error('添加子任务失败:', error);
+  }
 };
 
 const handleAddTaskItemCancel = () => {

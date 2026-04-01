@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lifeplan.common.BusinessException;
 import com.lifeplan.dto.TaskCreateDTO;
 import com.lifeplan.dto.TaskUpdateDTO;
+import com.lifeplan.entity.SubTask;
 import com.lifeplan.entity.Task;
 import com.lifeplan.entity.TaskStatusChange;
+import com.lifeplan.mapper.SubTaskMapper;
 import com.lifeplan.mapper.TaskMapper;
 import com.lifeplan.mapper.TaskStatusChangeMapper;
 import com.lifeplan.service.TaskService;
+import com.lifeplan.vo.TaskInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements TaskService {
@@ -27,6 +31,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
     
     @Autowired
     private TaskStatusChangeMapper taskStatusChangeMapper;
+    
+    @Autowired
+    private SubTaskMapper subTaskMapper;
     
     @Override
     @Transactional
@@ -90,6 +97,41 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
     @Override
     public List<Task> getTasksByDate(LocalDate date, Long userId) {
         return taskMapper.selectByDate(date, userId);
+    }
+    
+    @Override
+    public List<TaskInfoVO> getTaskDetailsByDate(LocalDate date, Long userId) {
+        // 查询当日所有任务
+        List<Task> tasks = taskMapper.selectByDate(date, userId);
+        
+        // 转换为 VO 并填充子任务和活动日志
+        return tasks.stream().map(task -> {
+            TaskInfoVO vo = new TaskInfoVO();
+            BeanUtil.copyProperties(task, vo);
+            
+            // 查询子任务列表
+            if (task.getSubTaskGroup() != null && !task.getSubTaskGroup().isEmpty()) {
+                List<SubTask> subTasks = subTaskMapper.selectBySubTaskGroup(task.getSubTaskGroup());
+                List<TaskInfoVO.SubTaskInfo> subTaskInfos = subTasks.stream().map(subTask -> {
+                    TaskInfoVO.SubTaskInfo subTaskInfo = new TaskInfoVO.SubTaskInfo();
+                    BeanUtil.copyProperties(subTask, subTaskInfo);
+                    subTaskInfo.setTaskId(task.getId());
+                    return subTaskInfo;
+                }).collect(Collectors.toList());
+                vo.setSubTasks(subTaskInfos);
+            }
+            
+            // 查询活动日志列表
+            List<TaskStatusChange> statusChanges = taskStatusChangeMapper.selectByTaskId(task.getId());
+            List<TaskInfoVO.ActivityLog> activityLogs = statusChanges.stream().map(change -> {
+                TaskInfoVO.ActivityLog activityLog = new TaskInfoVO.ActivityLog();
+                BeanUtil.copyProperties(change, activityLog);
+                return activityLog;
+            }).collect(Collectors.toList());
+            vo.setActivities(activityLogs);
+            
+            return vo;
+        }).collect(Collectors.toList());
     }
     
     @Override

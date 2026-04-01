@@ -5,6 +5,7 @@ import com.lifeplan.dto.TaskCreateDTO;
 import com.lifeplan.dto.TaskUpdateDTO;
 import com.lifeplan.entity.Task;
 import com.lifeplan.service.TaskService;
+import com.lifeplan.vo.TaskInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -44,6 +45,17 @@ public class TaskController {
         return Result.success(tasks);
     }
     
+    @GetMapping("/{date}/details")
+    public Result<List<TaskInfoVO>> getTaskDetailsByDate(
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @RequestParam(required = false) Integer taskType,
+            @RequestParam(required = false) Integer taskStatus,
+            @RequestParam(required = false) String category) {
+        Long userId = 1L;
+        List<TaskInfoVO> tasks = taskService.getTaskDetailsByDate(date, userId);
+        return Result.success(tasks);
+    }
+    
     @PutMapping("/{id}")
     public Result<Map<String, Object>> updateTask(@PathVariable Long id, @RequestBody TaskUpdateDTO dto) {
         Task task = taskService.updateTask(id, dto);
@@ -54,7 +66,7 @@ public class TaskController {
     }
     
     @DeleteMapping("/{id}")
-    public Result<Void> deleteTask(@PathVariable Long id) {
+    public Result<String> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
         return Result.success("删除成功");
     }

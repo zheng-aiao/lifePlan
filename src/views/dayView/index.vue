@@ -16,7 +16,7 @@
               <div class="greeting-text">又是元气满满的一天</div>
             </div>
 
-            <!-- 时间刻度 - 7-23点整点显示 -->
+            <!-- 时间刻度 - 7-23 点整点显示 -->
             <div class="time-scale">
               <!-- 整点刻度 -->
               <div
@@ -91,27 +91,22 @@ import AsideRight from '@/components/AsideRight.vue';
 import TaskCardList from '@/components/common/TaskCardList.vue';
 import DayTaskCard from './component/DayTaskCard.vue';
 import DayTaskHandle from './component/DayTaskHandle.vue';
-import {
-  yearlyTasks,
-  monthlyTasks,
-  temporaryTasks,
-  dailyTasks,
-  getDailyTasksByDate,
-} from '@/mock/day.js';
+import bizService from '@/utils/bizService';
+import { yearlyTasks, monthlyTasks, temporaryTasks } from '@/mock/day.js';
 
 // 常量定义
-const START_HOUR = 7; // 时间线从7点开始
-const END_HOUR = 23; // 时间线到23点结束
+const START_HOUR = 7; // 时间线从 7 点开始
+const END_HOUR = 23; // 时间线到 23 点结束
 const TASK_MIN_HEIGHT = 60; // 半小时任务的最小高度（像素）
-const HOUR_HEIGHT = TASK_MIN_HEIGHT * 2; // 1小时的高度（120px）
+const HOUR_HEIGHT = TASK_MIN_HEIGHT * 2; // 1 小时的高度（120px）
 
 const scrollbarRef = ref(null);
 const taskRefs = ref([]);
 const activeTaskIndex = ref(0);
 const scrollTop = ref(0);
 
-// 任务数据 - 从 mock 文件导入
-const tasks = ref(dailyTasks);
+// 任务数据 - 从后端加载
+const tasks = ref([]);
 
 // 视口高度（用于计算上下留白）
 const viewportHeight = ref(600);
@@ -121,14 +116,14 @@ const totalHeight = computed(() => {
   const contentHeight = (END_HOUR - START_HOUR) * HOUR_HEIGHT;
   const paddingHeight = topPadding.value + buttomPadding.value; // 顶部留白 + 底部留白
   const lastTaskOffset = getTaskOffset(tasks.value.length);
-  
+
   // 计算最后一个任务的实际高度（如果有任务）
   let lastTaskHeight = 0;
   if (tasks.value.length > 0) {
     const lastTask = tasks.value[tasks.value.length - 1];
     lastTaskHeight = getTaskActualHeight(lastTask, tasks.value.length - 1);
   }
-  
+
   // 确保总高度至少能容纳所有内容，包括最后一个任务的完整高度
   return Math.max(
     contentHeight + paddingHeight + lastTaskOffset,
@@ -136,12 +131,12 @@ const totalHeight = computed(() => {
   );
 });
 
-// 获取顶留白高度（各为视口1/3）
+// 获取顶留白高度（各为视口 1/3）
 const topPadding = computed(() => {
   return viewportHeight.value / 3;
 });
 
-// 获取底部留白高度（为视口高度的0.5倍，确保可以滚动到最后的任务）
+// 获取底部留白高度（为视口高度的 0.5 倍，确保可以滚动到最后的任务）
 const buttomPadding = computed(() => {
   return viewportHeight.value / 2;
 });
@@ -217,7 +212,7 @@ const calculateTaskContentHeight = (task) => {
   const SECTION_HEADER_HEIGHT = 36; // 区域头部高度
   const SUBTASK_ITEM_HEIGHT = 32; // 子任务项高度
   const ACTIVITY_ITEM_HEIGHT = 36; // 活动项高度
-  const SECTION_PADDING = 40; // 区域内边距总和（上下各16px + 底部24px）
+  const SECTION_PADDING = 40; // 区域内边距总和（上下各 16px + 底部 24px）
   const SECTION_GAP = 12; // 子任务/活动项之间的间距
   const EMPTY_LIST_HEIGHT = 48; // 空列表高度（包含内边距）
 
@@ -229,27 +224,27 @@ const calculateTaskContentHeight = (task) => {
   if (subTaskCount > 0 || activityCount > 0) {
     // 计算左侧子任务区域高度
     const leftSectionHeight =
-      SECTION_HEADER_HEIGHT + 
-      SECTION_PADDING + 
-      subTaskCount * SUBTASK_ITEM_HEIGHT + 
+      SECTION_HEADER_HEIGHT +
+      SECTION_PADDING +
+      subTaskCount * SUBTASK_ITEM_HEIGHT +
       (subTaskCount - 1) * SECTION_GAP;
-    
+
     // 计算右侧活动区域高度
     const rightSectionHeight =
-      SECTION_HEADER_HEIGHT + 
-      SECTION_PADDING + 
-      activityCount * ACTIVITY_ITEM_HEIGHT + 
+      SECTION_HEADER_HEIGHT +
+      SECTION_PADDING +
+      activityCount * ACTIVITY_ITEM_HEIGHT +
       (activityCount - 1) * SECTION_GAP;
 
     const contentHeight = Math.max(leftSectionHeight, rightSectionHeight);
     height += contentHeight;
   } else {
     // 当内容为空时，计算空内容区域的高度
-    const emptyContentHeight = 
+    const emptyContentHeight =
       SECTION_HEADER_HEIGHT + // 区域头部高度
       SECTION_PADDING + // 区域内边距
       EMPTY_LIST_HEIGHT; // 空列表高度
-    
+
     // 两个区域（左侧和右侧）
     const contentHeight = emptyContentHeight * 2;
     height += contentHeight;
@@ -345,44 +340,46 @@ const isTaskBoundary = (hour) => {
     const endParsed = parseTime(end);
 
     // 检查该整点是否是任务的开始或结束时间（整点）
-    return startParsed.hour === hour && startParsed.min === 0 || 
-           endParsed.hour === hour && endParsed.min === 0;
+    return (
+      (startParsed.hour === hour && startParsed.min === 0) ||
+      (endParsed.hour === hour && endParsed.min === 0)
+    );
   });
 };
 
 // 获取所有任务的边界时间（包括非整点）
 const taskBoundaryTicks = computed(() => {
   const ticks = [];
-  
+
   tasks.value.forEach((task, index) => {
     const [start, end] = task.timeRange.split('-');
     const startParsed = parseTime(start);
     const endParsed = parseTime(end);
-    
+
     // 计算开始时间位置
     const startPosition = getTaskStartPosition(task, index);
     // 计算结束时间位置
     const actualHeight = getTaskActualHeight(task, index);
     const endPosition = startPosition + actualHeight;
-    
+
     // 只添加非整点的边界时间
     if (startParsed.min !== 0) {
       ticks.push({
         position: startPosition,
         label: start,
-        type: 'start'
+        type: 'start',
       });
     }
-    
+
     if (endParsed.min !== 0) {
       ticks.push({
         position: endPosition,
         label: end,
-        type: 'end'
+        type: 'end',
       });
     }
   });
-  
+
   return ticks;
 });
 
@@ -433,22 +430,34 @@ const handleScroll = ({ scrollTop: st }) => {
   activeTaskIndex.value = closestIndex;
 };
 
+// 当前日期
+const currentDate = ref(new Date().toISOString().split('T')[0]);
+
+// 刷新任务数据
+const refreshTaskData = async () => {
+  await loadTaskDetails(currentDate.value);
+};
+
 // 延时处理
-const handleDelay = (taskIndex, newTimeRange, reason) => {
+const handleDelay = async (taskIndex, newTimeRange, reason) => {
   const task = tasks.value[taskIndex];
   task.delayedFrom = task.timeRange;
   task.timeRange = newTimeRange;
   if (reason) {
     task.delayReason = reason;
   }
+  // 刷新任务数据
+  await refreshTaskData();
 };
 
 // 子任务切换
-const toggleSubTask = (taskIndex, subTaskIndex) => {
+const toggleSubTask = async (taskIndex, subTaskIndex) => {
   const task = tasks.value[taskIndex];
   if (task.subTasks && task.subTasks[subTaskIndex]) {
     task.subTasks[subTaskIndex].completed = !task.subTasks[subTaskIndex].completed;
   }
+  // 刷新任务数据
+  await refreshTaskData();
 };
 
 // 反馈按钮
@@ -468,19 +477,141 @@ const handleResize = (taskIndex, newTimeRange, newHeight) => {
   console.log('任务调整大小:', task.title, newTimeRange);
 };
 
-const handleUpdateTasks = (newDate) => {
-  console.log('获取该日期的任务列表', newDate);
-  tasks.value = getDailyTasksByDate(newDate);
+// 格式化时间
+const formatTime = (dateTimeStr) => {
+  if (!dateTimeStr) return '';
+  const date = new Date(dateTimeStr);
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
 };
 
-// 初始化视口高度并滚动到7点位置
+// 加载任务详情列表（从后端获取完整数据）
+const loadTaskDetails = async (date) => {
+  try {
+    const response = await bizService.task.getTaskDetailsByDate(date);
+    if (response.data && response.data) {
+      tasks.value = response.data.map((task) => ({
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        category: task.category,
+        taskType: task.taskType,
+        taskStatus: task.taskStatus,
+        status: mapTaskStatus(task.taskStatus),
+        statusText: mapTaskStatusText(task.taskStatus),
+        timeRange: formatTimeRange(task.plannedStartTime, task.plannedEndTime),
+        actualDuration: formatDuration(task.actualDuration),
+        subTaskGroup: task.subTaskGroup,
+        borderColor: task.borderColor || 'rgba(74, 64, 224, 1)',
+        bgColor: task.bgColor || 'rgba(255, 255, 255, 1)',
+        opacity: task.opacity || 1,
+        // 子任务列表（后端已返回）
+        subTasks: task.subTasks
+          ? task.subTasks.map((subTask) => ({
+              id: subTask.id,
+              text: subTask.title,
+              completed: subTask.status === 1,
+              taskId: subTask.taskId,
+              subTaskGroup: subTask.subTaskGroup,
+              sortOrder: subTask.sortOrder,
+              createdAt: subTask.createdAt,
+              updatedAt: subTask.updatedAt,
+            }))
+          : [],
+        // 活动日志列表（后端已返回）
+        activities: task.activities
+          ? task.activities.map((activity) => {
+              const typeMap = {
+                1: { type: 'start', typeText: '开始任务' },
+                2: { type: 'pause', typeText: '暂停任务' },
+                3: { type: 'resume', typeText: '恢复任务' },
+                4: { type: 'complete', typeText: '完成任务' },
+                5: { type: 'abandon', typeText: '放弃任务' },
+                6: { type: 'delay', typeText: '延时任务' },
+              };
+              const typeInfo = typeMap[activity.changeType] || { type: 'info', typeText: '信息' };
+              return {
+                id: activity.id,
+                taskId: activity.taskId,
+                changeType: activity.changeType,
+                type: typeInfo.type,
+                typeText: typeInfo.typeText,
+                time: formatTime(activity.createdAt),
+                description: activity.feedbackContent || typeInfo.typeText,
+                userId: activity.userId,
+                createdAt: activity.createdAt,
+              };
+            })
+          : [],
+      }));
+    }
+  } catch (error) {
+    console.error('加载任务详情失败:', error);
+  }
+};
+
+// 映射任务状态
+const mapTaskStatus = (status) => {
+  const statusMap = {
+    0: 'pending',
+    1: 'in-progress',
+    2: 'paused',
+    3: 'completed',
+    4: 'abandoned',
+    5: 'delayed',
+  };
+  return statusMap[status] || 'pending';
+};
+
+// 映射任务状态文本
+const mapTaskStatusText = (status) => {
+  const statusTextMap = {
+    0: '待开始',
+    1: '进行中',
+    2: '已暂停',
+    3: '已完成',
+    4: '已放弃',
+    5: '已延迟',
+  };
+  return statusTextMap[status] || '待开始';
+};
+
+// 格式化时间范围
+const formatTimeRange = (startTime, endTime) => {
+  if (!startTime || !endTime) return '00:00 - 00:00';
+  const start = formatTime(startTime);
+  const end = formatTime(endTime);
+  return `${start} - ${end}`;
+};
+
+// 格式化持续时间
+const formatDuration = (minutes) => {
+  if (!minutes) return '0min';
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hours > 0) {
+    return `${hours}h ${mins}min`;
+  }
+  return `${mins}min`;
+};
+
+const handleUpdateTasks = (newDate) => {
+  console.log('获取该日期的任务详情', newDate);
+  currentDate.value = newDate;
+  loadTaskDetails(newDate);
+};
+
+// 初始化视口高度并滚动到 7 点位置
 onMounted(() => {
   nextTick(() => {
     if (scrollbarRef.value?.wrapRef) {
       viewportHeight.value = scrollbarRef.value.wrapRef.clientHeight;
-      // 滚动到7点位置（顶部留白处），再向上偏移10px
+      // 滚动到 7 点位置（顶部留白处），再向上偏移 10px
       scrollbarRef.value.wrapRef.scrollTop = topPadding.value - 10;
     }
+    // 加载任务详情（从后端获取完整数据）
+    loadTaskDetails(currentDate.value);
   });
 });
 </script>

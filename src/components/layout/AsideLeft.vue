@@ -30,75 +30,84 @@
         />
       </div>
     </div>
+
+    <NewTaskDialog v-model="showNewTaskDialog" @success="handleTaskCreated" />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import MenuSection from "@/components/MenuSection.vue";
-import IconButton from "@/components/IconButton.vue";
+import { ref } from 'vue';
+import MenuSection from '@/components/MenuSection.vue';
+import IconButton from '@/components/IconButton.vue';
+import NewTaskDialog from '@/components/layout/NewTaskDialog.vue';
 
-const emit = defineEmits(["viewChange", "categoryClick", "newTask"]);
+const emit = defineEmits(['viewChange', 'categoryClick', 'newTask']);
 
-const activeView = ref("1");
-const activeCategory = ref("");
+const activeView = ref('1');
+const activeCategory = ref('');
+const showNewTaskDialog = ref(false);
 
 const routeData = ref([
   {
     id: 1,
-    name: "今日视图",
-    icon: new URL("@/assets/images/Frame_1_11.png", import.meta.url).href,
+    name: '今日视图',
+    icon: new URL('@/assets/images/Frame_1_11.png', import.meta.url).href,
   },
   {
     id: 2,
-    name: "月度计划",
-    icon: new URL("@/assets/images/Frame_1_17.png", import.meta.url).href,
+    name: '月度计划',
+    icon: new URL('@/assets/images/Frame_1_17.png', import.meta.url).href,
   },
   {
     id: 3,
-    name: "年度回顾",
-    icon: new URL("@/assets/images/Frame_1_23.png", import.meta.url).href,
+    name: '年度回顾',
+    icon: new URL('@/assets/images/Frame_1_23.png', import.meta.url).href,
   },
 ]);
 
 const categories = ref([
   {
     id: 1,
-    name: "健身",
-    icon: new URL("@/assets/images/Frame_1_45.png", import.meta.url).href,
+    name: '健身',
+    icon: new URL('@/assets/images/Frame_1_45.png', import.meta.url).href,
   },
   {
     id: 2,
-    name: "学习",
-    icon: new URL("@/assets/images/Frame_1_39.png", import.meta.url).href,
+    name: '学习',
+    icon: new URL('@/assets/images/Frame_1_39.png', import.meta.url).href,
   },
   {
     id: 3,
-    name: "工作",
-    icon: new URL("@/assets/images/Frame_1_33.png", import.meta.url).href,
+    name: '工作',
+    icon: new URL('@/assets/images/Frame_1_33.png', import.meta.url).href,
   },
   {
     id: 4,
-    name: "写作",
-    icon: new URL("@/assets/images/Frame_1_51.png", import.meta.url).href,
+    name: '写作',
+    icon: new URL('@/assets/images/Frame_1_51.png', import.meta.url).href,
   },
 ]);
 
 const handleViewSelect = (key) => {
   activeView.value = key;
-  emit("viewChange", key);
+  emit('viewChange', key);
 };
 
 const handleCategorySelect = (key) => {
   activeCategory.value = key;
   const category = categories.value.find((cat) => cat.id === parseInt(key));
   if (category) {
-    emit("categoryClick", category);
+    emit('categoryClick', category);
   }
 };
 
 const handleNewTask = () => {
-  emit("newTask");
+  showNewTaskDialog.value = true;
+  emit('newTask');
+};
+
+const handleTaskCreated = (taskData) => {
+  console.log('任务创建成功:', taskData);
 };
 </script>
 

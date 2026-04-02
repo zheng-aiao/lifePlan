@@ -2,209 +2,163 @@
   <BaseDialog
     v-model="dialogVisible"
     title="新建任务"
-    width="900px"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    class="new-task-dialog"
+    size="large"
+    :show-cancel="true"
+    :show-confirm="true"
+    cancel-text="取消"
+    confirm-text="确认创建"
+    :confirm-icon="Check"
+    :confirm-loading="submitting"
+    @confirm="handleSubmit"
+    @cancel="handleCancel"
+    @close="handleClose"
   >
-    <div class="form-content">
-      <el-form
-        ref="formRef"
-        :model="formData"
-        :rules="formRules"
-        label-position="top"
-        class="task-form"
-      >
-        <div class="form-container">
-          <div class="form-row task-type-row">
-            <el-form-item label="任务类型" prop="taskType" class="form-item">
-              <div class="task-type-selector">
-                <div
-                  v-for="type in taskTypes"
-                  :key="type.value"
-                  :class="['type-option', { active: formData.taskType === type.value }]"
-                  @click="formData.taskType = type.value"
-                >
-                  <span class="type-icon">{{ type.icon }}</span>
-                  <span class="type-name">{{ type.label }}</span>
-                </div>
-              </div>
-            </el-form-item>
-          </div>
-
-          <div class="form-row">
-            <el-form-item label="任务标题" prop="title" class="form-item">
-              <el-input
-                v-model="formData.title"
-                placeholder="请输入任务标题"
-                maxlength="50"
-                show-word-limit
-                class="form-input"
-              />
-            </el-form-item>
-          </div>
-
-          <div class="form-row">
-            <el-form-item label="任务描述" prop="description" class="form-item">
-              <el-input
-                v-model="formData.description"
-                type="textarea"
-                placeholder="请输入任务描述（选填）"
-                maxlength="200"
-                show-word-limit
-                :rows="3"
-                class="form-textarea"
-              />
-            </el-form-item>
-          </div>
-
-          <div class="form-row">
-            <el-form-item label="标签" prop="tags" class="form-item">
-              <div class="tags-wrapper">
-                <div class="tags-container">
-                  <el-tag
-                    v-for="(tag, index) in formData.tags"
-                    :key="index"
-                    closable
-                    @close="removeTag(index)"
-                    class="tag-item"
-                  >
-                    {{ tag }}
-                  </el-tag>
-                  <el-input
-                    v-if="showTagInput"
-                    ref="tagInputRef"
-                    v-model="inputTag"
-                    size="small"
-                    class="tag-input"
-                    @keyup.enter="addTag"
-                    @blur="addTag"
-                  />
-                  <el-button
-                    v-else-if="formData.tags.length < 5"
-                    class="add-tag-btn"
-                    @click="showTagInput = true"
-                  >
-                    + 添加标签
-                  </el-button>
-                </div>
-                <span class="tags-hint">最多添加5个标签</span>
-              </div>
-            </el-form-item>
-          </div>
-
-          <div class="form-row priority-row">
-            <el-form-item label="优先级" prop="priority" class="form-item">
-              <div class="priority-selector">
-                <div
-                  v-for="item in priorities"
-                  :key="item.value"
-                  :class="[
-                    'priority-option',
-                    item.value,
-                    { active: formData.priority === item.value },
-                  ]"
-                  @click="formData.priority = item.value"
-                >
-                  <span class="priority-dot"></span>
-                  <span class="priority-label">{{ item.label }}</span>
-                </div>
-              </div>
-            </el-form-item>
-          </div>
-
-          <div class="form-row">
-            <el-form-item label="计划时间" prop="planTime" class="form-item plan-time-item">
-              <div class="plan-time-card">
-                <div class="plan-time-content">
-                  <template v-if="formData.taskType === 'year'">
-                    <el-date-picker
-                      v-model="formData.planTime.year"
-                      type="year"
-                      placeholder="选择年份"
-                      :disabled-date="yearDisabledDate"
-                      class="plan-time-picker"
-                    />
-                  </template>
-                  <template v-else-if="formData.taskType === 'month'">
-                    <el-date-picker
-                      v-model="formData.planTime.monthRange"
-                      type="monthrange"
-                      range-separator="至"
-                      start-placeholder="开始月份"
-                      end-placeholder="结束月份"
-                      :disabled-date="monthDisabledDate"
-                      class="plan-time-picker"
-                    />
-                  </template>
-                  <template v-else>
-                    <el-date-picker
-                      v-model="formData.planTime.dayRange"
-                      type="datetimerange"
-                      range-separator="至"
-                      start-placeholder="开始时间"
-                      end-placeholder="结束时间"
-                      :disabled-hours="dayDisabledHours"
-                      class="plan-time-picker"
-                    />
-                  </template>
-                </div>
-                <div class="plan-time-icon">
-                  <el-icon><Calendar /></el-icon>
-                </div>
-              </div>
-            </el-form-item>
-          </div>
-
-          <div class="form-row">
-            <el-form-item label="关联父级任务" prop="parentTaskId" class="form-item">
-              <el-select
-                v-model="formData.parentTaskId"
-                placeholder="未选择父级任务"
-                clearable
-                class="parent-task-select"
-              >
-                <el-option
-                  v-for="task in parentTaskList"
-                  :key="task.id"
-                  :label="task.title"
-                  :value="task.id"
-                >
-                  <div class="parent-task-option">
-                    <span class="task-type-icon">{{ getTaskTypeIcon(task.type) }}</span>
-                    <span class="task-title">{{ task.title }}</span>
-                    <el-tag :type="getTagType(task.type)" size="small" class="task-type-tag">
-                      {{ getTaskTypeName(task.type) }}
-                    </el-tag>
-                  </div>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </div>
-        </div>
-      </el-form>
-    </div>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="handleCancel" class="cancel-button">取消</el-button>
-        <el-button
-          type="primary"
-          @click="handleSubmit"
-          :loading="submitting"
-          class="confirm-button"
+    <template #headerExtra>
+      <div class="task-type-tabs">
+        <div
+          v-for="type in taskTypes"
+          :key="type.value"
+          :class="['type-tab', { active: formData.taskType === type.value }]"
+          @click="formData.taskType = type.value"
         >
-          确认创建
-        </el-button>
+          <span class="type-label">{{ type.label }}</span>
+        </div>
       </div>
     </template>
+
+    <div class="form-content">
+      <div class="form-item">
+        <div class="form-label">
+          <span>任务标题</span>
+          <span class="char-count">{{ formData.title.length }}/50</span>
+        </div>
+        <el-input
+          v-model="formData.title"
+          placeholder="给你的目标起个好名字..."
+          maxlength="50"
+          class="form-input"
+        />
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span>描述</span>
+          <span class="char-count">{{ formData.description.length }}/200</span>
+        </div>
+        <el-input
+          v-model="formData.description"
+          type="textarea"
+          placeholder="添加更多细节或步骤..."
+          maxlength="200"
+          :rows="3"
+          class="form-textarea"
+        />
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span>任务标签</span>
+        </div>
+        <TagSelect v-model="formData.tags" :task-type="formData.taskType" :max-tags="5" />
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span>优先级</span>
+        </div>
+        <el-radio-group v-model="formData.priority" class="priority-radio-group">
+          <el-radio v-for="item in priorities" :key="item.value" :value="item.value">
+            <span class="priority-label" :style="{ color: item.color }">{{ item.label }}</span>
+          </el-radio>
+        </el-radio-group>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span>计划时间</span>
+        </div>
+        <div class="plan-time-picker">
+          <div class="time-picker-left">
+            <el-icon class="calendar-icon"><Calendar /></el-icon>
+          </div>
+          <div class="time-picker-content">
+            <template v-if="formData.taskType === 1">
+              <el-date-picker
+                v-model="formData.planTime.year"
+                type="year"
+                placeholder="选择年份"
+                class="time-picker"
+                format="YYYY"
+                value-format="YYYY"
+              />
+            </template>
+            <template v-else-if="formData.taskType === 2">
+              <el-date-picker
+                v-model="formData.planTime.monthRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                class="time-picker"
+                format="YYYY/M/D"
+                value-format="YYYY-MM-DD"
+              />
+            </template>
+            <template v-else>
+              <el-time-picker
+                v-model="formData.planTime.dayRange"
+                is-range
+                range-separator="至"
+                start-placeholder="开始时间"
+                end-placeholder="结束时间"
+                class="time-picker"
+                format="HH:mm"
+                value-format="HH:mm"
+              />
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span>父任务</span>
+          <span class="optional-label">(可选)</span>
+        </div>
+        <div class="parent-task-selector">
+          <el-select
+            v-model="formData.parentId"
+            placeholder="选择父任务..."
+            clearable
+            class="parent-select"
+          >
+            <el-option
+              v-for="task in parentTaskList"
+              :key="task.id"
+              :label="task.title"
+              :value="task.id"
+            >
+              <div class="parent-option">
+                <span class="parent-title">{{ task.title }}</span>
+                <el-tag :type="getTaskTagType(task.taskType)" size="small">
+                  {{ getTaskTypeName(task.taskType) }}
+                </el-tag>
+              </div>
+            </el-option>
+          </el-select>
+          <el-icon class="dropdown-icon"><ArrowDown /></el-icon>
+        </div>
+      </div>
+    </div>
   </BaseDialog>
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, nextTick } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import { ElMessage } from 'element-plus';
-import { Calendar } from '@element-plus/icons-vue';
+import { Calendar, ArrowDown, Check } from '@element-plus/icons-vue';
 import BaseDialog from '@/components/BaseDialog.vue';
+import TagSelect from '@/components/common/TagSelect.vue';
 
 const props = defineProps({
   modelValue: {
@@ -220,129 +174,61 @@ const dialogVisible = computed({
   set: (value) => emit('update:modelValue', value),
 });
 
-const formRef = ref(null);
-const tagInputRef = ref(null);
 const submitting = ref(false);
-const showTagInput = ref(false);
-const inputTag = ref('');
 
 const formData = reactive({
-  taskType: 'day',
+  taskType: 3,
   title: '',
   description: '',
   tags: [],
-  priority: 'medium',
+  priority: 2,
   planTime: {
-    year: new Date().getFullYear().toString(),
-    monthRange: [],
-    dayRange: [],
+    year: null,
+    monthRange: null,
+    dayRange: null,
   },
-  parentTaskId: null,
+  parentId: null,
 });
 
-const formRules = computed(() => ({
-  title: [
-    { required: true, message: '任务标题不能为空', trigger: 'blur' },
-    { min: 1, max: 50, message: '任务标题不能超过 50 个字', trigger: 'blur' },
-  ],
-  description: [{ max: 200, message: '任务描述不能超过 200 个字', trigger: 'blur' }],
-  priority: [{ required: true, message: '请选择任务优先级', trigger: 'change' }],
-  planTime: [{ required: true, message: '请选择计划时间', trigger: 'change' }],
-}));
-
 const taskTypes = [
-  { value: 'year', label: '年任务', icon: '📅' },
-  { value: 'month', label: '月任务', icon: '📆' },
-  { value: 'day', label: '日任务', icon: '📋' },
+  { value: 1, label: '年任务' },
+  { value: 2, label: '月任务' },
+  { value: 3, label: '日任务' },
 ];
 
 const priorities = [
-  { value: 'high', label: '高' },
-  { value: 'medium', label: '中' },
-  { value: 'low', label: '低' },
+  { value: 3, label: '高', color: 'rgba(247, 75, 109, 1)' },
+  { value: 2, label: '中', color: 'rgba(248, 160, 16, 1)' },
+  { value: 1, label: '低', color: 'rgba(105, 246, 184, 1)' },
 ];
 
 const parentTaskList = ref([
-  { id: '1', title: '年度学习计划', type: 'year' },
-  { id: '2', title: '3 月阅读计划', type: 'month' },
-  { id: '3', title: '今天晨跑', type: 'day' },
+  { id: 1, title: '年度学习计划', taskType: 1 },
+  { id: 2, title: '3月阅读计划', taskType: 2 },
+  { id: 3, title: '今天晨跑', taskType: 3 },
 ]);
 
-const validateField = async (field) => {
-  try {
-    await formRef.value.validateField(field);
-  } catch (error) {
-    console.error('Validation error:', error);
-  }
-};
-
-const getTagType = (taskType) => {
+const getTaskTagType = (taskType) => {
   const typeMap = {
-    year: '',
-    month: 'success',
-    day: 'warning',
+    1: '',
+    2: 'success',
+    3: 'warning',
   };
   return typeMap[taskType] || '';
 };
 
-const addTag = () => {
-  if (inputTag.value.trim()) {
-    if (formData.tags.length >= 5) {
-      ElMessage.warning('最多只能添加 5 个标签');
-      return;
-    }
-    if (formData.tags.includes(inputTag.value.trim())) {
-      ElMessage.warning('标签不能重复');
-      return;
-    }
-    formData.tags.push(inputTag.value.trim());
-  }
-  inputTag.value = '';
-  showTagInput.value = false;
-};
-
-const removeTag = (index) => {
-  formData.tags.splice(index, 1);
-};
-
-const getTaskTypeIcon = (type) => {
-  const iconMap = {
-    year: '📅',
-    month: '📆',
-    day: '📋',
-  };
-  return iconMap[type] || '📋';
-};
-
-const getTaskTypeName = (type) => {
+const getTaskTypeName = (taskType) => {
   const nameMap = {
-    year: '年任务',
-    month: '月任务',
-    day: '日任务',
+    1: '年任务',
+    2: '月任务',
+    3: '日任务',
   };
-  return nameMap[type] || '日任务';
+  return nameMap[taskType] || '日任务';
 };
 
-const yearDisabledDate = (time) => {
-  const currentYear = new Date().getFullYear();
-  const selectedYear = time.getFullYear();
-  return selectedYear < currentYear - 10 || selectedYear > currentYear + 10;
-};
-
-const monthDisabledDate = (time) => {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  return time.getTime() < now.getTime();
-};
-
-const dayDisabledHours = () => {
-  const now = new Date();
-  const currentHour = now.getHours();
-  const disabledHours = [];
-  for (let i = 0; i < currentHour; i++) {
-    disabledHours.push(i);
-  }
-  return disabledHours;
+const handleClose = () => {
+  dialogVisible.value = false;
+  resetForm();
 };
 
 const handleCancel = () => {
@@ -351,492 +237,332 @@ const handleCancel = () => {
 };
 
 const resetForm = () => {
-  formData.taskType = 'day';
+  formData.taskType = 3;
   formData.title = '';
   formData.description = '';
   formData.tags = [];
-  formData.priority = 'medium';
+  formData.priority = 2;
   formData.planTime = {
-    year: new Date().getFullYear().toString(),
-    monthRange: [],
-    dayRange: [],
+    year: null,
+    monthRange: null,
+    dayRange: null,
   };
-  formData.parentTaskId = null;
-  if (formRef.value) {
-    formRef.value.clearValidate();
-  }
+  formData.parentId = null;
 };
 
 const handleSubmit = async () => {
-  if (!formRef.value) return;
+  if (!formData.title.trim()) {
+    ElMessage.warning('请输入任务标题');
+    return;
+  }
 
-  try {
-    await formRef.value.validate();
-    submitting.value = true;
+  submitting.value = true;
 
-    const submitData = {
-      taskType: formData.taskType,
-      title: formData.title,
-      description: formData.description,
-      tags: formData.tags,
-      priority: formData.priority,
-      planTime: getPlanTimeValue(),
-      parentTaskId: formData.parentTaskId,
-    };
+  const submitData = {
+    title: formData.title,
+    taskType: formData.taskType,
+    description: formData.description,
+    tags: formData.tags.map((tag) => tag.name),
+    taskPriority: formData.priority,
+    parentId: formData.parentId,
+  };
 
-    console.log('提交数据:', submitData);
+  if (formData.taskType === 1 && formData.planTime.year) {
+    submitData.plannedStartTime = `${formData.planTime.year}-01-01T00:00:00`;
+    submitData.plannedEndTime = `${formData.planTime.year}-12-31T23:59:59`;
+  } else if (formData.taskType === 2 && formData.planTime.monthRange) {
+    submitData.plannedStartTime = `${formData.planTime.monthRange[0]}T00:00:00`;
+    submitData.plannedEndTime = `${formData.planTime.monthRange[1]}T23:59:59`;
+  } else if (formData.taskType === 3 && formData.planTime.dayRange) {
+    const today = new Date().toISOString().split('T')[0];
+    submitData.plannedStartTime = `${today}T${formData.planTime.dayRange[0]}:00`;
+    submitData.plannedEndTime = `${today}T${formData.planTime.dayRange[1]}:00`;
+  }
 
-    setTimeout(() => {
-      ElMessage.success('任务创建成功');
-      emit('success', submitData);
-      dialogVisible.value = false;
-      resetForm();
-      submitting.value = false;
-    }, 1000);
-  } catch (error) {
-    console.error('表单验证失败:', error);
+  console.log('提交数据:', submitData);
+
+  setTimeout(() => {
+    ElMessage.success('任务创建成功');
+    emit('success', submitData);
+    dialogVisible.value = false;
+    resetForm();
     submitting.value = false;
-    if (error.fields) {
-      const firstField = Object.keys(error.fields)[0];
-      const el = document.querySelector(`[prop="${firstField}"]`);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-  }
-};
-
-const getPlanTimeValue = () => {
-  switch (formData.taskType) {
-    case 'year':
-      return {
-        year: formData.planTime.year,
-        monthRange: null,
-        dayRange: null,
-      };
-    case 'month':
-      return {
-        year: null,
-        monthRange: formData.planTime.monthRange,
-        dayRange: null,
-      };
-    case 'day':
-      return {
-        year: null,
-        monthRange: null,
-        dayRange: formData.planTime.dayRange,
-      };
-    default:
-      return null;
-  }
+  }, 1000);
 };
 
 watch(
   () => formData.taskType,
   () => {
-    if (formRef.value) {
-      formRef.value.clearValidate();
-    }
+    formData.planTime = {
+      year: null,
+      monthRange: null,
+      dayRange: null,
+    };
   }
 );
-
-watch(showTagInput, (val) => {
-  if (val) {
-    nextTick(() => {
-      tagInputRef.value?.focus();
-    });
-  }
-});
 </script>
 
 <style scoped lang="scss">
 @import '@/assets/styles/_mixins.scss';
 
-.new-task-dialog {
-  :deep(.el-dialog__body) {
-    padding: 0;
+.task-type-tabs {
+  display: flex;
+  gap: pxToRem(8);
+
+  .type-tab {
+    padding: pxToRem(8) pxToRem(16);
+    font-size: pxToRem(14);
+    font-weight: 500;
+    color: rgba(77, 93, 115, 1);
+    cursor: pointer;
+    border-radius: pxToRem(8);
+    background: rgba(234, 241, 255, 1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: rgba(74, 64, 224, 1);
+      background: rgba(220, 233, 255, 1);
+    }
+
+    &.active {
+      color: rgba(244, 241, 255, 1);
+      background: rgba(74, 64, 224, 1);
+    }
   }
 }
 
 .form-content {
-  width: 100%;
-  max-height: pxToRem(420px);
-  overflow-y: auto;
-  padding: pxToRem(32px);
-  box-sizing: border-box;
-}
-
-.task-form {
-  width: 100%;
-}
-
-.form-container {
   display: flex;
   flex-direction: column;
-  gap: pxToRem(24px);
+  gap: pxToRem(24);
+  padding: pxToRem(24);
 }
 
 .form-row {
-  width: 100%;
+  display: flex;
+  gap: pxToRem(24);
 }
 
 .form-item {
-  margin-bottom: 0;
-
-  :deep(.el-form-item__label) {
-    font-size: pxToRem(14px);
-    font-weight: 700;
-    color: #4d5d73;
-    line-height: pxToRem(20px);
-    letter-spacing: pxToRem(0.7px);
-    padding-bottom: pxToRem(12px);
-  }
-}
-
-.task-type-selector {
-  display: flex;
-  gap: pxToRem(16px);
-}
-
-.type-option {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  gap: pxToRem(12);
+}
+
+.form-item-half {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-label {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: pxToRem(16px);
-  background: #eaf1ff;
-  border-radius: pxToRem(8px);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  gap: pxToRem(8);
+  font-size: pxToRem(14);
+  font-weight: 700;
+  color: rgba(77, 93, 115, 1);
 
-  &:hover {
-    background: #dce4ff;
+  .char-count {
+    font-size: pxToRem(12);
+    font-weight: 400;
+    color: rgba(139, 154, 181, 1);
   }
 
-  &.active {
-    background: #eaf1ff;
-    border-color: #4a40e0;
-  }
-
-  .type-icon {
-    font-size: pxToRem(24px);
-    margin-bottom: pxToRem(8px);
-  }
-
-  .type-name {
-    font-size: pxToRem(14px);
-    font-weight: 500;
-    color: #4d5d73;
+  .optional-label {
+    font-size: pxToRem(12);
+    font-weight: 400;
+    color: rgba(139, 154, 181, 1);
   }
 }
 
-.form-input,
-.form-textarea {
-  :deep(.el-input__wrapper),
-  :deep(.el-textarea__inner) {
-    background: #eaf1ff;
-    border-radius: pxToRem(8px);
+.form-input {
+  :deep(.el-input__wrapper) {
+    background: rgba(234, 241, 255, 1);
+    border-radius: pxToRem(8);
     box-shadow: none;
     border: none;
-    padding: pxToRem(12px) pxToRem(16px);
-    min-height: pxToRem(44px);
+    padding: pxToRem(12) pxToRem(16);
 
-    &::placeholder {
-      color: #8b9ab5;
+    &.is-focus {
+      box-shadow: 0 0 0 1px rgba(74, 64, 224, 1);
     }
   }
 
   :deep(.el-input__inner) {
-    font-size: pxToRem(14px);
-    color: #4d5d73;
+    font-size: pxToRem(14);
+    color: rgba(77, 93, 115, 1);
+
+    &::placeholder {
+      color: rgba(139, 154, 181, 1);
+    }
   }
 }
 
 .form-textarea {
   :deep(.el-textarea__inner) {
-    min-height: pxToRem(88px) !important;
+    background: rgba(234, 241, 255, 1);
+    border-radius: pxToRem(8);
+    box-shadow: none;
+    border: none;
+    padding: pxToRem(12) pxToRem(16);
+    min-height: pxToRem(88) !important;
     resize: none;
-  }
-}
 
-.tags-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: pxToRem(8px);
-}
+    &:focus {
+      box-shadow: 0 0 0 1px rgba(74, 64, 224, 1);
+    }
 
-.tags-container {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: pxToRem(8px);
-  min-height: pxToRem(44px);
-  padding: pxToRem(10px) pxToRem(16px);
-  background: #eaf1ff;
-  border-radius: pxToRem(8px);
-}
-
-.tag-item {
-  background: #4a40e0;
-  color: #fff;
-  border: none;
-  border-radius: pxToRem(4px);
-  padding: pxToRem(4px) pxToRem(8px);
-  font-size: pxToRem(12px);
-
-  :deep(.el-tag__close) {
-    color: #fff;
-    background: transparent;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.2);
+    &::placeholder {
+      color: rgba(139, 154, 181, 1);
     }
   }
 }
 
-.tag-input {
-  width: pxToRem(100px);
-
-  :deep(.el-input__wrapper) {
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-  }
-}
-
-.add-tag-btn {
-  background: transparent;
-  border: 1px dashed #4a40e0;
-  color: #4a40e0;
-  font-size: pxToRem(12px);
-  padding: pxToRem(4px) pxToRem(12px);
-  border-radius: pxToRem(4px);
-
-  &:hover {
-    background: #eaf1ff;
-    border-color: #4a40e0;
-    color: #4a40e0;
-  }
-}
-
-.tags-hint {
-  font-size: pxToRem(12px);
-  color: #8b9ab5;
-}
-
-.priority-selector {
+.priority-radio-group {
   display: flex;
-  gap: pxToRem(16px);
-}
-
-.priority-option {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: pxToRem(8px);
-  padding: pxToRem(12px) pxToRem(16px);
-  background: #eaf1ff;
-  border-radius: pxToRem(8px);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-
-  &:hover {
-    background: #dce4ff;
-  }
-
-  &.active {
-    border-color: #4a40e0;
-  }
-
-  .priority-dot {
-    width: pxToRem(8px);
-    height: pxToRem(8px);
-    border-radius: 50%;
-  }
-
-  &.high .priority-dot {
-    background: #f56c6c;
-  }
-
-  &.medium .priority-dot {
-    background: #e6a23c;
-  }
-
-  &.low .priority-dot {
-    background: #67c23a;
-  }
+  gap: pxToRem(16);
+  width: 100%;
 
   .priority-label {
-    font-size: pxToRem(14px);
+    font-size: pxToRem(14);
     font-weight: 500;
-    color: #4d5d73;
   }
-}
-
-.plan-time-item {
-  :deep(.el-form-item__content) {
-    line-height: 1;
-  }
-}
-
-.plan-time-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: pxToRem(16px);
-  background: #eaf1ff;
-  border-radius: pxToRem(8px);
-  border-left: pxToRem(4px) solid #4a40e0;
-  box-sizing: border-box;
-}
-
-.plan-time-content {
-  flex: 1;
 }
 
 .plan-time-picker {
-  width: 100%;
+  display: flex;
+  align-items: center;
+  background: rgba(234, 241, 255, 1);
+  border-radius: pxToRem(8);
+  border-left: 4px solid rgba(74, 64, 224, 1);
+  overflow: hidden;
 
-  :deep(.el-input__wrapper) {
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
+  .time-picker-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: pxToRem(12) pxToRem(16);
+    background: rgba(74, 64, 224, 0.08);
 
-    &::after {
+    .calendar-icon {
+      font-size: pxToRem(18);
+      color: rgba(74, 64, 224, 1);
+    }
+  }
+
+  .time-picker-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: pxToRem(8) pxToRem(16);
+    min-height: pxToRem(44);
+
+    .time-picker {
+      width: 100%;
+
+      :deep(.el-input__wrapper) {
+        background: transparent;
+        box-shadow: none;
+        padding: 0;
+        border: none;
+      }
+
+      :deep(.el-input__inner) {
+        font-size: pxToRem(14);
+        font-weight: 500;
+        color: rgba(32, 48, 68, 1);
+
+        &::placeholder {
+          color: rgba(139, 154, 181, 1);
+        }
+      }
+
+      :deep(.el-range-input) {
+        font-size: pxToRem(14);
+        font-weight: 500;
+        color: rgba(32, 48, 68, 1);
+
+        &::placeholder {
+          color: rgba(139, 154, 181, 1);
+        }
+      }
+
+      :deep(.el-range-separator) {
+        font-size: pxToRem(14);
+        font-weight: 500;
+        color: rgba(77, 93, 115, 1);
+        padding: 0 pxToRem(8);
+      }
+
+      :deep(.el-input__prefix),
+      :deep(.el-input__suffix),
+      :deep(.el-input__suffix-inner) {
+        display: none;
+      }
+
+      :deep(.el-range__icon) {
+        display: none;
+      }
+
+      :deep(.el-input__icon) {
+        display: none;
+      }
+    }
+  }
+}
+
+.parent-task-selector {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .parent-select {
+    width: 100%;
+
+    :deep(.el-input__wrapper) {
+      background: rgba(234, 241, 255, 0.7);
+      border-radius: pxToRem(8);
+      box-shadow: none;
+      border: none;
+      padding: pxToRem(12) pxToRem(16);
+
+      &.is-focus {
+        box-shadow: 0 0 0 1px rgba(74, 64, 224, 1);
+      }
+    }
+
+    :deep(.el-input__inner) {
+      font-size: pxToRem(14);
+      color: rgba(77, 93, 115, 1);
+
+      &::placeholder {
+        color: rgba(139, 154, 181, 1);
+      }
+    }
+
+    :deep(.el-input__suffix) {
       display: none;
     }
   }
 
-  :deep(.el-range-input) {
-    font-size: pxToRem(14px);
-    color: #4d5d73;
-
-    &::placeholder {
-      color: #8b9ab5;
-    }
-  }
-
-  :deep(.el-range-separator) {
-    color: #4d5d73;
-  }
-
-  :deep(.el-input__prefix),
-  :deep(.el-input__suffix) {
-    display: none;
+  .dropdown-icon {
+    position: absolute;
+    right: pxToRem(16);
+    font-size: pxToRem(12);
+    color: rgba(77, 93, 115, 1);
+    pointer-events: none;
   }
 }
 
-.plan-time-icon {
+.parent-option {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: pxToRem(26px);
-  height: pxToRem(26px);
-  color: #4a40e0;
-  font-size: pxToRem(18px);
-  margin-left: pxToRem(16px);
-}
-
-.parent-task-select {
+  justify-content: space-between;
   width: 100%;
 
-  :deep(.el-input__wrapper) {
-    background: #eaf1ff;
-    border-radius: pxToRem(8px);
-    box-shadow: none;
-    border: none;
-    padding: pxToRem(12px) pxToRem(16px);
-    opacity: 0.7;
-
-    &::placeholder {
-      color: #4d5d73;
-    }
-  }
-
-  :deep(.el-input__inner) {
-    font-size: pxToRem(14px);
-    color: #4d5d73;
-  }
-}
-
-.parent-task-option {
-  display: flex;
-  align-items: center;
-  gap: pxToRem(12px);
-
-  .task-type-icon {
-    font-size: pxToRem(16px);
-  }
-
-  .task-title {
-    flex: 1;
-    font-size: pxToRem(14px);
-    color: #4d5d73;
-  }
-
-  .task-type-tag {
-    font-size: pxToRem(12px);
-  }
-}
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: pxToRem(12px);
-  padding: pxToRem(16px) pxToRem(32px);
-  border-top: 1px solid #e4e7ed;
-}
-
-.cancel-button {
-  padding: pxToRem(10px) pxToRem(20px);
-  font-size: pxToRem(14px);
-  border-radius: pxToRem(6px);
-
-  &:hover {
-    color: #4a40e0;
-    border-color: #4a40e0;
-  }
-}
-
-.confirm-button {
-  padding: pxToRem(10px) pxToRem(20px);
-  font-size: pxToRem(14px);
-  border-radius: pxToRem(6px);
-  background: #4a40e0;
-  border-color: #4a40e0;
-
-  &:hover {
-    background: #5b51e8;
-    border-color: #5b51e8;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .form-content {
-    padding: pxToRem(20px);
-  }
-
-  .task-type-selector {
-    flex-direction: column;
-  }
-
-  .priority-selector {
-    flex-direction: column;
-  }
-
-  .plan-time-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: pxToRem(12px);
-  }
-
-  .plan-time-icon {
-    margin-left: 0;
+  .parent-title {
+    font-size: pxToRem(14);
+    color: rgba(77, 93, 115, 1);
   }
 }
 </style>

@@ -47,8 +47,7 @@ const handleNext = () => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
-
+@use '@/assets/scss/rules' as *;
 .timeline-header {
   width: 100%;
   height: pxToRem(56);

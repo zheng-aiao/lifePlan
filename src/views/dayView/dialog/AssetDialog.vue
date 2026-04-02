@@ -185,7 +185,7 @@ watch(visible, (newValue) => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
 .feedback-content {
   display: flex;
   gap: pxToRem(24);

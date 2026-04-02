@@ -9,23 +9,23 @@
 const props = defineProps({
   type: {
     type: String,
-    default: "icon-text",
+    default: 'icon-text',
   },
   text: {
     type: String,
-    default: "",
+    default: '',
   },
   icon: {
     type: String,
-    default: "",
+    default: '',
   },
 });
 
-const emit = defineEmits(["click"]);
+const emit = defineEmits(['click']);
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
 
 .icon-button {
   width: 100%;
@@ -39,7 +39,7 @@ const emit = defineEmits(["click"]);
   background-color: rgba(74, 64, 224, 1);
   color: rgba(244, 241, 255, 1);
   font-size: pxToRem(12);
-  font-family: "Alibaba PuHuiTi-Regular";
+  font-family: 'Alibaba PuHuiTi-Regular';
   font-weight: 400;
   letter-spacing: pxToRem(1.2);
   line-height: pxToRem(16);

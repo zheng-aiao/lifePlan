@@ -16,9 +16,8 @@ import AsideLeft from '@/components/layout/AsideLeft.vue';
 window.app = getCurrentInstance();
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @use '@/assets/scss/index' as *;
-@import '@/assets/styles/_mixins.scss';
 
 .app-container {
   min-height: 100vh;

@@ -617,7 +617,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
 .view-container {
   display: flex;
   height: 100%;

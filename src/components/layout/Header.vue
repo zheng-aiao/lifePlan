@@ -7,11 +7,7 @@
     </div>
 
     <div class="search-container">
-      <el-input
-        v-model="searchQuery"
-        placeholder="搜索任务、笔记或档案..."
-        class="search-input"
-      >
+      <el-input v-model="searchQuery" placeholder="搜索任务、笔记或档案..." class="search-input">
         <template #prefix>
           <img src="@/assets/images/header/search.png" class="search-icon" />
         </template>
@@ -34,14 +30,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 
-const searchQuery = ref("");
+const searchQuery = ref('');
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
-
+@use '@/assets/scss/rules' as *;
 .header-wrapper {
   height: var(--header-height);
   width: 100vw;
@@ -160,12 +155,12 @@ const searchQuery = ref("");
 :deep(.el-input__placeholder) {
   color: #9eaec7 !important;
   font-size: pxToRem(16);
-  font-family: "Alibaba PuHuiTi-Regular";
+  font-family: 'Alibaba PuHuiTi-Regular';
 }
 
 :deep(.el-input__inner) {
   font-size: pxToRem(16);
-  font-family: "Alibaba PuHuiTi-Regular";
+  font-family: 'Alibaba PuHuiTi-Regular';
   color: #323031;
 }
 </style>

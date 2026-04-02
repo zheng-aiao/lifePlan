@@ -112,8 +112,7 @@ const handleTaskCreated = (taskData) => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
-
+@use '@/assets/scss/rules' as *;
 .aside-left-wrapper {
   width: var(--aside-left-width);
   height: 100%;

@@ -99,7 +99,7 @@ const emit = defineEmits(['update:modelValue', 'confirm', 'cancel', 'close']);
 
 // 不同尺寸的缩放比例（相对于large尺寸）
 const sizeScale = {
-  large: 1,      // large: 100%
+  large: 1, // large: 100%
   normal: 0.667, // normal: 66.7% (600/900, 400/600)
 };
 
@@ -111,8 +111,10 @@ const updateRootVars = () => {
   // 从-base变量读取原始px值（不会被修改），按比例缩放后设置到使用变量
   const widthPx = parseFloat(styles.getPropertyValue('--dialog-width-base').trim()) * scale;
   const heightPx = parseFloat(styles.getPropertyValue('--dialog-height-base').trim()) * scale;
-  const headerHeightPx = parseFloat(styles.getPropertyValue('--dialog-header-height-base').trim()) * scale;
-  const footerHeightPx = parseFloat(styles.getPropertyValue('--dialog-footer-height-base').trim()) * scale;
+  const headerHeightPx =
+    parseFloat(styles.getPropertyValue('--dialog-header-height-base').trim()) * scale;
+  const footerHeightPx =
+    parseFloat(styles.getPropertyValue('--dialog-footer-height-base').trim()) * scale;
 
   root.style.setProperty('--dialog-width', widthPx);
   root.style.setProperty('--dialog-height', heightPx);
@@ -150,7 +152,8 @@ const handleConfirm = () => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
+
 .dialog-container {
   display: flex;
   flex-direction: column;

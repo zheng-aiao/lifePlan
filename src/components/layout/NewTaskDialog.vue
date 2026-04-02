@@ -74,56 +74,19 @@
           </el-radio-group>
         </div>
       </div>
-
-      <div class="form-item">
-        <div class="form-label">
-          <span>计划时间</span>
+      <div class="form-row">
+        <div class="form-item form-item-half">
+          <div class="form-label">
+            <span>开始时间</span>
+          </div>
+          <BaseDateSelect v-model="formData.taskType" />
         </div>
-        <div class="plan-time-picker">
-          <div class="time-picker-left">
-            <el-icon class="calendar-icon"><Calendar /></el-icon>
+
+        <div class="form-item form-item-half">
+          <div class="form-label">
+            <span>结束时间</span>
           </div>
-          <div class="time-picker-content">
-            <template v-if="formData.taskType === 1">
-              <el-date-picker
-                v-model="formData.planTime.yearRange"
-                type="monthrange"
-                range-separator="至"
-                start-placeholder="开始月份"
-                end-placeholder="结束月份"
-                class="time-picker"
-                format="YYYY-MM"
-                value-format="YYYY-MM"
-              />
-            </template>
-            <template v-else-if="formData.taskType === 2">
-              <el-date-picker
-                v-model="formData.planTime.monthRange"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                class="time-picker"
-                format="YYYY/MM/DD"
-                value-format="YYYY-MM-DD"
-              />
-            </template>
-            <template v-else>
-              <div class="day-time-picker">
-                <span class="today-date">{{ todayDate }}</span>
-                <el-time-picker
-                  v-model="formData.planTime.dayRange"
-                  is-range
-                  range-separator="至"
-                  start-placeholder="开始时间"
-                  end-placeholder="结束时间"
-                  class="time-picker"
-                  format="HH:mm"
-                  value-format="HH:mm:ss"
-                />
-              </div>
-            </template>
-          </div>
+          <BaseDateSelect v-model="formData.taskType" />
         </div>
       </div>
 
@@ -166,6 +129,7 @@ import { ElMessage } from 'element-plus';
 import { Calendar, ArrowDown, Check } from '@element-plus/icons-vue';
 import BaseDialog from '@/components/BaseDialog.vue';
 import TagSelect from '@/components/common/TagSelect.vue';
+import BaseDateSelect from '@/components/common/BaseDateSelect.vue';
 
 const props = defineProps({
   modelValue: {
@@ -317,8 +281,7 @@ watch(
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
-
+@use '@/assets/scss/rules' as *;
 .task-type-tabs {
   display: flex;
   gap: pxToRem(8);

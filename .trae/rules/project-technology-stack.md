@@ -12,7 +12,5 @@
 
 ```Vue
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
 </style>
 ```
-

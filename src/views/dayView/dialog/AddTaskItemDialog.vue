@@ -16,11 +16,7 @@
 
       <div class="form-section">
         <div class="form-label">子任务名称</div>
-        <el-input
-          v-model="subTaskName"
-          placeholder="例如：设计首页高保真原型"
-          class="task-input"
-        />
+        <el-input v-model="subTaskName" placeholder="例如：设计首页高保真原型" class="task-input" />
       </div>
 
       <div class="form-section">
@@ -35,7 +31,9 @@
             @click="selectedPriority = option.value"
           >
             <div class="priority-dot" :style="{ backgroundColor: option.color }"></div>
-            <span class="priority-text" :style="{ color: option.textColor }">{{ option.label }}</span>
+            <span class="priority-text" :style="{ color: option.textColor }">{{
+              option.label
+            }}</span>
           </div>
         </div>
       </div>
@@ -129,8 +127,7 @@ const handleConfirm = () => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
-
+@use '@/assets/scss/rules' as *;
 .dialog-body {
   display: flex;
   flex-direction: column;

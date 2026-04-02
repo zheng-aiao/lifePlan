@@ -390,8 +390,7 @@ const handleAddTaskItemCancel = () => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
-
+@use '@/assets/scss/rules' as *;
 .day-task-card {
   width: 100%;
   height: 100%;

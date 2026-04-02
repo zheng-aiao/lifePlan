@@ -1,5 +1,6 @@
 @use 'sass:math';
 @use 'sass:map';
+@use 'sass:list';
 
 // [颜色] 白色;
 @mixin whiteColor($alpha, $style, $isImportant: false) {
@@ -107,7 +108,10 @@
 
 // [动画] 基础过度效果
 @mixin baseTransition($style: 'normal', $isImportant: false) {
-  $baseTransition: color var(--duration), background var(--duration), border-color var(--duration),
+  $baseTransition:
+    color var(--duration),
+    background var(--duration),
+    border-color var(--duration),
     box-shadow var(--duration);
 
   @if $isImportant==false {
@@ -116,7 +120,9 @@
     } @else if $style== 'none' {
       transition: none;
     } @else {
-      transition: $baseTransition, #{$style} var(--duration);
+      transition:
+        $baseTransition,
+        #{$style} var(--duration);
     }
   } @else {
     @if $style== 'normal' {
@@ -124,7 +130,9 @@
     } @else if $style== 'none' {
       transition: none !important;
     } @else {
-      transition: $baseTransition, #{$style} var(--duration) !important;
+      transition:
+        $baseTransition,
+        #{$style} var(--duration) !important;
     }
   }
 }
@@ -335,7 +343,8 @@
   --secondButtonActiveShadow: 0 0 0 #{pxToRem(3)} rgba(var(--color), 0.3);
 
   @include darkTheme {
-    --secondButtonActiveShadow: 0 #{pxToRem(-2)} #{pxToRem(4)} 0 rgba(var(--white), 0.8) inset,
+    --secondButtonActiveShadow:
+      0 #{pxToRem(-2)} #{pxToRem(4)} 0 rgba(var(--white), 0.8) inset,
       0 #{pxToRem(6)} #{pxToRem(8)} 0 rgb(var(--color)) inset,
       0 #{pxToRem(-4)} #{pxToRem(8)} 0 rgb(var(--color)) inset,
       0 #{pxToRem(-6)} #{pxToRem(12)} 0 rgb(var(--color)) inset;
@@ -347,34 +356,34 @@ $font-config: (
   1: (
     size: 18,
     line-height: 28,
-    weight: 700
+    weight: 700,
   ),
   2: (
     size: 16,
     line-height: 24,
-    weight: 700
+    weight: 700,
   ),
   3: (
     size: 16,
     line-height: 24,
-    weight: 400
+    weight: 400,
   ),
   4: (
     size: 14,
     line-height: 22,
-    weight: 700
+    weight: 700,
   ),
   5: (
     size: 14,
     line-height: 22,
-    weight: 400
-  )
+    weight: 400,
+  ),
 );
 // 字体样式
 @mixin fontStyle($level: 4, $onlyUseSize: false) {
   // 验证级别有效性
-  $valid-levels: map-keys($font-config);
-  @if not index($valid-levels, $level) {
+  $valid-levels: map.keys($font-config);
+  @if not list.index($valid-levels, $level) {
     @error "Invalid $level: #{$level}. Must be one of #{$valid-levels}";
   }
 
@@ -475,13 +484,15 @@ $font-config: (
     border: 1px solid colorValue(0.5);
     background: colorValue(0.1);
 
-    box-shadow: 0 pxToRem(4) pxToRem(6) 0 colorValue($color, 0.5) inset,
+    box-shadow:
+      0 pxToRem(4) pxToRem(6) 0 colorValue($color, 0.5) inset,
       0 pxToRem(-4) pxToRem(6) 0 colorValue($color, 1) inset;
   }
 
   &:active {
     border: pxToRem(1) solid colorValue(1);
-    box-shadow: 0 pxToRem(-2) pxToRem(4) 0 colorValue($color, 0.8) inset,
+    box-shadow:
+      0 pxToRem(-2) pxToRem(4) 0 colorValue($color, 0.8) inset,
       0 pxToRem(6) pxToRem(8) 0 colorValue($color, 1) inset,
       0 pxToRem(-4) pxToRem(8) 0 colorValue($color, 1) inset,
       0 pxToRem(-6) pxToRem(12) 0 colorValue($color, 1) inset;

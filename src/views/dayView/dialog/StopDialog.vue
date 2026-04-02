@@ -108,7 +108,7 @@ watch(visible, (newValue) => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
 .stop-content {
   display: flex;
   flex-direction: column;

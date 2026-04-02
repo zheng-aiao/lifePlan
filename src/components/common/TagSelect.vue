@@ -338,7 +338,7 @@ const vClickOutside = {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
 
 .tag-select {
   position: relative;

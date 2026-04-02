@@ -96,7 +96,8 @@ const getCategoryColor = (category) => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
+
 .task-card {
   width: 100%;
   height: pxToRem(310);

@@ -1,0 +1,134 @@
+@use '../rules' as *;
+
+@mixin inputInner {
+  @include baseTransition;
+  @include fontStyle(5);
+  height: inherit;
+  color: var(--textColor-1);
+  border-radius: 8px;
+  border: 1px solid rgba(var(--color), 0.2);
+  background: rgba(var(--color), 0.2);
+  line-height: initial;
+  padding-left: pxToRem(12);
+
+  &::placeholder {
+    color: var(--textColor-3);
+  }
+
+  @include hover {
+    @include fontStyle(5);
+    line-height: initial;
+    border-color: colorValue(color, 1);
+  }
+
+  @include focus {
+    border-color: colorValue(color, 1);
+    box-shadow:
+      0 pxToRem(-3) pxToRem(6) 0 colorValue(color) inset,
+      0 pxToRem(2) pxToRem(4) 0 colorValue(color) inset;
+  }
+
+  &[disabled='disabled'] {
+    border-radius: 8px;
+    border: 1px solid rgba(var(--color), 0.1) !important;
+    background-color: rgba(var(--color), 0.1) !important;
+    resize: unset;
+    color: var(--textColor-4);
+  }
+
+  &[type='number'] {
+    appearance: textfield;
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  @include lightTheme {
+    border: 1px solid colorValue(color, 0.3);
+    background: colorValue(color, 0.1);
+
+    @include hover {
+      border-color: colorValue(color, 1);
+    }
+
+    @include focus {
+      border-color: colorValue(color, 1);
+      box-shadow: 0 0 0 pxToRem(3) colorValue(color, 0.3);
+    }
+  }
+}
+
+@include mainContentSelector {
+  $inputInnerHeight: pxToRem(38);
+  .el-autocomplete {
+    width: 100%;
+  }
+  .el-input {
+    width: 100%;
+    height: $inputInnerHeight;
+
+    .el-input__inner {
+      @include inputInner;
+    }
+
+    &:has(.el-input__prefix) {
+      .el-input__inner {
+        padding-left: pxToRem(12 + 8 + 20);
+      }
+    }
+
+    .el-input__prefix {
+      @include flexCenter;
+      color: var(--textColor-2);
+      left: pxToRem(12);
+
+      .el-input__icon {
+        font-size: pxToRem(18);
+      }
+    }
+
+    .el-input__suffix {
+      .el-input__clear {
+        color: var(--textColor-2);
+      }
+      .el-icon-circle-close {
+        &::before {
+          content: '\e6db';
+          font-family: 'element-icons' !important;
+          font-size: pxToRem(18);
+        }
+      }
+      .el-input__count-inner {
+        background: transparent;
+      }
+      .el-icon-circle-check {
+        display: none;
+      }
+    }
+
+    &:has(.el-input__count-inner) {
+      .el-input__inner {
+        padding-right: 70px;
+      }
+    }
+  }
+
+  .el-textarea {
+    .el-textarea__inner {
+      @include inputInner;
+      height: pxToRem(80);
+      max-height: pxToRem(200);
+      resize: none;
+    }
+    .el-input__count {
+      background: transparent;
+      color: var(--textColor-1);
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+  }
+}

@@ -3,11 +3,7 @@
     <div class="section-label">
       <p class="label-text">{{ title }}</p>
     </div>
-    <el-menu
-      :default-active="activeIndex"
-      class="section-menu"
-      @select="handleSelect"
-    >
+    <el-menu :default-active="activeIndex" class="section-menu" @select="handleSelect">
       <el-menu-item
         v-for="item in data"
         :key="item.id"
@@ -29,7 +25,7 @@ const props = defineProps({
   },
   activeIndex: {
     type: String,
-    default: "",
+    default: '',
   },
   data: {
     type: Array,
@@ -37,15 +33,15 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["select"]);
+const emit = defineEmits(['select']);
 
 const handleSelect = (key) => {
-  emit("select", key);
+  emit('select', key);
 };
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
 
 .menu-section {
   width: 100%;
@@ -56,7 +52,7 @@ const handleSelect = (key) => {
 
     .label-text {
       font-size: pxToRem(10);
-      font-family: "Alibaba PuHuiTi-Regular";
+      font-family: 'Alibaba PuHuiTi-Regular';
       font-weight: 400;
       letter-spacing: pxToRem(0.5);
       line-height: pxToRem(15);
@@ -94,7 +90,7 @@ const handleSelect = (key) => {
 
       .menu-text {
         font-size: pxToRem(12);
-        font-family: "Alibaba PuHuiTi-Regular";
+        font-family: 'Alibaba PuHuiTi-Regular';
         font-weight: 400;
         letter-spacing: pxToRem(0.6);
         line-height: pxToRem(16);

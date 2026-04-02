@@ -320,7 +320,7 @@ const handleClose = () => {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
 .task-info {
   display: flex;
   align-items: center;

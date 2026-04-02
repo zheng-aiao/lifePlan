@@ -3,20 +3,12 @@
     <el-card class="recent-highlights-card">
       <template #header>
         <div class="highlights-header">
-          <p class="highlights-title">{{ "Recent Highlights" }}</p>
+          <p class="highlights-title">{{ 'Recent Highlights' }}</p>
         </div>
       </template>
       <div class="highlights-container">
-        <el-row
-          v-for="(item, index) in highlights"
-          :key="index"
-          class="highlight-item"
-        >
-          <el-col
-            :span="6"
-            class="highlight-overlay"
-            :style="{ backgroundColor: item.bgColor }"
-          >
+        <el-row v-for="(item, index) in highlights" :key="index" class="highlight-item">
+          <el-col :span="6" class="highlight-overlay" :style="{ backgroundColor: item.bgColor }">
             <img :src="item.icon" class="overlay-icon" />
           </el-col>
           <el-col :span="18" class="highlight-content">
@@ -34,26 +26,26 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 
 const highlights = ref([
   {
-    title: "这是你三月以来的最佳表现",
-    description: "完成 30 小时深度办公",
-    bgColor: "rgba(248, 160, 16, 0.3)",
-    icon: new URL("@/assets/images/Frame_1_195.png", import.meta.url).href,
+    title: '这是你三月以来的最佳表现',
+    description: '完成 30 小时深度办公',
+    bgColor: 'rgba(248, 160, 16, 0.3)',
+    icon: new URL('@/assets/images/Frame_1_195.png', import.meta.url).href,
   },
   {
     title: '解锁"三月之星"',
-    description: "完成 30 小时深度办公",
-    bgColor: "rgba(248, 160, 16, 0.3)",
-    icon: new URL("@/assets/images/Frame_1_195.png", import.meta.url).href,
+    description: '完成 30 小时深度办公',
+    bgColor: 'rgba(248, 160, 16, 0.3)',
+    icon: new URL('@/assets/images/Frame_1_195.png', import.meta.url).href,
   },
 ]);
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/_mixins.scss';
+@use '@/assets/scss/rules' as *;
 
 .aside-right-wrapper {
   width: var(--aside-right-width);
@@ -77,7 +69,7 @@ const highlights = ref([
 
       .highlights-title {
         font-size: pxToRem(14);
-        font-family: "Alibaba PuHuiTi-Regular";
+        font-family: 'Alibaba PuHuiTi-Regular';
         font-weight: 400;
         letter-spacing: pxToRem(1.4);
         line-height: pxToRem(20);
@@ -125,7 +117,7 @@ const highlights = ref([
 
             .title-text {
               font-size: pxToRem(12);
-              font-family: "Alibaba PuHuiTi-Regular";
+              font-family: 'Alibaba PuHuiTi-Regular';
               font-weight: 400;
               line-height: pxToRem(16);
               color: rgba(32, 48, 68, 1);
@@ -138,7 +130,7 @@ const highlights = ref([
 
             .desc-text {
               font-size: pxToRem(10);
-              font-family: "Alibaba PuHuiTi-Regular";
+              font-family: 'Alibaba PuHuiTi-Regular';
               font-weight: 400;
               line-height: pxToRem(15);
               color: rgba(77, 93, 115, 1);

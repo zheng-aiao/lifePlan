@@ -86,7 +86,7 @@
 <script setup>
 import { ref, reactive, watch } from 'vue';
 import { Check, Warning, Clock, Star, InfoFilled } from '@element-plus/icons-vue';
-import BaseDialog from '@/components/BaseDialog.vue';
+import BaseDialog from '@/components/common/BaseDialog.vue';
 
 const props = defineProps({
   modelValue: {

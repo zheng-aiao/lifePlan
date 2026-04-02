@@ -2,28 +2,28 @@
   <header class="header-wrapper">
     <div class="left-container">
       <div class="logo-container">
-        <img src="@/assets/images/header/title.png" class="logo-image" />
+        <img src="../assets/images/header/title.png" class="logo-image" />
       </div>
     </div>
 
     <div class="search-container">
       <el-input v-model="searchQuery" placeholder="搜索任务、笔记或档案..." class="search-input">
         <template #prefix>
-          <img src="@/assets/images/header/search.png" class="search-icon" />
+          <img src="../assets/images/header/search.png" class="search-icon" />
         </template>
       </el-input>
     </div>
 
     <div class="right-container">
       <el-button class="header-button" circle>
-        <img src="@/assets/images/header/setting.png" class="button-icon" />
+        <img src="../assets/images/header/setting.png" class="button-icon" />
       </el-button>
       <el-button class="header-button" circle>
-        <img src="@/assets/images/header/message.png" class="button-icon" />
+        <img src="../assets/images/header/message.png" class="button-icon" />
       </el-button>
       <div class="vertical-border"></div>
       <el-avatar class="user-avatar">
-        <img src="@/assets/images/header/avatar.png" class="avatar-image" />
+        <img src="../assets/images/header/avatar.png" class="avatar-image" />
       </el-avatar>
     </div>
   </header>

@@ -146,7 +146,7 @@
 <script setup>
 import { ref, reactive, watch, computed } from 'vue';
 import { Timer, Plus, ArrowRight, Document, InfoFilled } from '@element-plus/icons-vue';
-import BaseDialog from '@/components/BaseDialog.vue';
+import BaseDialog from '@/components/common/BaseDialog.vue';
 
 const props = defineProps({
   modelValue: {

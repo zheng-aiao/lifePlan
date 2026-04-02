@@ -42,7 +42,7 @@
 
 <script setup>
 import { ref, reactive, watch } from 'vue';
-import BaseDialog from '@/components/BaseDialog.vue';
+import BaseDialog from '@/components/common/BaseDialog.vue';
 
 const props = defineProps({
   modelValue: {

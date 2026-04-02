@@ -22,7 +22,7 @@
       </div>
 
       <div class="button-container">
-        <IconButton
+        <BaseButton
           type="icon-text"
           text="新建任务"
           icon="@/assets/images/Frame_1_59.png"
@@ -37,9 +37,9 @@
 
 <script setup>
 import { ref } from 'vue';
-import MenuSection from '@/components/MenuSection.vue';
-import IconButton from '@/components/IconButton.vue';
-import NewTaskDialog from '@/components/layout/NewTaskDialog.vue';
+import MenuSection from '@/layout/component/MenuSection.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import NewTaskDialog from '@/layout/dialog/NewTaskDialog.vue';
 
 const emit = defineEmits(['viewChange', 'categoryClick', 'newTask']);
 

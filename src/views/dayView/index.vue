@@ -2,9 +2,9 @@
   <div class="view-container">
     <div class="day-view">
       <div class="day-view-left">
-        <TaskCardList :title="'年度任务'" :type="'year'" :tasks="yearlyTasks" />
-        <TaskCardList :title="'月度任务'" :type="'month'" :tasks="monthlyTasks" />
-        <TaskCardList :title="'临时任务'" :type="'week'" :tasks="temporaryTasks" />
+        <DayTaskList :title="'年度任务'" :type="'year'" :tasks="yearlyTasks" />
+        <DayTaskList :title="'月度任务'" :type="'month'" :tasks="monthlyTasks" />
+        <DayTaskList :title="'临时任务'" :type="'week'" :tasks="temporaryTasks" />
       </div>
       <div class="day-view-main">
         <DayTaskHandle @updateTasks="handleUpdateTasks" />
@@ -87,8 +87,8 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue';
-import AsideRight from '@/components/AsideRight.vue';
-import TaskCardList from '@/components/common/TaskCardList.vue';
+import AsideRight from '@/views/dayView/component/AsideRight.vue';
+import DayTaskList from '@/views/dayView/component/DayTaskList.vue';
 import DayTaskCard from './component/DayTaskCard.vue';
 import DayTaskHandle from './component/DayTaskHandle.vue';
 import bizService from '@/utils/bizService';

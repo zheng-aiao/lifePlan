@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <Header />
+    <HeaderLayout />
     <div class="content-container">
-      <AsideLeft />
+      <LeftLayout />
       <router-view></router-view>
     </div>
   </div>
@@ -10,8 +10,8 @@
 
 <script setup>
 import { getCurrentInstance } from 'vue';
-import Header from './components/layout/Header.vue';
-import AsideLeft from '@/components/layout/AsideLeft.vue';
+import HeaderLayout from './layout/HeaderLayout.vue';
+import LeftLayout from '@/layout/LeftLayout.vue';
 
 window.app = getCurrentInstance();
 </script>

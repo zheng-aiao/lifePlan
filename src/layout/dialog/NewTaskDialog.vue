@@ -79,14 +79,14 @@
           <div class="form-label">
             <span>开始时间</span>
           </div>
-          <BaseDateSelect v-model="formData.taskType" />
+          <BaseDate v-model="formData.taskType" />
         </div>
 
         <div class="form-item form-item-half">
           <div class="form-label">
             <span>结束时间</span>
           </div>
-          <BaseDateSelect v-model="formData.taskType" />
+          <BaseDate v-model="formData.taskType" />
         </div>
       </div>
 
@@ -127,9 +127,9 @@
 import { ref, reactive, computed, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Calendar, ArrowDown, Check } from '@element-plus/icons-vue';
-import BaseDialog from '@/components/BaseDialog.vue';
-import TagSelect from '@/components/common/TagSelect.vue';
-import BaseDateSelect from '@/components/common/BaseDateSelect.vue';
+import BaseDialog from '@/components/common/BaseDialog.vue';
+import TagSelect from '@/layout/component/TagSelect.vue';
+import BaseDate from '@/components/common/BaseDate.vue';
 
 const props = defineProps({
   modelValue: {

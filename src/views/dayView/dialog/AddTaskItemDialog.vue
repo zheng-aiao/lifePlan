@@ -44,7 +44,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { ArrowRight } from '@element-plus/icons-vue';
-import BaseDialog from '@/components/BaseDialog.vue';
+import BaseDialog from '@/components/common/BaseDialog.vue';
 
 const props = defineProps({
   modelValue: {

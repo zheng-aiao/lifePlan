@@ -63,20 +63,11 @@
           </el-radio-group>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-item form-item-half">
-          <div class="form-label">
-            <span>开始时间</span>
-          </div>
-          <BaseDate v-model="formData.taskType" />
+      <div class="form-item">
+        <div class="form-label">
+          <span>计划时间</span>
         </div>
-
-        <div class="form-item form-item-half">
-          <div class="form-label">
-            <span>结束时间</span>
-          </div>
-          <BaseDate v-model="formData.taskType" />
-        </div>
+        <BaseDate v-model="formData.planTime" :task-type="formData.taskType" />
       </div>
 
       <div class="form-item">
@@ -126,11 +117,7 @@ const formData = reactive({
   description: '',
   tags: [],
   priority: 2,
-  planTime: {
-    yearRange: null,
-    monthRange: null,
-    dayRange: null,
-  },
+  planTime: null,
   parentId: null,
 });
 
@@ -176,11 +163,7 @@ const resetForm = () => {
   formData.description = '';
   formData.tags = [];
   formData.priority = 2;
-  formData.planTime = {
-    yearRange: null,
-    monthRange: null,
-    dayRange: null,
-  };
+  formData.planTime = null;
   formData.parentId = null;
 };
 
@@ -199,18 +182,9 @@ const handleSubmit = async () => {
     tags: formData.tags.map((tag) => tag.name),
     taskPriority: formData.priority,
     parentId: formData.parentId,
+    plannedStartTime: formData.planTime ? formData.planTime[0] : null,
+    plannedEndTime: formData.planTime ? formData.planTime[1] : null,
   };
-
-  if (formData.taskType === 1 && formData.planTime.yearRange) {
-    submitData.plannedStartTime = `${formData.planTime.yearRange[0]}-01T00:00:00`;
-    submitData.plannedEndTime = `${formData.planTime.yearRange[1].split('-')[0]}-12-31T23:59:59`;
-  } else if (formData.taskType === 2 && formData.planTime.monthRange) {
-    submitData.plannedStartTime = `${formData.planTime.monthRange[0]}T00:00:00`;
-    submitData.plannedEndTime = `${formData.planTime.monthRange[1]}T23:59:59`;
-  } else if (formData.taskType === 3 && formData.planTime.dayRange) {
-    submitData.plannedStartTime = formData.planTime.dayRange[0];
-    submitData.plannedEndTime = formData.planTime.dayRange[1];
-  }
 
   console.log('提交数据:', submitData);
 
@@ -226,11 +200,7 @@ const handleSubmit = async () => {
 watch(
   () => formData.taskType,
   () => {
-    formData.planTime = {
-      yearRange: null,
-      monthRange: null,
-      dayRange: null,
-    };
+    formData.planTime = null;
   }
 );
 </script>

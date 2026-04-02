@@ -220,9 +220,13 @@ const handleConfirm = () => {
 }
 
 .dialog-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: pxToRem(20);
   background-color: #fff;
   position: relative;
-  flex: 1;
+  padding: 0 pxToRem(24);
   overflow: auto;
 }
 

@@ -13,18 +13,7 @@
     @cancel="handleCancel"
     @close="handleClose"
   >
-    <template #headerExtra>
-      <div class="task-type-tabs">
-        <div
-          v-for="type in taskTypes"
-          :key="type.value"
-          :class="['type-tab', { active: formData.taskType === type.value }]"
-          @click="formData.taskType = type.value"
-        >
-          <span class="type-label">{{ type.label }}</span>
-        </div>
-      </div>
-    </template>
+    <BaseTab v-model="formData.taskType" :options="taskTypes" />
 
     <div class="form-content">
       <div class="form-item">
@@ -128,6 +117,7 @@ import { ref, reactive, computed, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Calendar, ArrowDown, Check } from '@element-plus/icons-vue';
 import BaseDialog from '@/components/common/BaseDialog.vue';
+import BaseTab from '@/components/common/BaseTab.vue';
 import TagSelect from '@/layout/component/TagSelect.vue';
 import BaseDate from '@/components/common/BaseDate.vue';
 
@@ -282,37 +272,11 @@ watch(
 
 <style scoped lang="scss">
 @use '@/assets/scss/rules' as *;
-.task-type-tabs {
-  display: flex;
-  gap: pxToRem(8);
-
-  .type-tab {
-    padding: pxToRem(8) pxToRem(16);
-    font-size: pxToRem(14);
-    font-weight: 500;
-    color: rgba(77, 93, 115, 1);
-    cursor: pointer;
-    border-radius: pxToRem(8);
-    background: rgba(234, 241, 255, 1);
-    transition: all 0.3s ease;
-
-    &:hover {
-      color: rgba(74, 64, 224, 1);
-      background: rgba(220, 233, 255, 1);
-    }
-
-    &.active {
-      color: rgba(244, 241, 255, 1);
-      background: rgba(74, 64, 224, 1);
-    }
-  }
-}
 
 .form-content {
   display: flex;
   flex-direction: column;
   gap: pxToRem(24);
-  padding: pxToRem(24);
 }
 
 .form-row {

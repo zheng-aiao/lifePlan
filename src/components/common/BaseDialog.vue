@@ -223,7 +223,6 @@ const handleConfirm = () => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: pxToRem(20);
   background-color: #fff;
   position: relative;
   padding: 0 pxToRem(24);

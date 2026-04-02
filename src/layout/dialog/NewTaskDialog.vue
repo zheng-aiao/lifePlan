@@ -84,29 +84,11 @@
           <span>父任务</span>
           <span class="optional-label">(可选)</span>
         </div>
-        <div class="parent-task-selector">
-          <el-select
-            v-model="formData.parentId"
-            placeholder="选择父任务..."
-            clearable
-            class="parent-select"
-          >
-            <el-option
-              v-for="task in parentTaskList"
-              :key="task.id"
-              :label="task.title"
-              :value="task.id"
-            >
-              <div class="parent-option">
-                <span class="parent-title">{{ task.title }}</span>
-                <el-tag :type="getTaskTagType(task.taskType)" size="small">
-                  {{ getTaskTypeName(task.taskType) }}
-                </el-tag>
-              </div>
-            </el-option>
-          </el-select>
-          <el-icon class="dropdown-icon"><ArrowDown /></el-icon>
-        </div>
+        <BaseDropdown
+          v-model="formData.parentId"
+          :options="parentTaskList"
+          placeholder="选择父任务..."
+        />
       </div>
     </div>
   </BaseDialog>
@@ -115,11 +97,12 @@
 <script setup>
 import { ref, reactive, computed, watch } from 'vue';
 import { ElMessage } from 'element-plus';
-import { Calendar, ArrowDown, Check } from '@element-plus/icons-vue';
+import { Calendar, Check } from '@element-plus/icons-vue';
 import BaseDialog from '@/components/common/BaseDialog.vue';
 import BaseTab from '@/components/common/BaseTab.vue';
 import TagSelect from '@/layout/component/TagSelect.vue';
 import BaseDate from '@/components/common/BaseDate.vue';
+import BaseDropdown from '@/components/common/BaseDropdown.vue';
 
 const props = defineProps({
   modelValue: {
@@ -176,24 +159,6 @@ const parentTaskList = ref([
   { id: 2, title: '3月阅读计划', taskType: 2 },
   { id: 3, title: '今天晨跑', taskType: 3 },
 ]);
-
-const getTaskTagType = (taskType) => {
-  const typeMap = {
-    1: '',
-    2: 'success',
-    3: 'warning',
-  };
-  return typeMap[taskType] || '';
-};
-
-const getTaskTypeName = (taskType) => {
-  const nameMap = {
-    1: '年任务',
-    2: '月任务',
-    3: '日任务',
-  };
-  return nameMap[taskType] || '日任务';
-};
 
 const handleClose = () => {
   dialogVisible.value = false;
@@ -277,6 +242,7 @@ watch(
   display: flex;
   flex-direction: column;
   gap: pxToRem(24);
+  padding: pxToRem(24) 0;
 }
 
 .form-row {
@@ -516,61 +482,6 @@ watch(
     :deep(.el-input__icon) {
       display: none;
     }
-  }
-}
-
-.parent-task-selector {
-  position: relative;
-  display: flex;
-  align-items: center;
-
-  .parent-select {
-    width: 100%;
-
-    :deep(.el-input__wrapper) {
-      background: rgba(234, 241, 255, 0.7);
-      border-radius: pxToRem(8);
-      box-shadow: none;
-      border: none;
-      padding: pxToRem(12) pxToRem(16);
-
-      &.is-focus {
-        box-shadow: 0 0 0 1px rgba(74, 64, 224, 1);
-      }
-    }
-
-    :deep(.el-input__inner) {
-      font-size: pxToRem(14);
-      color: rgba(77, 93, 115, 1);
-
-      &::placeholder {
-        color: rgba(139, 154, 181, 1);
-      }
-    }
-
-    :deep(.el-input__suffix) {
-      display: none;
-    }
-  }
-
-  .dropdown-icon {
-    position: absolute;
-    right: pxToRem(16);
-    font-size: pxToRem(12);
-    color: rgba(77, 93, 115, 1);
-    pointer-events: none;
-  }
-}
-
-.parent-option {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-
-  .parent-title {
-    font-size: pxToRem(14);
-    color: rgba(77, 93, 115, 1);
   }
 }
 </style>

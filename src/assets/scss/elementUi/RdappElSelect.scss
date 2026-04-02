@@ -1,0 +1,174 @@
+@use '../rules' as *;
+
+.el-select {
+  width: 100%;
+  height: 38px;
+  color: var(--textColor-1);
+
+  &:hover {
+    .el-input__inner {
+      border-color: rgba(var(--color), 1);
+    }
+  }
+
+  .el-input {
+    height: inherit;
+    margin: 0;
+    border-radius: 8px;
+
+    .el-input__suffix .el-input__suffix-inner .el-input__icon {
+      &::before {
+        color: var(--textColor-2);
+        font-size: pxToRem(18);
+      }
+    }
+
+    &.is-focus {
+      .el-input__inner {
+        @include secondButtonActive;
+        border: 2px solid rgb(var(--color));
+        background: rgba(var(--color), 0.3);
+
+        @include lightTheme {
+          background-color: transparent;
+        }
+      }
+    }
+
+    &.is-disabled {
+      .el-input__inner {
+        background-color: rgba(var(--color), 0.1);
+        border-color: rgba(var(--color), 0.1);
+        color: var(--textColor-4);
+
+        .el-input__suffix .el-input__suffix-inner .el-input__icon {
+          color: var(--textColor-4);
+        }
+
+        &:hover {
+          border-color: colorValue(color, 1);
+        }
+      }
+    }
+  }
+
+  .el-input__inner {
+    height: inherit !important;
+    color: var(--textColor-1);
+    border-radius: 8px;
+    background-color: rgba(var(--color), 0.2);
+    border: 1px solid rgba(var(--color), 0.2);
+
+    &[disabled] {
+      opacity: 1 !important;
+    }
+  }
+
+  // 多选
+  .el-select__tags {
+    height: 100%;
+    overflow: auto;
+
+    .el-tag {
+      height: 28px;
+      max-width: 125px;
+      line-height: 28px;
+      padding: 0 8px;
+      border-radius: 26px;
+      color: rgb(var(--color));
+      background: rgba(var(--color), 0.3);
+
+      .el-tag__close {
+        color: var(--textColor-1);
+        background-color: colorValue(color, 1);
+        line-height: 24px;
+        height: 22px;
+        width: 22px;
+      }
+    }
+  }
+}
+
+.el-select-dropdown.el-popper {
+  @include dropdownStyle;
+  display: flex;
+  padding: 12px 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  border-radius: pxToRem(12);
+
+  .el-scrollbar {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+
+    .el-select-dropdown__wrap {
+      max-height: pxToRem(300);
+      margin: 0 !important;
+
+      .el-scrollbar__view {
+        width: 100%;
+
+        $itemHeight: pxToRem(40);
+        .el-select-dropdown__item {
+          @include wh(100%, $itemHeight);
+          @include fontStyle(5);
+          @include baseTransition;
+          line-height: $itemHeight;
+          color: var(--textColor-1);
+          padding: 0 pxToRem(10);
+          border-radius: pxToRem(8);
+          background: none;
+          border: pxToRem(2) solid transparent;
+
+          &.selected {
+            @include secondButtonActive;
+            border-color: colorValue(color, 1);
+            background: colorValue(color, 0.3);
+          }
+          @include hover {
+            border-color: colorValue(color, 0.2);
+            background: colorValue(color, 0.3);
+          }
+          &:active {
+            @include secondButtonActive;
+            border-color: colorValue(color, 1);
+            background: colorValue(color, 0.3);
+          }
+          &::after {
+            @include fontStyle(3);
+            right: pxToRem(30);
+            content: '';
+          }
+          &.is-disabled {
+            color: var(--textColor-4);
+            border: none;
+            background: none;
+          }
+
+          @include lightTheme {
+            &.selected {
+              color: colorValue(color, 1);
+              border-color: transparent;
+              background: colorValue(color, 0.15);
+              box-shadow: none;
+            }
+            @include hover {
+              border-color: transparent;
+              background: colorValue(color, 0.15);
+              box-shadow: none;
+            }
+          }
+
+          & + .el-select-dropdown__item {
+            margin-top: 4px;
+          }
+        }
+      }
+    }
+    .el-scrollbar__bar {
+      display: none !important;
+    }
+  }
+}

@@ -31,18 +31,25 @@ const headerText = computed(() => {
   return `${year}年${month}月${day}日 · 星期${weekday} · 今日重点`;
 });
 
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const handlePrev = () => {
   const newDate = new Date(currentDate.value);
   newDate.setDate(newDate.getDate() - 1);
   currentDate.value = newDate;
-  emit('updateTasks', newDate);
+  emit('updateTasks', formatDate(newDate));
 };
 
 const handleNext = () => {
   const newDate = new Date(currentDate.value);
   newDate.setDate(newDate.getDate() + 1);
   currentDate.value = newDate;
-  emit('updateTasks', newDate);
+  emit('updateTasks', formatDate(newDate));
 };
 </script>
 

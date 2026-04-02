@@ -85,6 +85,6 @@ CREATE TABLE IF NOT EXISTS task_status_change (
     INDEX idx_user (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务状态变更表';
 
--- 插入默认用户
-INSERT INTO user (username, password_hash, nickname, status) VALUES
+-- 插入默认用户（如果不存在）
+INSERT IGNORE INTO user (username, password_hash, nickname, status) VALUES
 ('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '管理员', 1);

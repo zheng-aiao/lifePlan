@@ -1,10 +1,10 @@
 spring:
   application:
     name: life-plan-backend
-  
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/life_plan?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/mysql?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: Nucleus!
     hikari:
@@ -14,6 +14,12 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       connection-test-query: SELECT 1
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/init.sql
+      continue-on-error: true
 
   jackson:
     time-zone: GMT+8
@@ -39,4 +45,4 @@ logging:
     com.lifeplan.mapper: debug
     org.springframework.web: info
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n"
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'

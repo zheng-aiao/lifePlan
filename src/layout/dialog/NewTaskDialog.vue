@@ -94,6 +94,7 @@ import BaseTab from '@/components/common/BaseTab.vue';
 import TagSelect from '@/layout/component/TagSelect.vue';
 import BaseDate from '@/components/common/BaseDate.vue';
 import BaseDropdown from '@/components/common/BaseDropdown.vue';
+import bizService from '@/utils/bizService';
 
 const props = defineProps({
   modelValue: {
@@ -175,26 +176,51 @@ const handleSubmit = async () => {
 
   submitting.value = true;
 
+  let plannedStartTime = null;
+  let plannedEndTime = null;
+
+  if (formData.planTime && formData.planTime.length === 2) {
+    const [start, end] = formData.planTime;
+    if (formData.taskType === 1) {
+      plannedStartTime = `${start}-01T00:00:00`;
+      const [year, month] = end.split('-');
+      const lastDay = new Date(parseInt(year), parseInt(month), 0).getDate();
+      plannedEndTime = `${end}-${lastDay}T23:59:59`;
+    } else if (formData.taskType === 2) {
+      plannedStartTime = `${start}T00:00:00`;
+      plannedEndTime = `${end}T23:59:59`;
+    } else if (formData.taskType === 3) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      plannedStartTime = `${year}-${month}-${day}T${start}:00`;
+      plannedEndTime = `${year}-${month}-${day}T${end}:00`;
+    }
+  }
+
   const submitData = {
     title: formData.title,
     taskType: formData.taskType,
     description: formData.description,
-    tags: formData.tags.map((tag) => tag.name),
+    category: formData.tags.length > 0 ? formData.tags[0].name : null,
     taskPriority: formData.priority,
     parentId: formData.parentId,
-    plannedStartTime: formData.planTime ? formData.planTime[0] : null,
-    plannedEndTime: formData.planTime ? formData.planTime[1] : null,
+    plannedStartTime,
+    plannedEndTime,
   };
 
-  console.log('提交数据:', submitData);
-
-  setTimeout(() => {
+  try {
+    const res = await bizService.task.createTask(submitData);
     ElMessage.success('任务创建成功');
-    emit('success', submitData);
+    emit('success', res.data);
     dialogVisible.value = false;
     resetForm();
+  } catch (error) {
+    console.error('创建任务失败:', error);
+  } finally {
     submitting.value = false;
-  }, 1000);
+  }
 };
 
 watch(

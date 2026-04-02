@@ -50,6 +50,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
             task.setSubTaskGroup(IdUtil.simpleUUID());
         }
         
+        if (task.getUserId() == null) {
+            task.setUserId(1L);
+        }
+        
         save(task);
         return task;
     }

@@ -2,6 +2,11 @@ import request from './request';
 
 // 任务相关服务
 const taskService = {
+  // 创建任务
+  createTask: (data) => {
+    return request.post('/tasks', data);
+  },
+
   // 开始任务
   startTask: (taskId) => {
     return request.post(`/tasks/${taskId}/start`);

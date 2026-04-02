@@ -32,4 +32,6 @@ public class TaskCreateDTO {
     private LocalDateTime plannedEndTime;
     
     private Long parentId;
+    
+    private Long userId;
 }

@@ -55,22 +55,24 @@
         />
       </div>
 
-      <div class="form-item">
-        <div class="form-label">
-          <span>任务标签</span>
+      <div class="form-row">
+        <div class="form-item form-item-half">
+          <div class="form-label">
+            <span>任务标签</span>
+          </div>
+          <TagSelect v-model="formData.tags" :task-type="formData.taskType" :max-tags="4" />
         </div>
-        <TagSelect v-model="formData.tags" :task-type="formData.taskType" :max-tags="5" />
-      </div>
 
-      <div class="form-item">
-        <div class="form-label">
-          <span>优先级</span>
+        <div class="form-item form-item-half">
+          <div class="form-label">
+            <span>优先级</span>
+          </div>
+          <el-radio-group v-model="formData.priority" class="priority-radio-group">
+            <el-radio v-for="item in priorities" :key="item.value" :value="item.value">
+              <span class="priority-label" :style="{ color: item.color }">{{ item.label }}</span>
+            </el-radio>
+          </el-radio-group>
         </div>
-        <el-radio-group v-model="formData.priority" class="priority-radio-group">
-          <el-radio v-for="item in priorities" :key="item.value" :value="item.value">
-            <span class="priority-label" :style="{ color: item.color }">{{ item.label }}</span>
-          </el-radio>
-        </el-radio-group>
       </div>
 
       <div class="form-item">
@@ -84,12 +86,14 @@
           <div class="time-picker-content">
             <template v-if="formData.taskType === 1">
               <el-date-picker
-                v-model="formData.planTime.year"
-                type="year"
-                placeholder="选择年份"
+                v-model="formData.planTime.yearRange"
+                type="monthrange"
+                range-separator="至"
+                start-placeholder="开始月份"
+                end-placeholder="结束月份"
                 class="time-picker"
-                format="YYYY"
-                value-format="YYYY"
+                format="YYYY-MM"
+                value-format="YYYY-MM"
               />
             </template>
             <template v-else-if="formData.taskType === 2">
@@ -100,21 +104,24 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 class="time-picker"
-                format="YYYY/M/D"
+                format="YYYY/MM/DD"
                 value-format="YYYY-MM-DD"
               />
             </template>
             <template v-else>
-              <el-time-picker
-                v-model="formData.planTime.dayRange"
-                is-range
-                range-separator="至"
-                start-placeholder="开始时间"
-                end-placeholder="结束时间"
-                class="time-picker"
-                format="HH:mm"
-                value-format="HH:mm"
-              />
+              <div class="day-time-picker">
+                <span class="today-date">{{ todayDate }}</span>
+                <el-time-picker
+                  v-model="formData.planTime.dayRange"
+                  is-range
+                  range-separator="至"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                  class="time-picker"
+                  format="HH:mm"
+                  value-format="HH:mm:ss"
+                />
+              </div>
             </template>
           </div>
         </div>
@@ -183,7 +190,7 @@ const formData = reactive({
   tags: [],
   priority: 2,
   planTime: {
-    year: null,
+    yearRange: null,
     monthRange: null,
     dayRange: null,
   },
@@ -201,6 +208,14 @@ const priorities = [
   { value: 2, label: '中', color: 'rgba(248, 160, 16, 1)' },
   { value: 1, label: '低', color: 'rgba(105, 246, 184, 1)' },
 ];
+
+const todayDate = computed(() => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}/${month}/${day}`;
+});
 
 const parentTaskList = ref([
   { id: 1, title: '年度学习计划', taskType: 1 },
@@ -243,7 +258,7 @@ const resetForm = () => {
   formData.tags = [];
   formData.priority = 2;
   formData.planTime = {
-    year: null,
+    yearRange: null,
     monthRange: null,
     dayRange: null,
   };
@@ -267,16 +282,15 @@ const handleSubmit = async () => {
     parentId: formData.parentId,
   };
 
-  if (formData.taskType === 1 && formData.planTime.year) {
-    submitData.plannedStartTime = `${formData.planTime.year}-01-01T00:00:00`;
-    submitData.plannedEndTime = `${formData.planTime.year}-12-31T23:59:59`;
+  if (formData.taskType === 1 && formData.planTime.yearRange) {
+    submitData.plannedStartTime = `${formData.planTime.yearRange[0]}-01T00:00:00`;
+    submitData.plannedEndTime = `${formData.planTime.yearRange[1].split('-')[0]}-12-31T23:59:59`;
   } else if (formData.taskType === 2 && formData.planTime.monthRange) {
     submitData.plannedStartTime = `${formData.planTime.monthRange[0]}T00:00:00`;
     submitData.plannedEndTime = `${formData.planTime.monthRange[1]}T23:59:59`;
   } else if (formData.taskType === 3 && formData.planTime.dayRange) {
-    const today = new Date().toISOString().split('T')[0];
-    submitData.plannedStartTime = `${today}T${formData.planTime.dayRange[0]}:00`;
-    submitData.plannedEndTime = `${today}T${formData.planTime.dayRange[1]}:00`;
+    submitData.plannedStartTime = formData.planTime.dayRange[0];
+    submitData.plannedEndTime = formData.planTime.dayRange[1];
   }
 
   console.log('提交数据:', submitData);
@@ -294,7 +308,7 @@ watch(
   () => formData.taskType,
   () => {
     formData.planTime = {
-      year: null,
+      yearRange: null,
       monthRange: null,
       dayRange: null,
     };
@@ -507,6 +521,73 @@ watch(
       :deep(.el-input__icon) {
         display: none;
       }
+    }
+  }
+}
+
+.day-time-picker {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: pxToRem(12);
+
+  .today-date {
+    flex: 1;
+    font-size: pxToRem(14);
+    font-weight: 500;
+    color: rgba(32, 48, 68, 1);
+    white-space: nowrap;
+  }
+
+  .time-picker {
+    flex: 1;
+
+    :deep(.el-input__wrapper) {
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
+      border: none;
+    }
+
+    :deep(.el-input__inner) {
+      font-size: pxToRem(14);
+      font-weight: 500;
+      color: rgba(32, 48, 68, 1);
+
+      &::placeholder {
+        color: rgba(139, 154, 181, 1);
+      }
+    }
+
+    :deep(.el-range-input) {
+      font-size: pxToRem(14);
+      font-weight: 500;
+      color: rgba(32, 48, 68, 1);
+
+      &::placeholder {
+        color: rgba(139, 154, 181, 1);
+      }
+    }
+
+    :deep(.el-range-separator) {
+      font-size: pxToRem(14);
+      font-weight: 500;
+      color: rgba(77, 93, 115, 1);
+      padding: 0 pxToRem(4);
+    }
+
+    :deep(.el-input__prefix),
+    :deep(.el-input__suffix),
+    :deep(.el-input__suffix-inner) {
+      display: none;
+    }
+
+    :deep(.el-range__icon) {
+      display: none;
+    }
+
+    :deep(.el-input__icon) {
+      display: none;
     }
   }
 }

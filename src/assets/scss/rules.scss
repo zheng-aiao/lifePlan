@@ -1,0 +1,530 @@
+@use 'sass:math';
+@use 'sass:map';
+
+// [颜色] 白色;
+@mixin whiteColor($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(white, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 黑色;
+@mixin blackColor($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(black, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 背景色;
+@mixin bodyBackground($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(background, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 强调色/主题色;
+@mixin themeColor($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(color, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 成功/安全色;
+@mixin successColor($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(success, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 常规色;
+@mixin normalColor($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(color, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 告警/错误色;
+@mixin errorColor($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(error, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 警告/提醒色;
+@mixin warnColor($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(warning, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 警告/辅助色-黄;
+@mixin assistColorYellow($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(yellow, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 故障/禁用色;
+@mixin disabledColor($alpha, $style, $isImportant: false) {
+  #{$style}: colorValue(gray, $alpha, $isImportant);
+  @include baseTransition;
+}
+
+// [颜色] 获取颜色函数
+@function colorValue($name: 'color', $alpha: 1, $isImportant: false) {
+  @if $isImportant==true {
+    @return rgba(var(--#{$name}), $alpha) + ' '+'!' + important;
+  } @else {
+    @return rgba(var(--#{$name}), $alpha);
+  }
+}
+
+/// 通用主题条件判断, 可新增其它模式的主题
+/// @param {String} $theme - 主题名称 (light/dark(默认))
+@mixin whenTheme($theme) {
+  @at-root [srm-theme-model='#{$theme}'] & {
+    @content;
+  }
+}
+
+@mixin lightTheme {
+  @include whenTheme('light') {
+    @content;
+  }
+}
+
+@mixin darkTheme {
+  @include whenTheme('dark') {
+    @content;
+  }
+}
+
+// 根节点选择白色模式
+@mixin rootLightTheme {
+  html[srm-theme-model='light'] {
+    @content;
+  }
+}
+
+@mixin mainContentSelector {
+  [class*='LayoutContainer'],
+  .el-popper,
+  .themePopper {
+    @content;
+  }
+}
+
+// [动画] 基础过度效果
+@mixin baseTransition($style: 'normal', $isImportant: false) {
+  $baseTransition: color var(--duration), background var(--duration), border-color var(--duration),
+    box-shadow var(--duration);
+
+  @if $isImportant==false {
+    @if $style== 'normal' {
+      transition: $baseTransition;
+    } @else if $style== 'none' {
+      transition: none;
+    } @else {
+      transition: $baseTransition, #{$style} var(--duration);
+    }
+  } @else {
+    @if $style== 'normal' {
+      transition: $baseTransition !important;
+    } @else if $style== 'none' {
+      transition: none !important;
+    } @else {
+      transition: $baseTransition, #{$style} var(--duration) !important;
+    }
+  }
+}
+
+/// 将像素单位转换为 rem（支持无单位值和带单位值）
+/// @param {Number} $px - 输入值（如 16 或 16px）
+/// @return {Number} - 返回 rem 值（如 1rem）或原始值（如 16px）
+@function pxToRem($px) {
+  // 检查输入值是否带单位
+  @if math.is-unitless($px) {
+    @return math.div($px, 16) * 1rem; // 无单位时转换：16 → 1rem
+  } @else {
+    @return $px; // 带单位时原样返回：16px → 16px
+  }
+}
+
+/**
+ * @name: wh
+ * @desc: 设置元素宽高,默认为宽高100%;
+ * @param {String} $width 宽度
+ * @param {String} $height 高度
+ * @use: @include wh;
+ * @use: @include wh(80%);
+ * @use: @include wh(80%, 20px);
+ */
+@mixin wh($width: 100%, $height: $width) {
+  width: $width;
+  height: $height;
+}
+
+/**
+ * @name: whrem
+ * @desc: 设置元素宽高,传入数值自动转换rem值
+ * @param {String} $width 宽度
+ * @param {String} $height 高度
+ * @use: @include whrem(40);
+ * @use: @include whrem(200, 100);
+ */
+@mixin whrem($width, $height: $width) {
+  width: pxToRem($width);
+  height: pxToRem($height);
+}
+
+/**
+ * @name: flexCenter
+ * @desc: 弹性盒居中
+ * @param {String} $justify 主轴对齐方式
+ * @param {String} $align 副轴对齐方式
+ * @param {String} $direction 主轴是否垂直
+ * @param {String} $wrap 换行方式
+ * @use: @include flexCenter;
+ * @use: @include flexCenter(space-around, center);
+ */
+@mixin flexCenter($justify: center, $align: center, $direction: false, $wrap: false) {
+  display: flex;
+
+  @if ($justify != false) {
+    justify-content: $justify;
+  }
+
+  @if ($align != false) {
+    align-items: $align;
+  }
+
+  @if ($direction != false) {
+    flex-direction: column;
+  }
+
+  @if ($wrap != false) {
+    flex-wrap: wrap;
+  }
+}
+
+/** 默认滚动条样式 */
+@mixin scrollBarStyle($color: var(--bgColor)) {
+  // 修改滚动条默认样式
+  &::-webkit-scrollbar {
+    width: pxToRem(5);
+    height: 100%;
+    border-radius: pxToRem(4);
+  }
+
+  /* 滚动槽 */
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* 滚动条滑块 */
+  &::-webkit-scrollbar-thumb {
+    border-radius: pxToRem(3);
+    background: $color;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+}
+
+// 单行文本溢出
+@mixin oneLineTextHidden() {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/**
+ * @name: textHidden
+ * @desc: 文本溢出省略号(无法做到与rdapp-tooltip组件的功能溢出隐藏才显示)
+ * @use: @include textHidden;
+ */
+@mixin textHidden($line: 1) {
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $line;
+  -webkit-box-orient: vertical;
+  white-space: pre-wrap;
+  word-break: break-all;
+
+  &::after {
+    @include wh;
+    @include foregroundStyle;
+    border: 1px solid transparent;
+    background: none;
+    box-shadow: none;
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: pxToRem(8);
+    z-index: -2;
+  }
+}
+
+/**
+ * @name: before
+ * @desc: before伪类添加
+ * @use: @include before{ width: 20px; height: 20px; }
+ */
+@mixin before {
+  &::before {
+    content: '';
+    display: block;
+    @content;
+  }
+}
+
+/**
+ * @name: after
+ * @desc: after伪类添加
+ * @use: @include after{ width: 20px; height: 20px; }
+ */
+@mixin after {
+  &::after {
+    content: '';
+    display: block;
+    @content;
+  }
+}
+
+@mixin hover {
+  &:hover {
+    @content;
+  }
+}
+
+@mixin focus {
+  &:focus {
+    @content;
+  }
+}
+
+// 弹窗样式
+@mixin dialogStyle($radius: 10) {
+  border-radius: pxToRem($radius);
+  border: pxToRem(2) solid var(--dialogBorderColor);
+  background: var(--dialogBackgroundColor);
+  box-shadow: var(--dialogShadowColor);
+}
+
+// 前景色样式(普通卡片)
+@mixin foregroundStyle() {
+  border-radius: pxToRem(12);
+  border: 1px solid var(--foreBorderColor);
+  background: var(--foregroundColor);
+  box-shadow: var(--foreShadowColor);
+}
+
+// 地图卡片样式
+@mixin mapCardStyle() {
+  border-radius: pxToRem(12);
+  border: pxToRem(2) solid var(--mapCardBorderColor);
+  background: var(--mapCardBackgroundColor);
+  box-shadow: var(--mapCardShadowColor);
+}
+
+@mixin dropdownStyle() {
+  border-radius: pxToRem(12);
+  border: 2px solid var(--dropdownBorderColor);
+  background-color: var(--dialogBackgroundColor);
+  box-shadow: var(--dialogShadowColor);
+}
+
+// 次要激活
+@mixin secondButtonActive() {
+  --secondButtonActiveShadow: 0 0 0 #{pxToRem(3)} rgba(var(--color), 0.3);
+
+  @include darkTheme {
+    --secondButtonActiveShadow: 0 #{pxToRem(-2)} #{pxToRem(4)} 0 rgba(var(--white), 0.8) inset,
+      0 #{pxToRem(6)} #{pxToRem(8)} 0 rgb(var(--color)) inset,
+      0 #{pxToRem(-4)} #{pxToRem(8)} 0 rgb(var(--color)) inset,
+      0 #{pxToRem(-6)} #{pxToRem(12)} 0 rgb(var(--color)) inset;
+  }
+  box-shadow: var(--secondButtonActiveShadow);
+}
+
+$font-config: (
+  1: (
+    size: 18,
+    line-height: 28,
+    weight: 700
+  ),
+  2: (
+    size: 16,
+    line-height: 24,
+    weight: 700
+  ),
+  3: (
+    size: 16,
+    line-height: 24,
+    weight: 400
+  ),
+  4: (
+    size: 14,
+    line-height: 22,
+    weight: 700
+  ),
+  5: (
+    size: 14,
+    line-height: 22,
+    weight: 400
+  )
+);
+// 字体样式
+@mixin fontStyle($level: 4, $onlyUseSize: false) {
+  // 验证级别有效性
+  $valid-levels: map-keys($font-config);
+  @if not index($valid-levels, $level) {
+    @error "Invalid $level: #{$level}. Must be one of #{$valid-levels}";
+  }
+
+  font-family: inherit;
+  font-size: var(--fontSize-#{$level});
+
+  @if not $onlyUseSize {
+    font-weight: var(--fontWeight-#{$level});
+    line-height: var(--fontLineHeight-#{$level});
+    min-height: var(--fontLineHeight-#{$level});
+  }
+}
+
+// 搜索栏背景样式
+@mixin searchBarStyle($elInputWidth: 240, $elDateRangeWidth: 240, $elSelectInputWidth: 216) {
+  @include foregroundStyle;
+  width: 100%;
+  // min-height: var(--search-bar-height);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--textColor-1);
+  padding: 20px;
+  flex-wrap: wrap;
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: pxToRem(16);
+    margin-right: auto;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: pxToRem(16);
+    margin-left: auto;
+    // flex-wrap: wrap;
+    // width: 100%;
+  }
+
+  .btn-content {
+    display: flex;
+    justify-content: flex-end;
+    width: auto;
+    margin-left: auto;
+    gap: pxToRem(10);
+  }
+
+  .item {
+    @include flexCenter;
+    @include fontStyle(5);
+    color: var(--textColor-2);
+
+    .label {
+      margin-right: 8px;
+      color: var(--textColor-2);
+      display: inline-block;
+      width: max-content;
+    }
+  }
+
+  .el-input {
+    width: pxToRem($elInputWidth);
+  }
+
+  .el-select {
+    width: pxToRem($elSelectInputWidth);
+
+    .el-input {
+      width: inherit;
+    }
+  }
+
+  .el-date-editor--daterange {
+    min-width: pxToRem($elDateRangeWidth);
+    max-width: pxToRem(260);
+    border-radius: 8px;
+  }
+}
+
+// 字体图标按钮样式
+@mixin iconfontButton($color: color, $width: pxToRem(32), $height: $width) {
+  @include wh($width, $height);
+  @include flexCenter;
+  @include baseTransition;
+  @include fontStyle(1);
+  // font-size: pxToRem(24);
+  // font-weight: 400;
+  cursor: pointer;
+  border-radius: pxToRem(8);
+  color: colorValue($color);
+  border: 1px solid transparent;
+
+  &:hover {
+    border: 1px solid colorValue(0.5);
+    background: colorValue(0.1);
+
+    box-shadow: 0 pxToRem(4) pxToRem(6) 0 colorValue($color, 0.5) inset,
+      0 pxToRem(-4) pxToRem(6) 0 colorValue($color, 1) inset;
+  }
+
+  &:active {
+    border: pxToRem(1) solid colorValue(1);
+    box-shadow: 0 pxToRem(-2) pxToRem(4) 0 colorValue($color, 0.8) inset,
+      0 pxToRem(6) pxToRem(8) 0 colorValue($color, 1) inset,
+      0 pxToRem(-4) pxToRem(8) 0 colorValue($color, 1) inset,
+      0 pxToRem(-6) pxToRem(12) 0 colorValue($color, 1) inset;
+  }
+
+  &.is-disabled,
+  &.disable {
+    border-color: transparent;
+    box-shadow: none;
+    color: var(--textColor-4);
+    pointer-events: none;
+  }
+}
+
+// 表格滚动放大样式
+@mixin tableWheelLayout($containerClass, $headerHeight, $duration: 0.5s) {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-top: $headerHeight + pxToRem(16);
+  transition: padding $duration;
+
+  > .header {
+    width: 100%;
+    height: $headerHeight;
+    position: absolute;
+    top: 0;
+    transition: top $duration;
+  }
+
+  > .table-warper {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &.collapsed {
+    padding: 0;
+
+    > .header {
+      top: -($headerHeight + pxToRem(16));
+    }
+  }
+}

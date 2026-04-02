@@ -1,0 +1,258 @@
+@use '../rules' as *;
+
+@mixin buttonShadow {
+  @include after {
+    @include baseTransition;
+    width: calc(100% + #{pxToRem(2)});
+    height: calc(100% + #{pxToRem(2)});
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    border-radius: inherit;
+    box-shadow: none;
+  }
+}
+
+// 主要按钮样式
+@mixin primaryButtonStyle {
+  @include fontStyle(5);
+  @include baseTransition;
+  @include buttonShadow;
+  $height: 38px;
+  line-height: $height;
+  height: $height;
+  padding: pxToRem(8) pxToRem(12);
+  border-radius: pxToRem(8);
+  border: pxToRem(1) solid transparent;
+  color: colorValue(white, 1);
+  background-color: colorValue(color, 1);
+  cursor: pointer;
+  position: relative;
+
+  //圆角按钮不采用如下样式
+  &:not(.is-circle) {
+    $height: 38px;
+    font-size: 14px;
+    height: $height;
+    line-height: $height;
+    padding: pxToRem(8) pxToRem(16);
+    border-radius: pxToRem(8);
+  }
+
+  > span {
+    @include wh;
+    @include flexCenter;
+    @include fontStyle(5);
+    min-height: auto;
+    gap: 8px;
+  }
+
+  &:hover:not(.is-disabled) {
+    color: colorValue(white, 1);
+    border-color: colorValue(white, 0.2);
+    background-color: colorValue(color, 1);
+
+    @include after {
+      box-shadow: 0 pxToRem(4) pxToRem(6) 0 colorValue(white, 0.3) inset,
+        0 pxToRem(-4) pxToRem(8) 0 colorValue(white, 0.8) inset;
+    }
+  }
+
+  &:active:not(.is-disabled) {
+    color: colorValue(white, 1);
+    border: pxToRem(1) solid colorValue(white, 0.5);
+    background-color: colorValue(color, 1);
+
+    @include after {
+      box-shadow: 0 pxToRem(4) pxToRem(12) 0 colorValue(white, 0.8) inset,
+        0 pxToRem(-2) pxToRem(4) 0 colorValue(white, 1) inset,
+        0 pxToRem(-6) pxToRem(12) 0 colorValue(color, 1) inset;
+    }
+  }
+
+  &:focus {
+    border: pxToRem(1) solid transparent;
+    color: colorValue(white, 1);
+    background-color: colorValue(color, 1);
+  }
+
+  &.is-disabled[disabled='disabled'] {
+    color: var(--textColor-4);
+    border-color: transparent;
+    background-color: colorValue(color, 0.3);
+    box-shadow: none;
+  }
+
+  &.el-button--text {
+    color: colorValue(color, 1);
+    background: none;
+    border: none;
+
+    &:hover {
+      color: colorValue(color, 1);
+      border: none;
+      background: colorValue(color, 0.3);
+
+      @include after {
+        box-shadow: none;
+      }
+
+      @include lightTheme {
+        background: colorValue(color, 0.1);
+      }
+    }
+
+    &:active {
+      color: colorValue(color, 1);
+      border: none;
+      background: colorValue(color, 0.5);
+
+      @include after {
+        box-shadow: none;
+      }
+
+      @include lightTheme {
+        background: colorValue(color, 0.3);
+      }
+    }
+
+    &.is-disabled[disabled='disabled'] {
+      color: colorValue(color, 0.3);
+      border: none;
+      background: none;
+    }
+  }
+}
+
+// 次要按钮样式
+@mixin secondButtonStyle {
+  --button-background: #{colorValue(color, 0.3)};
+  @include primaryButtonStyle;
+  @include buttonShadow;
+  color: var(--textColor-1);
+  border: pxToRem(1) solid colorValue(color, 0.2);
+  background: var(--button-background);
+
+  &.map-style {
+    --button-background: linear-gradient(
+        0deg,
+        rgba(var(--color), 0.3) 0%,
+        rgba(var(--color), 0.3) 100%
+      ),
+      rgba(0, 0, 0, 0.7);
+    border: pxToRem(1) solid rgba(var(--color), 0.5);
+  }
+
+  &:hover:not(.is-disabled) {
+    color: colorValue(white, 1);
+    border-color: colorValue(color, 0.5);
+    background: var(--button-background);
+
+    @include after {
+      box-shadow: 0 pxToRem(4) pxToRem(6) 0 colorValue(color, 0.5) inset,
+        0 pxToRem(-4) pxToRem(6) 0 colorValue(color, 1) inset;
+    }
+  }
+
+  &:active:not(.is-disabled) {
+    color: colorValue(white, 1);
+    border: pxToRem(1) solid colorValue(color, 1);
+    background: var(--button-background);
+
+    @include after {
+      @include secondButtonActive;
+    }
+  }
+
+  &:focus {
+    color: var(--textColor-1);
+    border: pxToRem(1) solid colorValue(color, 0.2);
+    background: var(--button-background);
+  }
+
+  @include lightTheme {
+    --button-background: #{colorValue(color, 0.1)};
+    color: colorValue(color, 1);
+    border-color: colorValue(color, 0.3);
+    background: var(--button-background);
+
+    &.map-style {
+      --button-background: linear-gradient(
+          0deg,
+          rgba(var(--color), 0.3) 0%,
+          rgba(var(--color), 0.3) 100%
+        ),
+        rgba(255, 255, 255);
+    }
+
+    @include after {
+      display: none !important;
+    }
+
+    &:hover:not(.is-disabled) {
+      color: colorValue(color, 1);
+      border-color: colorValue(color, 1);
+      background: var(--button-background);
+    }
+
+    &:active:not(.is-disabled) {
+      color: colorValue(color, 1);
+      border-color: colorValue(color, 1);
+      @include secondButtonActive;
+    }
+
+    &:focus {
+      color: colorValue(color, 1);
+      border-color: colorValue(color, 0.3);
+      background: var(--button-background);
+    }
+
+    &.is-disabled {
+      color: colorValue(color, 0.3);
+      border-color: colorValue(color, 0.1);
+      background: var(--button-background);
+      cursor: not-allowed;
+    }
+  }
+}
+
+// [全局] 按钮样式
+@include mainContentSelector {
+  .el-button {
+    @include primaryButtonStyle;
+
+    .iconfont {
+      @include fontStyle(1);
+      transform: translateY(pxToRem(1));
+    }
+
+    & + .el-button {
+      margin-left: 0;
+    }
+
+    // 次要按钮
+    &[second] {
+      @include secondButtonStyle;
+    }
+
+    &.is-disabled[disabled='disabled'] {
+      color: var(--textColor-4);
+      border-color: transparent;
+      background-color: colorValue(color, 0.3);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    &:has(.el-icon-loading) {
+      display: flex;
+      align-items: center;
+      cursor: not-allowed;
+
+      .el-icon-loading {
+        height: fit-content;
+      }
+    }
+  }
+}

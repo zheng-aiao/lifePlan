@@ -9,14 +9,15 @@
 </template>
 
 <script setup>
-import { getCurrentInstance } from "vue";
-import Header from "./components/layout/Header.vue";
-import AsideLeft from "@/components/layout/AsideLeft.vue";
+import { getCurrentInstance } from 'vue';
+import Header from './components/layout/Header.vue';
+import AsideLeft from '@/components/layout/AsideLeft.vue';
 
 window.app = getCurrentInstance();
 </script>
 
 <style scoped lang="scss">
+@use '@/assets/scss/index' as *;
 @import '@/assets/styles/_mixins.scss';
 
 .app-container {

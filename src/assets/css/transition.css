@@ -1,0 +1,43 @@
+/** 弹窗进入、离开动画 **/
+.importExportProgress-enter-active {
+    animation: slide-in 0.7s both;
+}
+.importExportProgress-leave-active {
+    animation: slide-out 0.7s both;
+}
+@keyframes slide-in {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes slide-out {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(120%);
+    }
+}
+
+/* 路由切换 */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+    transition: all 0.5s;
+}
+
+.fade-transform-enter {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.fade-transform-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+}

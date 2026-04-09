@@ -15,5 +15,7 @@ public class SubTaskCreateDTO {
     @Size(max = 200, message = "子任务标题长度不能超过200个字符")
     private String title;
     
+    private Integer priority;
+    
     private Integer sortOrder;
 }

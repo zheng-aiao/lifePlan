@@ -122,6 +122,7 @@
     <add-task-item-dialog
       v-model="addTaskItemDialogVisible"
       :task-title="task.title"
+      :sub-task-group="task.subTaskGroup"
       @confirm="handleAddTaskItemConfirm"
       @cancel="handleAddTaskItemCancel"
     />
@@ -369,16 +370,25 @@ const handleAddSubTask = () => {
 
 const handleAddTaskItemConfirm = async (taskItemData) => {
   try {
+    // 优先级映射：将前端字符串转换为后端整数值
+    const priorityMap = {
+      urgent: 4, // 紧急
+      important: 3, // 重要
+      normal: 2, // 一般
+      low: 1, // 低
+    };
+
     const subTaskData = {
-      subTaskGroup: taskItemData.group || '默认',
-      title: taskItemData.text,
+      subTaskGroup: taskItemData.subTaskGroup,
+      title: taskItemData.title,
+      priority: priorityMap[taskItemData.priority] || 2, // 默认一般优先级
       sortOrder: 0,
     };
     await bizService.subTask.createSubTask(subTaskData);
     ElMessage.success('子任务添加成功');
     addTaskItemDialogVisible.value = false;
-    // 重新加载子任务列表
-    await loadSubTasks();
+    // 通知父组件添加了子任务
+    emit('addSubTask');
   } catch (error) {
     console.error('添加子任务失败:', error);
   }

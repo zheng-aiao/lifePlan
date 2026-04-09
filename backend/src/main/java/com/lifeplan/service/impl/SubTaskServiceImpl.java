@@ -57,6 +57,7 @@ public class SubTaskServiceImpl extends ServiceImpl<SubTaskMapper, SubTask> impl
         }
         
         if (dto.getTitle() != null) subTask.setTitle(dto.getTitle());
+        if (dto.getPriority() != null) subTask.setPriority(dto.getPriority());
         if (dto.getSortOrder() != null) subTask.setSortOrder(dto.getSortOrder());
         if (dto.getStatus() != null) subTask.setStatus(dto.getStatus());
         

@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS sub_task (
     sub_task_group VARCHAR(50) DEFAULT '' COMMENT '子任务组别，用于关联任务',
     title VARCHAR(200) NOT NULL COMMENT '子任务标题',
     status TINYINT DEFAULT 0 COMMENT '状态：0-未完成 1-已完成',
+    priority TINYINT DEFAULT 1 COMMENT '优先级：1-低 2-中 3-高 4-紧急',
     sort_order INT DEFAULT 0 COMMENT '排序顺序',
     finish_time DATETIME COMMENT '实际完成时间',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

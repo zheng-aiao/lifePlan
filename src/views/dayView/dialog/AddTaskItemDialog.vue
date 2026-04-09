@@ -55,6 +55,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  subTaskGroup: {
+    type: String,
+    default: '',
+  },
 });
 
 const emit = defineEmits(['update:modelValue', 'confirm', 'cancel']);
@@ -119,7 +123,8 @@ const handleConfirm = () => {
     return;
   }
   emit('confirm', {
-    name: subTaskName.value,
+    subTaskGroup: props.subTaskGroup,
+    title: subTaskName.value,
     priority: selectedPriority.value,
   });
   dialogVisible.value = false;

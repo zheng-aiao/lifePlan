@@ -21,6 +21,8 @@ public class SubTask implements Serializable {
     
     private Integer sortOrder;
     
+    private Integer priority;
+    
     private LocalDateTime finishTime;
     
     @TableField(fill = FieldFill.INSERT)

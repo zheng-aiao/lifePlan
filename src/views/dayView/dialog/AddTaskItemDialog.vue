@@ -44,7 +44,9 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { ArrowRight } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 import BaseDialog from '@/components/common/BaseDialog.vue';
+import bizService from '@/utils/bizService';
 
 const props = defineProps({
   modelValue: {
@@ -70,7 +72,7 @@ const dialogVisible = computed({
 
 const subTaskName = ref('');
 const selectedPriority = ref('important');
-
+const isLoading = ref(false);
 const priorityOptions = [
   {
     value: 'urgent',
@@ -110,24 +112,45 @@ watch(dialogVisible, (newVal) => {
   if (newVal) {
     subTaskName.value = '';
     selectedPriority.value = 'important';
+    isLoading.value = false;
   }
 });
 
 const handleCancel = () => {
-  dialogVisible.value = false;
   emit('cancel');
 };
 
-const handleConfirm = () => {
+const handleConfirm = async () => {
   if (!subTaskName.value.trim()) {
     return;
   }
-  emit('confirm', {
-    subTaskGroup: props.subTaskGroup,
-    title: subTaskName.value,
-    priority: selectedPriority.value,
-  });
-  dialogVisible.value = false;
+
+  isLoading.value = true;
+  try {
+    // 优先级映射：将前端字符串转换为后端整数值
+    const priorityMap = {
+      urgent: 4, // 紧急
+      important: 3, // 重要
+      normal: 2, // 一般
+      low: 1, // 低
+    };
+
+    const subTaskData = {
+      subTaskGroup: props.subTaskGroup,
+      title: subTaskName.value,
+      priority: priorityMap[selectedPriority.value] || 2, // 默认一般优先级
+      sortOrder: 0,
+    };
+
+    await bizService.subTask.createSubTask(subTaskData);
+    ElMessage.success('子任务添加成功');
+    handleCancel();
+  } catch (error) {
+    console.error('添加子任务失败:', error);
+    ElMessage.error('添加子任务失败，请稍后重试');
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 

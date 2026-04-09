@@ -434,9 +434,62 @@ const handleScroll = ({ scrollTop: st }) => {
 // 当前日期
 const currentDate = ref(new Date().toISOString().split('T')[0]);
 
+// 计算当前时间对应的页面位置
+const getCurrentTimePosition = () => {
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+
+  console.log('Current time:', currentHour, ':', currentMinute);
+  console.log('START_HOUR:', START_HOUR);
+
+  // 计算从7点开始的分钟数
+  const minutesFromStart = (currentHour - START_HOUR) * 60 + currentMinute;
+  console.log('Minutes from start:', minutesFromStart);
+
+  // 计算对应的像素位置（半小时60px）
+  const pixelPosition = topPadding.value + (minutesFromStart / 30) * TASK_MIN_HEIGHT;
+  console.log('Top padding:', topPadding.value);
+  console.log('Pixel position:', pixelPosition);
+
+  return pixelPosition;
+};
+
+// 滚动到当前时间点
+const scrollToCurrentTime = () => {
+  // 确保视口高度已初始化
+  if (!scrollbarRef.value?.wrapRef) {
+    console.error('Scrollbar wrapRef not found');
+    return;
+  }
+
+  // 重新获取视口高度
+  viewportHeight.value = scrollbarRef.value.wrapRef.clientHeight;
+
+  // 计算当前时间位置
+  const currentTimePosition = getCurrentTimePosition();
+  console.log('Current time position:', currentTimePosition);
+  console.log('Viewport height:', viewportHeight.value);
+
+  // 计算滚动位置，使当前时间点位于视口中央
+  const containerCenter = currentTimePosition - viewportHeight.value / 2;
+  console.log('Container center:', containerCenter);
+
+  // 确保滚动位置不小于0
+  const scrollPosition = Math.max(0, containerCenter);
+  console.log('Scroll position:', scrollPosition);
+
+  // 滚动到指定位置
+  scrollbarRef.value.wrapRef.scrollTop = scrollPosition;
+};
+
 // 刷新任务数据
 const refreshTaskData = async () => {
   await loadTaskDetails(currentDate.value);
+  // 刷新后滚动到当前时间点
+  nextTick(() => {
+    scrollToCurrentTime();
+  });
 };
 
 // 延时处理
@@ -577,15 +630,16 @@ const handleUpdateTasks = (newDate) => {
 };
 
 // 初始化视口高度并滚动到 7 点位置
-onMounted(() => {
+onMounted(async () => {
+  // 加载任务详情（从后端获取完整数据）
+  await loadTaskDetails(currentDate.value);
+
   nextTick(() => {
     if (scrollbarRef.value?.wrapRef) {
       viewportHeight.value = scrollbarRef.value.wrapRef.clientHeight;
-      // 滚动到 7 点位置（顶部留白处），再向上偏移 10px
-      scrollbarRef.value.wrapRef.scrollTop = topPadding.value - 10;
+      // 滚动到当前时间点
+      scrollToCurrentTime();
     }
-    // 加载任务详情（从后端获取完整数据）
-    loadTaskDetails(currentDate.value);
   });
 });
 </script>

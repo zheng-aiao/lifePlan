@@ -40,8 +40,9 @@ import { ref } from 'vue';
 import MenuSection from '@/layout/component/MenuSection.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
 import NewTaskDialog from '@/layout/dialog/NewTaskDialog.vue';
+import eventBus from '@/utils/eventBus';
 
-const emit = defineEmits(['viewChange', 'categoryClick', 'newTask']);
+const emit = defineEmits(['viewChange', 'categoryClick', 'newTask', 'taskCreated']);
 
 const activeView = ref('1');
 const activeCategory = ref('');
@@ -108,6 +109,9 @@ const handleNewTask = () => {
 
 const handleTaskCreated = (taskData) => {
   console.log('任务创建成功:', taskData);
+  emit('taskCreated', taskData);
+  // 使用事件总线通知dayView组件刷新数据
+  eventBus.emit('taskCreated', taskData);
 };
 </script>
 

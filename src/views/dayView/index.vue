@@ -86,12 +86,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted, nextTick, onUnmounted } from 'vue';
 import AsideRight from '@/views/dayView/component/AsideRight.vue';
 import DayTaskList from '@/views/dayView/component/DayTaskList.vue';
 import DayTaskCard from './component/DayTaskCard.vue';
 import DayTaskHandle from './component/DayTaskHandle.vue';
 import { mapTaskStatusText } from '@/emun/constant';
+import eventBus from '@/utils/eventBus';
 import bizService from '@/utils/bizService';
 import { yearlyTasks, monthlyTasks, temporaryTasks } from '@/mock/day.js';
 
@@ -641,7 +642,22 @@ onMounted(async () => {
       scrollToCurrentTime();
     }
   });
+
+  // 监听任务创建成功事件
+  eventBus.on('taskCreated', handleTaskCreated);
 });
+
+// 组件卸载时移除事件监听
+onUnmounted(() => {
+  eventBus.off('taskCreated', handleTaskCreated);
+});
+
+// 处理任务创建成功事件
+const handleTaskCreated = async (taskData) => {
+  console.log('收到任务创建成功事件:', taskData);
+  // 刷新任务数据
+  await loadTaskDetails(currentDate.value);
+};
 </script>
 
 <style scoped lang="scss">

@@ -37,14 +37,14 @@ const taskService = {
     return request.post(`/tasks/${taskId}/delay`, { reason });
   },
 
-  // 获取任务列表
-  getTasksByDate: (date, params = {}) => {
-    return request.get(`/tasks/${date}`, { params });
+  // 根据id获取任务详情（包含子任务和活动日志）
+  getTaskDetailsById: (taskId, params = {}) => {
+    return request.get(`/tasks/${taskId}`, { params });
   },
 
-  // 获取任务详情列表（包含子任务和活动日志）
+  // 根据日期获取任务详情列表（包含子任务和活动日志）
   getTaskDetailsByDate: (date, params = {}) => {
-    return request.get(`/tasks/${date}/details`, { params });
+    return request.get(`/tasks/date/${date}`, { params });
   },
 
   // 更新任务

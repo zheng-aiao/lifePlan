@@ -144,7 +144,7 @@ const handleConfirm = async () => {
 
     await bizService.subTask.createSubTask(subTaskData);
     ElMessage.success('子任务添加成功');
-    handleCancel();
+    emit('confirm');
   } catch (error) {
     console.error('添加子任务失败:', error);
     ElMessage.error('添加子任务失败，请稍后重试');

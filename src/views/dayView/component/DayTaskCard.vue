@@ -3,9 +3,9 @@
     class="day-task-card"
     :class="{ 'is-active': isActive }"
     :style="{
-      '--border-color': task.borderColor,
-      backgroundColor: task.bgColor,
-      opacity: task.opacity || 1,
+      '--border-color': taskData.borderColor,
+      backgroundColor: taskData.bgColor,
+      opacity: taskData.opacity || 1,
     }"
     :body-style="{ padding: 0, position: 'relative' }"
   >
@@ -14,11 +14,13 @@
         <div class="header-left">
           <div class="title-row">
             <el-icon class="title-icon"><Document /></el-icon>
-            <span class="task-title">{{ task.title }}</span>
+            <span class="task-title">{{ taskData.title }}</span>
             <div class="meta-row">
               <el-icon class="time-icon"><Clock /></el-icon>
-              <span class="time-range">{{ task.timeRange }}</span>
-              <span class="status-tag" :class="task.status">{{ task.statusText || '进行中' }}</span>
+              <span class="time-range">{{ taskData.timeRange }}</span>
+              <span class="status-tag" :class="taskData.status">{{
+                taskData.statusText || '进行中'
+              }}</span>
             </div>
           </div>
         </div>
@@ -46,7 +48,7 @@
           </div>
           <div class="sub-task-list">
             <div
-              v-for="(subTask, idx) in task.subTasks"
+              v-for="(subTask, idx) in taskData.subTasks"
               :key="idx"
               class="sub-task-item"
               @click.stop="toggleSubTask(idx)"
@@ -58,7 +60,9 @@
                 {{ subTask.text }}
               </span>
             </div>
-            <div v-if="!task.subTasks || !task.subTasks.length" class="empty-list">暂无子任务</div>
+            <div v-if="!taskData.subTasks || !taskData.subTasks.length" class="empty-list">
+              暂无子任务
+            </div>
           </div>
         </div>
 
@@ -68,14 +72,14 @@
             <span>活动日志</span>
           </div>
           <div class="activity-list">
-            <div v-for="(activity, idx) in task.activities" :key="idx" class="activity-item">
+            <div v-for="(activity, idx) in taskData.activities" :key="idx" class="activity-item">
               <div class="activity-indicator" :class="activity.type"></div>
               <div class="activity-content">
                 <div class="activity-time">{{ activity.time }} - {{ activity.typeText }}</div>
                 <div class="activity-desc">{{ activity.description }}</div>
               </div>
             </div>
-            <div v-if="!task.activities || !task.activities.length" class="empty-list">
+            <div v-if="!taskData.activities || !taskData.activities.length" class="empty-list">
               暂无活动日志
             </div>
           </div>
@@ -85,7 +89,7 @@
       <div class="card-footer">
         <div class="duration-info">
           <span class="duration-label">已用时:</span>
-          <span class="duration-value">{{ task.actualDuration }}</span>
+          <span class="duration-value">{{ taskData.actualDuration }}</span>
         </div>
         <div class="complete-btn" @click.stop="handlePause">
           <el-icon><Check /></el-icon>
@@ -97,32 +101,32 @@
 
     <delay-dialog
       v-model="delayDialogVisible"
-      :current-time-range="task.timeRange"
-      :task-title="task.title"
+      :current-time-range="taskData.timeRange"
+      :task-title="taskData.title"
       @confirm="handleDelayConfirm"
       @cancel="handleDelayCancel"
     />
 
     <asset-dialog
       v-model="feedbackDialogVisible"
-      :task-title="task.title"
-      :time-range="task.timeRange"
-      :actual-duration="task.actualDuration"
+      :task-title="taskData.title"
+      :time-range="taskData.timeRange"
+      :actual-duration="taskData.actualDuration"
       @confirm="handleFeedbackConfirm"
       @cancel="handleFeedbackCancel"
     />
 
     <stop-dialog
       v-model="stopDialogVisible"
-      :task-title="task.title"
+      :task-title="taskData.title"
       @confirm="handleStopConfirm"
       @cancel="handleStopCancel"
     />
 
     <add-task-item-dialog
       v-model="addTaskItemDialogVisible"
-      :task-title="task.title"
-      :sub-task-group="task.subTaskGroup"
+      :task-title="taskData.title"
+      :sub-task-group="taskData.subTaskGroup"
       @confirm="handleAddTaskItemConfirm"
       @cancel="handleAddTaskItemCancel"
     />
@@ -130,7 +134,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import {
   ChatDotRound,
   VideoPause,
@@ -177,7 +181,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['toggleSubTask', 'feedback', 'pause', 'delay', 'resize', 'addSubTask']);
+const emit = defineEmits(['toggleSubTask', 'feedback', 'pause', 'delay', 'resize']);
 
 const MIN_TASK_DURATION = 30;
 const PIXELS_PER_MINUTE = 2;
@@ -189,6 +193,18 @@ const addTaskItemDialogVisible = ref(false);
 const isResizing = ref(false);
 const startY = ref(0);
 const startHeight = ref(0);
+
+// 使用ref包装任务数据，确保响应式更新
+const taskData = ref({ ...props.task });
+
+// 监听props.task的变化，更新taskData
+watch(
+  () => props.task,
+  (newTask) => {
+    taskData.value = { ...newTask };
+  },
+  { deep: true }
+);
 
 // 注意：子任务和活动日志数据由父组件提供，组件内不再主动加载
 
@@ -205,8 +221,8 @@ const currentHeight = computed(() => {
 
   let height = HEADER_HEIGHT + FOOTER_HEIGHT;
 
-  const subTaskCount = props.task.subTasks?.length || 0;
-  const activityCount = props.task.activities?.length || 0;
+  const subTaskCount = taskData.value.subTasks?.length || 0;
+  const activityCount = taskData.value.activities?.length || 0;
 
   if (subTaskCount > 0 || activityCount > 0) {
     const leftSectionHeight =
@@ -229,22 +245,22 @@ const currentHeight = computed(() => {
 
 const hasContent = computed(() => {
   return (
-    (props.task.subTasks && props.task.subTasks.length > 0) ||
-    (props.task.activities && props.task.activities.length > 0)
+    (taskData.value.subTasks && taskData.value.subTasks.length > 0) ||
+    (taskData.value.activities && taskData.value.activities.length > 0)
   );
 });
 
 const toggleSubTask = async (idx) => {
   try {
-    const subTask = props.task.subTasks[idx];
+    const subTask = taskData.value.subTasks[idx];
     if (subTask.completed) {
       await bizService.subTask.uncompleteSubTask(subTask.id);
     } else {
       await bizService.subTask.completeSubTask(subTask.id);
     }
     ElMessage.success('操作成功');
-    // 通知父组件刷新子任务数据
-    emit('toggleSubTask', idx);
+    // 刷新任务数据
+    await loadTaskDetails();
   } catch (error) {
     console.error('切换子任务状态失败:', error);
   }
@@ -256,7 +272,7 @@ const handleFeedback = () => {
 
 const handleFeedbackConfirm = async (feedbackData) => {
   try {
-    await bizService.task.completeTask(props.task.id, feedbackData.feedback);
+    await bizService.task.completeTask(taskData.value.id, feedbackData.feedback);
     ElMessage.success('反馈提交成功');
     feedbackDialogVisible.value = false;
     // 通知父组件刷新数据
@@ -276,7 +292,7 @@ const handlePause = () => {
 
 const handleStopConfirm = async (stopData) => {
   try {
-    await bizService.task.pauseTask(props.task.id, stopData.reason);
+    await bizService.task.pauseTask(taskData.value.id, stopData.reason);
     ElMessage.success('任务已暂停');
     stopDialogVisible.value = false;
     // 通知父组件刷新数据
@@ -296,7 +312,7 @@ const handleDelay = () => {
 
 const handleDelayConfirm = async ({ timeRange, reason }) => {
   try {
-    await bizService.task.delayTask(props.task.id, reason);
+    await bizService.task.delayTask(taskData.value.id, reason);
     ElMessage.success('任务已延时');
     delayDialogVisible.value = false;
     // 通知父组件刷新数据
@@ -326,7 +342,7 @@ const checkTimeConflict = (newStart, newEnd) => {
   const endTimestamp = endHour * 60 + endMin;
 
   for (const otherTask of props.otherTasks) {
-    if (otherTask.id === props.task.id) continue;
+    if (otherTask.id === taskData.value.id) continue;
     const [otherStart, otherEnd] = otherTask.timeRange.split('-');
     const [otherStartHour, otherStartMin] = otherStart.split(':').map(Number);
     const otherStartTimestamp = otherStartHour * 60 + otherStartMin;
@@ -344,7 +360,7 @@ const onMouseMove = (e) => {
   const deltaY = e.clientY - startY.value;
   const newHeight = Math.max(startHeight.value + deltaY, MIN_TASK_DURATION * PIXELS_PER_MINUTE);
   const newDuration = Math.round(newHeight / PIXELS_PER_MINUTE);
-  const [start] = props.task.timeRange.split('-');
+  const [start] = taskData.value.timeRange.split('-');
   const [startHour, startMin] = start.split(':').map(Number);
   const startDate = new Date();
   startDate.setHours(startHour, startMin, 0, 0);
@@ -368,29 +384,82 @@ const handleAddSubTask = () => {
   addTaskItemDialogVisible.value = true;
 };
 
-const handleAddTaskItemConfirm = async (taskItemData) => {
+// 获取任务详情
+const loadTaskDetails = async () => {
   try {
-    // 优先级映射：将前端字符串转换为后端整数值
-    const priorityMap = {
-      urgent: 4, // 紧急
-      important: 3, // 重要
-      normal: 2, // 一般
-      low: 1, // 低
-    };
+    const response = await bizService.task.getTaskDetailsById(taskData.value.id);
+    if (response.data) {
+      const taskResponse = response.data;
+      // 更新任务的子任务列表
+      const subTasks = taskResponse.subTasks
+        ? taskResponse.subTasks.map((subTask) => ({
+            id: subTask.id,
+            text: subTask.title,
+            completed: subTask.status === 1,
+            taskId: subTask.taskId,
+            subTaskGroup: subTask.subTaskGroup,
+            sortOrder: subTask.sortOrder,
+            createdAt: subTask.createdAt,
+            updatedAt: subTask.updatedAt,
+          }))
+        : [];
 
-    const subTaskData = {
-      subTaskGroup: taskItemData.subTaskGroup,
-      title: taskItemData.title,
-      priority: priorityMap[taskItemData.priority] || 2, // 默认一般优先级
-      sortOrder: 0,
-    };
-    await bizService.subTask.createSubTask(subTaskData);
-    ElMessage.success('子任务添加成功');
-    addTaskItemDialogVisible.value = false;
-    // 通知父组件添加了子任务
-    emit('addSubTask');
+      // 更新任务的活动日志列表
+      const typeMap = {
+        1: { type: 'start', typeText: '开始任务' },
+        2: { type: 'pause', typeText: '暂停任务' },
+        3: { type: 'resume', typeText: '恢复任务' },
+        4: { type: 'complete', typeText: '完成任务' },
+        5: { type: 'abandon', typeText: '放弃任务' },
+        6: { type: 'delay', typeText: '延时任务' },
+      };
+
+      const activities = taskResponse.activities
+        ? taskResponse.activities.map((activity) => {
+            const typeInfo = typeMap[activity.changeType] || { type: 'info', typeText: '信息' };
+            return {
+              id: activity.id,
+              taskId: activity.taskId,
+              changeType: activity.changeType,
+              type: typeInfo.type,
+              typeText: typeInfo.typeText,
+              time: formatTime(activity.createdAt),
+              description: activity.feedbackContent || typeInfo.typeText,
+              userId: activity.userId,
+              createdAt: activity.createdAt,
+            };
+          })
+        : [];
+
+      // 更新taskData，触发组件重新渲染
+      taskData.value = {
+        ...taskData.value,
+        subTasks,
+        activities,
+      };
+    }
   } catch (error) {
-    console.error('添加子任务失败:', error);
+    console.error('加载任务详情失败:', error);
+  }
+};
+
+// 格式化时间
+const formatTime = (dateTimeStr) => {
+  if (!dateTimeStr) return '';
+  const date = new Date(dateTimeStr);
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
+
+const handleAddTaskItemConfirm = async () => {
+  try {
+    // 刷新当前任务的数据
+    await loadTaskDetails();
+  } catch (error) {
+    console.error('刷新任务数据失败:', error);
+  } finally {
+    addTaskItemDialogVisible.value = false;
   }
 };
 

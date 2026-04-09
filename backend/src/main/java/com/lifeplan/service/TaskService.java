@@ -16,11 +16,9 @@ public interface TaskService extends IService<Task> {
     Task updateTask(Long id, TaskUpdateDTO dto);
     
     void deleteTask(Long id);
-    
-    Task getTaskById(Long id);
-    
-    List<Task> getTasksByDate(LocalDate date, Long userId);
-    
+
+    TaskInfoVO getTaskDetailsById(Long taskId, Long userId);
+
     List<TaskInfoVO> getTaskDetailsByDate(LocalDate date, Long userId);
     
     Task startTask(Long id, Long userId);
@@ -34,4 +32,5 @@ public interface TaskService extends IService<Task> {
     Task abandonTask(Long id, String reason, Long userId);
     
     Task delayTask(Long id, String reason, Long userId);
+
 }

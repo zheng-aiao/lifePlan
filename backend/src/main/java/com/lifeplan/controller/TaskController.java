@@ -33,27 +33,17 @@ public class TaskController {
         data.put("created_at", task.getCreatedAt());
         return Result.success("创建成功", data);
     }
-    
-    @GetMapping("/{date}")
-    public Result<List<Task>> getTasksByDate(
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+
+
+    @GetMapping("/{taskId}")
+    public Result<TaskInfoVO> getTaskDetailsById(
+            @PathVariable Long taskId,
             @RequestParam(required = false) Integer taskType,
             @RequestParam(required = false) Integer taskStatus,
             @RequestParam(required = false) String category) {
         Long userId = 1L;
-        List<Task> tasks = taskService.getTasksByDate(date, userId);
-        return Result.success(tasks);
-    }
-    
-    @GetMapping("/{date}/details")
-    public Result<List<TaskInfoVO>> getTaskDetailsByDate(
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            @RequestParam(required = false) Integer taskType,
-            @RequestParam(required = false) Integer taskStatus,
-            @RequestParam(required = false) String category) {
-        Long userId = 1L;
-        List<TaskInfoVO> tasks = taskService.getTaskDetailsByDate(date, userId);
-        return Result.success(tasks);
+        TaskInfoVO taskVo = taskService.getTaskDetailsById(taskId, userId);
+        return Result.success(taskVo);
     }
     
     @PutMapping("/{id}")
@@ -69,6 +59,17 @@ public class TaskController {
     public Result<String> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
         return Result.success("删除成功");
+    }
+    
+    @GetMapping("/date/{date}")
+    public Result<List<TaskInfoVO>> getTasksByDate(
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @RequestParam(required = false) Integer taskType,
+            @RequestParam(required = false) Integer taskStatus,
+            @RequestParam(required = false) String category) {
+        Long userId = 1L;
+        List<TaskInfoVO> tasks = taskService.getTaskDetailsByDate(date, userId);
+        return Result.success(tasks);
     }
     
     @PostMapping("/{id}/start")

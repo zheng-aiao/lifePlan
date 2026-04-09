@@ -88,19 +88,35 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         }
         removeById(id);
     }
-    
+
+
     @Override
-    public Task getTaskById(Long id) {
+    public TaskInfoVO getTaskDetailsById(Long id, Long userId) {
         Task task = getById(id);
-        if (task == null) {
-            throw new BusinessException("任务不存在");
+        TaskInfoVO vo = new TaskInfoVO();
+        BeanUtil.copyProperties(task, vo);
+
+        // 查询子任务列表
+        if (task.getSubTaskGroup() != null && !task.getSubTaskGroup().isEmpty()) {
+            List<SubTask> subTasks = subTaskMapper.selectBySubTaskGroup(task.getSubTaskGroup());
+            List<TaskInfoVO.SubTaskInfo> subTaskInfos = subTasks.stream().map(subTask -> {
+                TaskInfoVO.SubTaskInfo subTaskInfo = new TaskInfoVO.SubTaskInfo();
+                BeanUtil.copyProperties(subTask, subTaskInfo);
+                subTaskInfo.setTaskId(task.getId());
+                return subTaskInfo;
+            }).collect(Collectors.toList());
+            vo.setSubTasks(subTaskInfos);
         }
-        return task;
-    }
-    
-    @Override
-    public List<Task> getTasksByDate(LocalDate date, Long userId) {
-        return taskMapper.selectByDate(date, userId);
+
+        // 查询活动日志列表
+        List<TaskStatusChange> statusChanges = taskStatusChangeMapper.selectByTaskId(task.getId());
+        List<TaskInfoVO.ActivityLog> activityLogs = statusChanges.stream().map(change -> {
+            TaskInfoVO.ActivityLog activityLog = new TaskInfoVO.ActivityLog();
+            BeanUtil.copyProperties(change, activityLog);
+            return activityLog;
+        }).collect(Collectors.toList());
+        vo.setActivities(activityLogs);
+        return vo;
     }
     
     @Override

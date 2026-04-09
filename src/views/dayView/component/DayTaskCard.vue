@@ -18,20 +18,20 @@
             <div class="meta-row">
               <el-icon class="time-icon"><Clock /></el-icon>
               <span class="time-range">{{ taskData.timeRange }}</span>
-              <span class="status-tag" :class="taskData.status">{{
+              <span class="status-tag" :class="taskData.taskStatus">{{
                 taskData.statusText || '进行中'
               }}</span>
             </div>
           </div>
         </div>
-        <div class="header-right">
+        <div class="header-right" v-if="isTaskActive">
           <div class="action-btn" @click.stop="handleAddSubTask">
             <el-icon><Plus /></el-icon>
             <span>新增</span>
           </div>
-          <div class="action-btn" @click.stop="handleFeedback">
-            <el-icon><ChatDotRound /></el-icon>
-            <span>反馈</span>
+          <div class="action-btn" @click.stop="handlePause">
+            <el-icon :is="startStopButtonInfo.icon"></el-icon>
+            <span>{{ startStopButtonInfo.text }}</span>
           </div>
           <div class="action-btn" @click.stop="handleDelay">
             <el-icon><Timer /></el-icon>
@@ -91,8 +91,15 @@
           <span class="duration-label">已用时:</span>
           <span class="duration-value">{{ taskData.actualDuration }}</span>
         </div>
-        <div class="complete-btn" @click.stop="handlePause">
-          <el-icon><Check /></el-icon>
+        <div v-if="isTaskActive" class="footer-buttons">
+          <div class="abandon-btn" @click.stop="handleAbandon">
+            <el-icon><Close /></el-icon>
+            <span>放弃</span>
+          </div>
+          <div class="complete-btn" @click.stop="handleFeedback">
+            <el-icon><Check /></el-icon>
+            <span>完成</span>
+          </div>
         </div>
       </div>
     </div>
@@ -123,6 +130,14 @@
       @cancel="handleStopCancel"
     />
 
+    <stop-dialog
+      v-model="abandonDialogVisible"
+      :task-title="taskData.title"
+      title="放弃任务"
+      @confirm="handleAbandonConfirm"
+      @cancel="handleAbandonCancel"
+    />
+
     <add-task-item-dialog
       v-model="addTaskItemDialogVisible"
       :task-title="taskData.title"
@@ -138,6 +153,7 @@ import { ref, computed, watch } from 'vue';
 import {
   ChatDotRound,
   VideoPause,
+  VideoPlay,
   Check,
   Timer,
   Plus,
@@ -151,6 +167,7 @@ import DelayDialog from '../dialog/DelayDialog.vue';
 import AssetDialog from '../dialog/AssetDialog.vue';
 import StopDialog from '../dialog/StopDialog.vue';
 import AddTaskItemDialog from '../dialog/AddTaskItemDialog.vue';
+import { mapTaskStatusText } from '@/emun/constant';
 import bizService from '@/utils/bizService';
 
 const props = defineProps({
@@ -161,7 +178,7 @@ const props = defineProps({
       id: 0,
       title: '',
       timeRange: '',
-      status: 'in-progress',
+      taskStatus: 0,
       statusText: '进行中',
       actualDuration: '',
       subTasks: [],
@@ -181,7 +198,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['toggleSubTask', 'feedback', 'pause', 'delay', 'resize']);
+const emit = defineEmits(['toggleSubTask', 'feedback', 'pause', 'delay', 'resize', 'abandon']);
 
 const MIN_TASK_DURATION = 30;
 const PIXELS_PER_MINUTE = 2;
@@ -190,6 +207,7 @@ const delayDialogVisible = ref(false);
 const feedbackDialogVisible = ref(false);
 const stopDialogVisible = ref(false);
 const addTaskItemDialogVisible = ref(false);
+const abandonDialogVisible = ref(false);
 const isResizing = ref(false);
 const startY = ref(0);
 const startHeight = ref(0);
@@ -205,6 +223,27 @@ watch(
   },
   { deep: true }
 );
+
+// 判断任务是否处于活动状态（待开始、进行中、暂停中）
+const isTaskActive = computed(() => {
+  const status = taskData.value.taskStatus;
+  return status !== 3 && status !== 4;
+});
+
+// 根据任务状态计算启停按钮的显示文本和图标
+const startStopButtonInfo = computed(() => {
+  const status = taskData.value.taskStatus;
+  switch (status) {
+    case 0: // 待开始
+      return { text: '开启', icon: VideoPlay };
+    case 1: // 进行中
+      return { text: '暂停', icon: VideoPause };
+    case 2: // 暂停中
+      return { text: '恢复', icon: VideoPlay };
+    default:
+      return { text: '启停', icon: VideoPause };
+  }
+});
 
 // 注意：子任务和活动日志数据由父组件提供，组件内不再主动加载
 
@@ -275,8 +314,8 @@ const handleFeedbackConfirm = async (feedbackData) => {
     await bizService.task.completeTask(taskData.value.id, feedbackData.feedback);
     ElMessage.success('反馈提交成功');
     feedbackDialogVisible.value = false;
-    // 通知父组件刷新数据
-    emit('feedback');
+    // 刷新任务数据
+    await loadTaskDetails();
   } catch (error) {
     console.error('提交反馈失败:', error);
   }
@@ -286,8 +325,32 @@ const handleFeedbackCancel = () => {
   feedbackDialogVisible.value = false;
 };
 
-const handlePause = () => {
-  stopDialogVisible.value = true;
+const handlePause = async () => {
+  const status = taskData.value.taskStatus;
+  if (status === 1) {
+    // 进行中，点击暂停
+    stopDialogVisible.value = true;
+  } else if (status === 0) {
+    // 待开始，点击开启
+    try {
+      await bizService.task.startTask(taskData.value.id);
+      ElMessage.success('任务已开启');
+      // 刷新任务数据
+      await loadTaskDetails();
+    } catch (error) {
+      console.error('开启任务失败:', error);
+    }
+  } else if (status === 2) {
+    // 暂停中，点击恢复
+    try {
+      await bizService.task.resumeTask(taskData.value.id);
+      ElMessage.success('任务已恢复');
+      // 刷新任务数据
+      await loadTaskDetails();
+    } catch (error) {
+      console.error('恢复任务失败:', error);
+    }
+  }
 };
 
 const handleStopConfirm = async (stopData) => {
@@ -295,8 +358,8 @@ const handleStopConfirm = async (stopData) => {
     await bizService.task.pauseTask(taskData.value.id, stopData.reason);
     ElMessage.success('任务已暂停');
     stopDialogVisible.value = false;
-    // 通知父组件刷新数据
-    emit('pause');
+    // 刷新任务数据
+    await loadTaskDetails();
   } catch (error) {
     console.error('暂停任务失败:', error);
   }
@@ -304,6 +367,26 @@ const handleStopConfirm = async (stopData) => {
 
 const handleStopCancel = () => {
   stopDialogVisible.value = false;
+};
+
+const handleAbandon = () => {
+  abandonDialogVisible.value = true;
+};
+
+const handleAbandonConfirm = async (abandonData) => {
+  try {
+    await bizService.task.abandonTask(taskData.value.id, abandonData.reason);
+    ElMessage.success('任务已放弃');
+    abandonDialogVisible.value = false;
+    // 刷新任务数据
+    await loadTaskDetails();
+  } catch (error) {
+    console.error('放弃任务失败:', error);
+  }
+};
+
+const handleAbandonCancel = () => {
+  abandonDialogVisible.value = false;
 };
 
 const handleDelay = () => {
@@ -315,8 +398,8 @@ const handleDelayConfirm = async ({ timeRange, reason }) => {
     await bizService.task.delayTask(taskData.value.id, reason);
     ElMessage.success('任务已延时');
     delayDialogVisible.value = false;
-    // 通知父组件刷新数据
-    emit('delay', timeRange, reason);
+    // 刷新任务数据
+    await loadTaskDetails();
   } catch (error) {
     console.error('延时任务失败:', error);
   }
@@ -434,6 +517,8 @@ const loadTaskDetails = async () => {
       // 更新taskData，触发组件重新渲染
       taskData.value = {
         ...taskData.value,
+        ...taskResponse,
+        statusText: mapTaskStatusText(taskResponse.taskStatus),
         subTasks,
         activities,
       };
@@ -823,14 +908,49 @@ const handleAddTaskItemCancel = () => {
     }
   }
 
-  .complete-btn {
-    width: pxToRem(40);
-    height: pxToRem(40);
-    border-radius: pxToRem(12);
-    background: linear-gradient(135deg, rgba(74, 64, 224, 1) 0%, rgba(151, 149, 255, 1) 100%);
+  .footer-buttons {
+    display: flex;
+    gap: pxToRem(12);
+    align-items: center;
+  }
+
+  .abandon-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: pxToRem(6);
+    padding: pxToRem(8) pxToRem(16);
+    border-radius: pxToRem(8);
+    background-color: rgba(248, 250, 252, 1);
+    border: pxToRem(1) solid rgba(229, 234, 238, 1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .el-icon {
+      font-size: pxToRem(14);
+      color: rgba(239, 68, 68, 1);
+    }
+
+    span {
+      font-size: pxToRem(12);
+      font-family: 'Alibaba PuHuiTi-Medium';
+      font-weight: 500;
+      line-height: pxToRem(16);
+      color: rgba(239, 68, 68, 1);
+    }
+  }
+
+  .complete-btn {
+    display: flex;
+    align-items: center;
+    gap: pxToRem(6);
+    padding: pxToRem(8) pxToRem(16);
+    border-radius: pxToRem(8);
+    background: linear-gradient(135deg, rgba(74, 64, 224, 1) 0%, rgba(151, 149, 255, 1) 100%);
     cursor: pointer;
     box-shadow:
       0 pxToRem(4) pxToRem(6) - pxToRem(4) rgba(199, 210, 254, 1),
@@ -843,6 +963,14 @@ const handleAddTaskItemCancel = () => {
 
     .el-icon {
       font-size: pxToRem(14);
+      color: white;
+    }
+
+    span {
+      font-size: pxToRem(12);
+      font-family: 'Alibaba PuHuiTi-Medium';
+      font-weight: 500;
+      line-height: pxToRem(16);
       color: white;
     }
   }

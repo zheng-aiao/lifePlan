@@ -91,6 +91,7 @@ import AsideRight from '@/views/dayView/component/AsideRight.vue';
 import DayTaskList from '@/views/dayView/component/DayTaskList.vue';
 import DayTaskCard from './component/DayTaskCard.vue';
 import DayTaskHandle from './component/DayTaskHandle.vue';
+import { mapTaskStatusText } from '@/emun/constant';
 import bizService from '@/utils/bizService';
 import { yearlyTasks, monthlyTasks, temporaryTasks } from '@/mock/day.js';
 
@@ -498,7 +499,6 @@ const loadTaskDetails = async (date) => {
         category: task.category,
         taskType: task.taskType,
         taskStatus: task.taskStatus,
-        status: mapTaskStatus(task.taskStatus),
         statusText: mapTaskStatusText(task.taskStatus),
         timeRange: formatTimeRange(task.plannedStartTime, task.plannedEndTime),
         actualDuration: formatDuration(task.actualDuration),
@@ -549,32 +549,6 @@ const loadTaskDetails = async (date) => {
   } catch (error) {
     console.error('加载任务详情失败:', error);
   }
-};
-
-// 映射任务状态
-const mapTaskStatus = (status) => {
-  const statusMap = {
-    0: 'pending',
-    1: 'in-progress',
-    2: 'paused',
-    3: 'completed',
-    4: 'abandoned',
-    5: 'delayed',
-  };
-  return statusMap[status] || 'pending';
-};
-
-// 映射任务状态文本
-const mapTaskStatusText = (status) => {
-  const statusTextMap = {
-    0: '待开始',
-    1: '进行中',
-    2: '已暂停',
-    3: '已完成',
-    4: '已放弃',
-    5: '已延迟',
-  };
-  return statusTextMap[status] || '待开始';
 };
 
 // 格式化时间范围

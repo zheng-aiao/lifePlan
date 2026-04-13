@@ -5,10 +5,10 @@
     </div>
     <div class="header-nav">
       <el-button circle class="nav-btn" @click="handlePrev">
-        <el-icon><ArrowLeft /></el-icon>
+        <BaseButton class="action-btn" type="left" iconBtn />
       </el-button>
       <el-button circle class="nav-btn" @click="handleNext">
-        <el-icon><ArrowRight /></el-icon>
+        <BaseButton class="action-btn" type="right" iconBtn />
       </el-button>
     </div>
   </div>
@@ -16,7 +16,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 
 const emit = defineEmits(['updateTasks']);
 

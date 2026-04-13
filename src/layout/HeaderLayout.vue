@@ -9,18 +9,14 @@
     <div class="search-container">
       <el-input v-model="searchQuery" placeholder="搜索任务、笔记或档案..." class="search-input">
         <template #prefix>
-          <img src="../assets/images/header/search.png" class="search-icon" />
+          <BaseButton class="action-btn" type="search" iconBtn />
         </template>
       </el-input>
     </div>
 
     <div class="right-container">
-      <el-button class="header-button" circle>
-        <img src="../assets/images/header/setting.png" class="button-icon" />
-      </el-button>
-      <el-button class="header-button" circle>
-        <img src="../assets/images/header/message.png" class="button-icon" />
-      </el-button>
+      <BaseButton class="action-btn" type="notify" iconBtn />
+      <BaseButton class="action-btn" type="setting" iconBtn />
       <div class="vertical-border"></div>
       <el-avatar class="user-avatar">
         <img src="../assets/images/header/avatar.png" class="avatar-image" />
@@ -31,6 +27,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 
 const searchQuery = ref('');
 </script>

@@ -13,10 +13,10 @@
       <div class="card-header">
         <div class="header-left">
           <div class="title-row">
-            <el-icon class="title-icon"><Document /></el-icon>
+            <BaseButton class="action-btn" type="task" iconBtn />
             <span class="task-title">{{ taskData.title }}</span>
             <div class="meta-row">
-              <el-icon class="time-icon"><Clock /></el-icon>
+              <BaseButton class="action-btn" type="clock" iconBtn />
               <span class="time-range">{{ taskData.timeRange }}</span>
               <span class="status-tag" :class="taskData.taskStatus">{{
                 taskData.statusText || '进行中'
@@ -25,25 +25,21 @@
           </div>
         </div>
         <div class="header-right" v-if="isTaskActive">
-          <div class="action-btn" @click.stop="handleAddSubTask">
-            <el-icon><Plus /></el-icon>
-            <span>新增</span>
-          </div>
-          <div class="action-btn" @click.stop="handlePause">
-            <el-icon :is="startStopButtonInfo.icon"></el-icon>
-            <span>{{ startStopButtonInfo.text }}</span>
-          </div>
-          <div class="action-btn" @click.stop="handleDelay">
-            <el-icon><Timer /></el-icon>
-            <span>延时</span>
-          </div>
+          <BaseButton class="action-btn" type="add" label="新增" @click.stop="handleAddSubTask" />
+          <BaseButton
+            class="action-btn"
+            :type="taskData.taskStatus === 1 ? 'pause' : 'start'"
+            :label="startStopButtonInfo.text"
+            @click.stop="handlePause"
+          />
+          <BaseButton class="action-btn" type="delay" label="延时" @click.stop="handleDelay" />
         </div>
       </div>
 
       <div class="card-content">
         <div class="left-section">
           <div class="section-header">
-            <el-icon><List /></el-icon>
+            <BaseButton class="action-btn" type="taskProcess" iconBtn />
             <span>任务清单</span>
           </div>
           <div class="sub-task-list">
@@ -68,7 +64,7 @@
 
         <div class="right-section">
           <div class="section-header">
-            <el-icon><Memo /></el-icon>
+            <BaseButton class="action-btn" type="active" iconBtn />
             <span>活动日志</span>
           </div>
           <div class="activity-list">
@@ -92,14 +88,13 @@
           <span class="duration-value">{{ taskData.actualDuration }}</span>
         </div>
         <div v-if="isTaskActive" class="footer-buttons">
-          <div class="abandon-btn" @click.stop="handleAbandon">
-            <el-icon><Close /></el-icon>
-            <span>放弃</span>
-          </div>
-          <div class="complete-btn" @click.stop="handleFeedback">
-            <el-icon><Check /></el-icon>
-            <span>完成</span>
-          </div>
+          <BaseButton class="abandon-btn" type="cancel" label="放弃" @click.stop="handleAbandon" />
+          <BaseButton
+            class="complete-btn"
+            type="confirm"
+            label="完成"
+            @click.stop="handleFeedback"
+          />
         </div>
       </div>
     </div>
@@ -150,19 +145,8 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
-import {
-  ChatDotRound,
-  VideoPause,
-  VideoPlay,
-  Check,
-  Timer,
-  Plus,
-  Document,
-  Clock,
-  List,
-  Memo,
-} from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
+import BaseButton from '@/components/common/BaseButton.vue';
 import DelayDialog from '../dialog/DelayDialog.vue';
 import AssetDialog from '../dialog/AssetDialog.vue';
 import StopDialog from '../dialog/StopDialog.vue';
@@ -230,18 +214,18 @@ const isTaskActive = computed(() => {
   return status !== 3 && status !== 4;
 });
 
-// 根据任务状态计算启停按钮的显示文本和图标
+// 根据任务状态计算启停按钮的显示文本
 const startStopButtonInfo = computed(() => {
   const status = taskData.value.taskStatus;
   switch (status) {
     case 0: // 待开始
-      return { text: '开启', icon: VideoPlay };
+      return { text: '开启' };
     case 1: // 进行中
-      return { text: '暂停', icon: VideoPause };
+      return { text: '暂停' };
     case 2: // 暂停中
-      return { text: '恢复', icon: VideoPlay };
+      return { text: '恢复' };
     default:
-      return { text: '启停', icon: VideoPause };
+      return { text: '启停' };
   }
 });
 

@@ -1,0 +1,19 @@
+@font-face {
+  font-family: 'iconfont';
+  src: url('@/assets/fonts/iconfont.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: '仿宋_GB2312';
+  src: url('@/assets/fonts/仿宋_GB2312.ttf') format('truetype');
+}
+
+.iconfont {
+  font-family: 'iconfont', sans-serif !important;
+  font-size: calc(18 * 1rem / 16);
+  line-height: 1;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: pointer;
+}

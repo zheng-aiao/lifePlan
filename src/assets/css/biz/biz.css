@@ -1,0 +1,27 @@
+.biz-primary {
+}
+
+.biz-blue {
+  --color: var(--blue);
+}
+
+.biz-success {
+  --color: var(--success);
+}
+
+.biz-red,
+.biz-error {
+  --color: var(--error);
+}
+
+.biz-warning {
+  --color: var(--warning);
+}
+
+.biz-yellow {
+  --color: var(--yellow);
+}
+
+.biz-grey {
+  --color: var(--gray);
+}

@@ -1,66 +1,20 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  word-break: break-word;
-}
-
-html {
+:root {
   font-size: var(--base-font-size);
 }
-
-body {
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-}
-
-html,
-body,
-#app {
-  height: 100%;
-  width: 100%;
-}
-
-ol,
-ul,
-menu {
-  padding-inline-start: 0;
-  list-style: none;
-}
-
-ol li::marker,
-ul li::before {
-  letter-spacing: 0;
-}
-
-.scroll-container > div {
-  width: 100%;
-}
-
-.container > div {
-  width: 100%;
-}
-
-.Pixso-canvas-0_1 > div {
-  width: 100%;
-}
-
 :root {
-  --aside-left-width: calc(240 / 16 * 1rem);
-  --aside-right-width: calc(308 / 16 * 1rem);
-  --left-section-width: calc(420 / 16 * 1rem);
+  --base-font-size: calc(1920 / 120 * 1px);
+
+  --aside-left-width: calc(200 / 16 * 1rem);
+  --aside-right-width: calc(240 / 16 * 1rem);
+  --header-height: calc(64 / 16 * 1rem);
   --content-gap: calc(16 / 16 * 1rem);
   --content-padding: calc(16 / 16 * 1rem);
-  --header-height: calc(64 / 16 * 1rem);
-  --base-font-size: calc(1920 / 100 * 1px); /* 19.2px for 1920px screen */
 
-  /* dialog尺寸 - 原始px值（JS读取用，不会被修改） */
+  /* 弹窗大小变量 */
   --dialog-width-base: 900;
   --dialog-height-base: 600;
   --dialog-header-height-base: 70;
   --dialog-footer-height-base: 70;
-  /* dialog尺寸 - 计算后的值（CSS使用，JS动态设置） */
   --dialog-width: 900;
   --dialog-height: 600;
   --dialog-header-height: 70;
@@ -69,12 +23,13 @@ ul li::before {
 
 @media (min-width: 2040px) {
   :root {
+    --base-font-size: calc(2040 / 120 * 1px);
+
     --aside-left-width: calc(280 / 16 * 1rem);
     --aside-right-width: calc(360 / 16 * 1rem);
-    --left-section-width: calc(480 / 16 * 1rem);
     --content-gap: calc(20 / 16 * 1rem);
     --content-padding: calc(20 / 16 * 1rem);
-    --base-font-size: calc(2040 / 100 * 1px); /* 20.4px for 2040px screen */
+
     --dialog-width-base: 1024;
     --dialog-height-base: 680;
     --dialog-header-height-base: 80;
@@ -88,12 +43,14 @@ ul li::before {
 
 @media (max-width: 1440px) {
   :root {
+    --base-font-size: calc(1440 / 120 * 1px);
+
     --aside-left-width: calc(224 / 16 * 1rem);
     --aside-right-width: calc(288 / 16 * 1rem);
-    --left-section-width: calc(384 / 16 * 1rem);
     --content-gap: calc(14 / 16 * 1rem);
     --content-padding: calc(14 / 16 * 1rem);
-    --base-font-size: calc(1440 / 100 * 1px); /* 14.4px for 1440px screen */
+
+    /* 弹窗变量 */
     --dialog-width-base: 840;
     --dialog-height-base: 560;
     --dialog-header-height-base: 64;
@@ -107,12 +64,14 @@ ul li::before {
 
 @media (max-width: 1280px) {
   :root {
+    --base-font-size: calc(1280 / 120 * 1px);
+
     --aside-left-width: calc(192 / 16 * 1rem);
     --aside-right-width: calc(256 / 16 * 1rem);
-    --left-section-width: calc(352 / 16 * 1rem);
     --content-gap: calc(12 / 16 * 1rem);
     --content-padding: calc(12 / 16 * 1rem);
-    --base-font-size: calc(1280 / 100 * 1px); /* 12.8px for 1280px screen */
+
+    /* 弹窗变量 */
     --dialog-width-base: 768;
     --dialog-height-base: 512;
     --dialog-header-height-base: 60;
@@ -126,12 +85,14 @@ ul li::before {
 
 @media (max-width: 1024px) {
   :root {
+    --base-font-size: calc(1024 / 120 * 1px);
+
     --aside-left-width: calc(160 / 16 * 1rem);
     --aside-right-width: calc(224 / 16 * 1rem);
-    --left-section-width: calc(288 / 16 * 1rem);
     --content-gap: calc(8 / 16 * 1rem);
     --content-padding: calc(8 / 16 * 1rem);
-    --base-font-size: calc(1024 / 100 * 1px); /* 10.24px for 1024px screen */
+
+    /* 弹窗变量 */
     --dialog-width-base: 680;
     --dialog-height-base: 448;
     --dialog-header-height-base: 56;

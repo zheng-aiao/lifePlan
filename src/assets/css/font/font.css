@@ -17,3 +17,40 @@
   -moz-osx-font-smoothing: grayscale;
   cursor: pointer;
 }
+
+:root {
+  /* 字体大小设置 */
+  --fontSize-1: calc(18 * 1rem / 16);
+  --fontLineHeight-1: calc(28 * 1rem / 16);
+  --fontWeight-1: 700;
+  --fontSize-2: calc(16 * 1rem / 16);
+  --fontLineHeight-2: calc(24 * 1rem / 16);
+  --fontWeight-2: 700;
+  --fontSize-3: calc(16 * 1rem / 16);
+  --fontLineHeight-3: calc(24 * 1rem / 16);
+  --fontWeight-3: 400;
+  --fontSize-4: calc(14 * 1rem / 16);
+  --fontLineHeight-4: calc(22 * 1rem / 16);
+  --fontWeight-4: 700;
+  --fontSize-5: calc(14 * 1rem / 16);
+  --fontLineHeight-5: calc(22 * 1rem / 16);
+  --fontWeight-5: 400;
+}
+
+:root[srm-care-model='true'] {
+  --fontSize-1: calc(22 * 1rem / 16);
+  --fontLineHeight-1: calc(34 * 1rem / 16);
+  --fontWeight-1: 700;
+  --fontSize-2: calc(20 * 1rem / 16);
+  --fontLineHeight-2: calc(30 * 1rem / 16);
+  --fontWeight-2: 700;
+  --fontSize-3: calc(20 * 1rem / 16);
+  --fontLineHeight-3: calc(30 * 1rem / 16);
+  --fontWeight-3: 400;
+  --fontSize-4: calc(18 * 1rem / 16);
+  --fontLineHeight-4: calc(28 * 1rem / 16);
+  --fontWeight-4: 700;
+  --fontSize-5: calc(18 * 1rem / 16);
+  --fontLineHeight-5: calc(28 * 1rem / 16);
+  --fontWeight-5: 400;
+}

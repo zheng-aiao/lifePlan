@@ -312,22 +312,6 @@ const isExpanded = computed(() => {
   return props.isActive;
 });
 
-// 获取任务的实际高度（根据新的展示策略）
-const currentHeight = computed(() => {
-  const DISPLAY_HEIGHT = 120; // 展示高度：固定高度120px
-  const EXPANDED_HEIGHT = 300; // 展开高度：固定高度300px
-
-  // 根据展开状态返回相应的固定高度
-  return isExpanded.value ? EXPANDED_HEIGHT : DISPLAY_HEIGHT;
-});
-
-const hasContent = computed(() => {
-  return (
-    (taskData.value.subTasks && taskData.value.subTasks.length > 0) ||
-    (taskData.value.activities && taskData.value.activities.length > 0)
-  );
-});
-
 // 计算已完成的子任务数量
 const completedSubTaskCount = computed(() => {
   if (!taskData.value.subTasks || taskData.value.subTasks.length === 0) return 0;
@@ -658,11 +642,6 @@ const handleAddTaskItemCancel = () => {
       align-items: center;
       gap: pxToRem(12);
 
-      .title-icon {
-        font-size: pxToRem(16);
-        color: rgba(74, 64, 224, 1);
-      }
-
       .task-title {
         font-size: pxToRem(20);
         font-family: 'Alibaba PuHuiTi-Medium';
@@ -674,11 +653,6 @@ const handleAddTaskItemCancel = () => {
         display: flex;
         align-items: center;
         gap: pxToRem(8);
-
-        .time-icon {
-          font-size: pxToRem(13);
-          color: rgba(100, 116, 139, 1);
-        }
 
         .time-range {
           font-size: pxToRem(14);
@@ -768,11 +742,6 @@ const handleAddTaskItemCancel = () => {
       gap: pxToRem(8);
       margin-bottom: pxToRem(16);
       flex-shrink: 0;
-
-      .el-icon {
-        font-size: pxToRem(16);
-        color: rgba(74, 64, 224, 1);
-      }
 
       span {
         font-size: pxToRem(14);
@@ -883,11 +852,6 @@ const handleAddTaskItemCancel = () => {
       margin-bottom: pxToRem(16);
       flex-shrink: 0;
 
-      .el-icon {
-        font-size: pxToRem(16);
-        color: rgba(74, 64, 224, 1);
-      }
-
       span {
         font-size: pxToRem(14);
         font-family: 'Alibaba PuHuiTi-Medium';
@@ -935,16 +899,28 @@ const handleAddTaskItemCancel = () => {
           margin-top: pxToRem(6);
           flex-shrink: 0;
 
-          &.interruption {
-            background-color: rgba(249, 115, 22, 1);
+          &.start {
+            background-color: rgba(34, 197, 94, 1);
+          }
+
+          &.pause {
+            background-color: rgba(234, 179, 8, 1);
+          }
+
+          &.resume {
+            background-color: rgba(34, 197, 94, 1);
+          }
+
+          &.complete {
+            background-color: rgba(34, 197, 94, 1);
+          }
+
+          &.abandon {
+            background-color: rgba(239, 68, 68, 1);
           }
 
           &.delay {
             background-color: rgba(234, 179, 8, 1);
-          }
-
-          &.feedback {
-            background-color: rgba(74, 64, 224, 1);
           }
 
           &.info {

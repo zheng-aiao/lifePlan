@@ -143,81 +143,84 @@ div.el-picker-panel {
 
 // 时间选择器
 div.el-time-panel {
-  height: pxToRem(248);
-  border-radius: pxToRem(8);
-  border: 1px solid colorValue(color, 0.2);
-  background: var(--dialogBackgroundColor);
-  box-shadow: var(--dialogShadowColor);
+  height: pxToRem(280);
+  min-width: pxToRem(320);
+  border-radius: pxToRem(12);
+  border: 1px solid rgba(74, 64, 224, 0.2);
+  background: #ffffff;
+  box-shadow: 0 pxToRem(12) pxToRem(24) rgba(0, 0, 0, 0.1);
   color: var(--textColor-1);
+  overflow: hidden;
 
-  .el-time-spinner__item {
-    color: var(--textColor-1);
+  // 时间选择器头部
+  .el-time-panel__header {
+    display: flex;
+    justify-content: space-between;
+    padding: pxToRem(16) pxToRem(20);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(74, 64, 224, 0.05);
 
-    &:hover {
-      color: var(--textColor-1);
-      border-color: colorValue(color, 1);
-      background: transparent;
-    }
-
-    &.active {
-      color: var(--textColor-1);
-      border-color: colorValue(color, 1);
-      // box-shadow: 0 -3px 6px 0 colorValue(color, 1) inset, 0 2px 4px 0 colorValue(color, 1) inset;
-    }
-
-    &:not(.disabled):not(.active):hover {
-      color: rgba(var(--color), 1);
-      background: transparent;
-      border-color: colorValue(color, 1);
+    span {
+      font-size: pxToRem(14);
+      font-weight: 600;
+      color: rgba(77, 93, 115, 1);
     }
   }
 
-  .el-time-panel__footer {
-    color: var(--textColor-1);
-    border-color: transparent;
+  .el-time-spinner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 
-    .cancel,
-    .confirm {
-      padding: pxToRem(5) pxToRem(12);
-      border-radius: pxToRem(8);
-      border: pxToRem(1) solid transparent;
-      cursor: pointer;
-      position: relative;
+    .el-time-spinner__wrapper {
+      flex: 1;
+      overflow: hidden;
     }
 
-    .cancel {
-      transition:
-        color var(--duration),
-        background var(--duration),
-        border-color var(--duration),
-        box-shadow var(--duration);
+    .el-time-spinner__item {
+      height: pxToRem(40);
+      line-height: pxToRem(40);
       color: var(--textColor-1);
-      background-color: rgba(var(--color), 0.3);
-    }
+      font-size: pxToRem(14);
+      text-align: center;
+      transition: all 0.2s ease;
+      border-radius: pxToRem(8);
+      margin: 0 pxToRem(8);
 
-    .confirm {
-      color: colorValue(white, 1);
-      background-color: colorValue(color, 1);
-      font-weight: unset;
+      &:hover {
+        color: rgba(74, 64, 224, 1);
+        background: rgba(74, 64, 224, 0.08);
+        border-color: transparent;
+      }
+
+      &.active {
+        color: rgba(74, 64, 224, 1);
+        background: rgba(74, 64, 224, 0.15);
+        font-weight: 600;
+        border-radius: pxToRem(8);
+        border-color: transparent;
+      }
+
+      &:not(.disabled):not(.active):hover {
+        color: rgba(74, 64, 224, 1);
+        background: rgba(74, 64, 224, 0.08);
+        border-color: transparent;
+      }
+
+      &.disabled {
+        color: rgba(139, 154, 181, 0.5);
+        cursor: not-allowed;
+      }
     }
   }
 
   .el-time-panel__content {
-    &::before {
-      border: none;
-      border-radius: pxToRem(8);
-      box-shadow:
-        0 -0.188rem 0.375rem 0 rgba(var(--color), 1) inset,
-        0 0.125rem 0.25rem 0 rgba(var(--color), 1) inset;
-      background: rgba(var(--color), 0.3);
-      margin: 0;
-      padding: 0;
-      top: calc(50% - 0.8rem);
+    display: flex;
+    height: calc(100% - pxToRem(96));
+    padding: pxToRem(8) 0;
 
-      @include lightTheme {
-        box-shadow: none;
-        background: rgba(var(--blue), 0.1);
-      }
+    &::before {
+      display: none;
     }
 
     &::after {
@@ -225,10 +228,50 @@ div.el-time-panel {
     }
 
     .el-time-spinner {
-      @include lightTheme {
-        .active {
-          color: rgb(var(--blue));
-        }
+      &:not(:last-child) {
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
+      }
+    }
+  }
+
+  .el-time-panel__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: pxToRem(12);
+    padding: pxToRem(12) pxToRem(16);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    background: #fafbfc;
+
+    .cancel,
+    .confirm {
+      padding: pxToRem(8) pxToRem(20);
+      border-radius: pxToRem(8);
+      border: none;
+      cursor: pointer;
+      font-size: pxToRem(14);
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .cancel {
+      color: rgba(77, 93, 115, 1);
+      background: transparent;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    .confirm {
+      color: #ffffff;
+      background: rgba(74, 64, 224, 1);
+
+      &:hover {
+        background: rgba(74, 64, 224, 0.9);
+      }
+
+      &:active {
+        transform: scale(0.98);
       }
     }
   }

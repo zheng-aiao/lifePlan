@@ -4,6 +4,7 @@
 :root {
   --base-font-size: calc(1920 / 120 * 1px);
 
+  /* 布局变量*/
   --aside-left-width: calc(200 / 16 * 1rem);
   --aside-right-width: calc(240 / 16 * 1rem);
   --header-height: calc(64 / 16 * 1rem);
@@ -15,73 +16,30 @@
   --dialog-height-base: 600;
   --dialog-width: 900;
   --dialog-height: 600;
+
+  --date-panel-width: calc(320 / 16 * 1rem);
 }
 
 @media (min-width: 2040px) {
   :root {
     --base-font-size: calc(2040 / 120 * 1px);
-
-    --aside-left-width: calc(280 / 16 * 1rem);
-    --aside-right-width: calc(360 / 16 * 1rem);
-    --content-gap: calc(20 / 16 * 1rem);
-    --content-padding: calc(20 / 16 * 1rem);
-
-    --dialog-width-base: 1024;
-    --dialog-height-base: 680;
-
-    --dialog-width: 1024;
-    --dialog-height: 680;
   }
 }
 
 @media (max-width: 1440px) {
   :root {
     --base-font-size: calc(1440 / 120 * 1px);
-
-    --aside-left-width: calc(224 / 16 * 1rem);
-    --aside-right-width: calc(288 / 16 * 1rem);
-    --content-gap: calc(14 / 16 * 1rem);
-    --content-padding: calc(14 / 16 * 1rem);
-
-    /* 弹窗变量 */
-    --dialog-width-base: 840;
-    --dialog-height-base: 560;
-    --dialog-width: 840;
-    --dialog-height: 560;
   }
 }
 
 @media (max-width: 1280px) {
   :root {
     --base-font-size: calc(1280 / 120 * 1px);
-
-    --aside-left-width: calc(192 / 16 * 1rem);
-    --aside-right-width: calc(256 / 16 * 1rem);
-    --content-gap: calc(12 / 16 * 1rem);
-    --content-padding: calc(12 / 16 * 1rem);
-
-    /* 弹窗变量 */
-    --dialog-width-base: 768;
-    --dialog-height-base: 512;
-    --dialog-width: 768;
-    --dialog-height: 512;
   }
 }
 
 @media (max-width: 1024px) {
   :root {
     --base-font-size: calc(1024 / 120 * 1px);
-
-    --aside-left-width: calc(160 / 16 * 1rem);
-    --aside-right-width: calc(224 / 16 * 1rem);
-    --content-gap: calc(8 / 16 * 1rem);
-    --content-padding: calc(8 / 16 * 1rem);
-
-    /* 弹窗变量 */
-    --dialog-width-base: 680;
-    --dialog-height-base: 448;
-
-    --dialog-width: 680;
-    --dialog-height: 448;
   }
 }

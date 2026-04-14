@@ -55,6 +55,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         }
         
         save(task);
+        
+        // 为新创建的任务添加活动日志
+        createStatusChange(task.getId(), 0, "创建任务", task.getUserId());
+        
         return task;
     }
     

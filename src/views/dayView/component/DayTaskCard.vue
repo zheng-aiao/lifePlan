@@ -826,6 +826,10 @@ const handleAddTaskItemCancel = () => {
           &.feedback {
             background-color: rgba(74, 64, 224, 1);
           }
+
+          &.info {
+            background-color: rgba(100, 116, 139, 1);
+          }
         }
 
         .activity-content {

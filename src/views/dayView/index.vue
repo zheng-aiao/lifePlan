@@ -577,6 +577,7 @@ const loadTaskDetails = async (date) => {
         activities: task.activities
           ? task.activities.map((activity) => {
               const typeMap = {
+                0: { type: 'info', typeText: '创建任务' },
                 1: { type: 'start', typeText: '开始任务' },
                 2: { type: 'pause', typeText: '暂停任务' },
                 3: { type: 'resume', typeText: '恢复任务' },

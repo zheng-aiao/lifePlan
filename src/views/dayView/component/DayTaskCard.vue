@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <div class="card-content">
+      <div class="card-content" :class="{ 'is-expanded': isExpanded }">
         <div class="left-section">
           <div class="section-header">
             <BaseButton class="action-btn" type="taskProcess" iconBtn />
@@ -296,19 +296,39 @@ const calculateTaskContentHeight = () => {
   return height + 40; // 添加安全边距
 };
 
-// 获取任务的实际高度（根据时间高度和内容高度的关系决定）
-const currentHeight = computed(() => {
-  const baseHeight = getTaskBaseHeight();
-  const contentHeight = calculateTaskContentHeight();
-  const TASK_MIN_HEIGHT = 60; // 半小时任务的最小高度（像素）
+// 检查当前时间是否在任务时间范围内
+const isCurrentTimeInTaskRange = computed(() => {
+  if (!taskData.value.timeRange) return false;
 
-  // 按照文档要求：
-  // 时间高度 > 内容高度：由内容高度决定，内容高度最小为刻度间隔的一半（半小时）
-  // 内容高度 > 时间高度：由时间高度决定，时间刻度最小为刻度间隔的一半（半小时）
-  if (baseHeight > contentHeight) {
-    return Math.max(contentHeight, TASK_MIN_HEIGHT); // 内容高度至少为半小时
-  }
-  return Math.max(baseHeight, TASK_MIN_HEIGHT); // 时间高度至少为半小时
+  const [start, end] = taskData.value.timeRange.split('-');
+  const [startHour, startMinute] = start.split(':').map(Number);
+  const [endHour, endMinute] = end.split(':').map(Number);
+
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+
+  // 计算当前时间的分钟数
+  const currentTotalMinutes = currentHour * 60 + currentMinute;
+  const startTotalMinutes = startHour * 60 + startMinute;
+  const endTotalMinutes = endHour * 60 + endMinute;
+
+  return currentTotalMinutes >= startTotalMinutes && currentTotalMinutes <= endTotalMinutes;
+});
+
+// 卡片的展开状态
+const isExpanded = computed(() => {
+  // 当手动选中，或当前时间在任务时间范围内，卡片高度自动切换为展开高度
+  return props.isActive || isCurrentTimeInTaskRange.value;
+});
+
+// 获取任务的实际高度（根据新的展示策略）
+const currentHeight = computed(() => {
+  const DISPLAY_HEIGHT = 120; // 展示高度：固定高度120px
+  const EXPANDED_HEIGHT = 300; // 展开高度：固定高度300px
+
+  // 根据展开状态返回相应的固定高度
+  return isExpanded.value ? EXPANDED_HEIGHT : DISPLAY_HEIGHT;
 });
 
 const hasContent = computed(() => {
@@ -725,6 +745,20 @@ const handleAddTaskItemCancel = () => {
   flex: 1;
   padding: 0 pxToRem(24);
   overflow: hidden;
+
+  // 默认不展开状态下隐藏详细内容
+  .left-section .sub-task-list,
+  .right-section .activity-list {
+    display: none;
+  }
+
+  // 展开状态下显示详细内容
+  &.is-expanded {
+    .left-section .sub-task-list,
+    .right-section .activity-list {
+      display: flex;
+    }
+  }
 
   .left-section {
     flex: 1;

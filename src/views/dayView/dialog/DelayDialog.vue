@@ -9,13 +9,6 @@
     @cancel="handleCancel"
     @close="handleClose"
   >
-    <template #headerExtra>
-      <div class="task-info">
-        <el-icon class="task-icon"><Document /></el-icon>
-        <span class="task-name">{{ taskTitle }}</span>
-      </div>
-    </template>
-
     <div class="delay-content">
       <div class="top-section">
         <h4 class="section-title">时间线对比</h4>

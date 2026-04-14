@@ -7,15 +7,8 @@
   >
     <div class="dialog-container">
       <div class="dialog-header">
-        <div class="header-content">
-          <h3 class="dialog-title">{{ title }}</h3>
-          <div v-if="$slots.headerExtra" class="header-extra">
-            <slot name="headerExtra"></slot>
-          </div>
-        </div>
-        <button class="close-btn" @click="handleClose">
-          <el-icon><Close /></el-icon>
-        </button>
+        <h3 class="dialog-title">{{ title }}</h3>
+        <BaseButton type="cancel" iconBtn @click="handleClose">关闭</BaseButton>
       </div>
 
       <div class="dialog-body" :style="bodyStyle">
@@ -25,21 +18,20 @@
       <div class="dialog-footer">
         <slot name="footer">
           <div class="footer-buttons">
-            <el-button v-if="showCancel" class="cancel-btn" @click="handleCancel">
-              {{ cancelText }}
-            </el-button>
-            <el-button
-              v-if="showConfirm"
-              type="primary"
-              class="confirm-btn"
-              :loading="confirmLoading"
+            <BaseButton
+              type="cancel"
+              :label="cancelText"
+              textBtn
+              @click="handleCancel"
+              class="cancel-btn"
+            ></BaseButton>
+            <BaseButton
+              type="confirm"
+              :label="confirmText"
+              textBtn
               @click="handleConfirm"
-            >
-              <el-icon v-if="confirmIcon && !confirmLoading" class="btn-icon">
-                <component :is="confirmIcon" />
-              </el-icon>
-              <span>{{ confirmText }}</span>
-            </el-button>
+              class="confirm-btn"
+            ></BaseButton>
           </div>
         </slot>
       </div>
@@ -49,7 +41,7 @@
 
 <script setup>
 import { computed, watch } from 'vue';
-import { Close } from '@element-plus/icons-vue';
+import BaseButton from './BaseButton.vue';
 
 const props = defineProps({
   modelValue: {
@@ -60,19 +52,6 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  size: {
-    type: String,
-    default: 'normal',
-    validator: (value) => ['large', 'normal'].includes(value),
-  },
-  showCancel: {
-    type: Boolean,
-    default: true,
-  },
-  showConfirm: {
-    type: Boolean,
-    default: true,
-  },
   cancelText: {
     type: String,
     default: '取消',
@@ -81,13 +60,10 @@ const props = defineProps({
     type: String,
     default: '确认',
   },
-  confirmIcon: {
-    type: [Object, String],
-    default: null,
-  },
-  confirmLoading: {
-    type: Boolean,
-    default: false,
+  size: {
+    type: String,
+    default: 'normal',
+    validator: (value) => ['large', 'normal'].includes(value),
   },
   bodyStyle: {
     type: Object,
@@ -158,47 +134,8 @@ const handleConfirm = () => {
     height: pxToRem(64);
     border-bottom: 1px solid var(--dividerColor);
 
-    .header-content {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      gap: pxToRem(12);
-
-      .dialog-title {
-        @include fontStyle(2);
-
-        margin: 0;
-      }
-
-      .header-extra {
-        display: flex;
-        align-items: center;
-      }
-    }
-
-    .close-btn {
-      @include whrem(32, 32);
-      @include flexCenter;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      border-radius: pxToRem(8);
-      @include baseTransition;
-      padding: 0;
-
-      @include hover {
-        background-color: rgba(244, 246, 255, 1);
-
-        .el-icon {
-          color: rgba(74, 64, 224, 1);
-        }
-      }
-
-      .el-icon {
-        font-size: pxToRem(16);
-        color: rgba(158, 174, 199, 1);
-        @include baseTransition;
-      }
+    .dialog-title {
+      @include fontStyle(1);
     }
   }
 
@@ -212,57 +149,36 @@ const handleConfirm = () => {
   }
 
   .dialog-footer {
-    display: flex;
-    justify-content: flex-end;
-    border-top: 1px solid rgba(220, 233, 255, 1);
-    background-color: #fff;
+    @include flexCenter(flex-end, center);
+    border-top: 1px solid var(--dividerColor);
     padding: 0 pxToRem(24);
     height: pxToRem(64);
-    flex-shrink: 0;
 
     .footer-buttons {
-      display: flex;
-      align-items: center;
+      @include flexCenter(center center);
       gap: pxToRem(12);
       height: 100%;
 
       .cancel-btn {
-        min-width: pxToRem(76);
-        @include whrem(76, 40);
-        border-radius: pxToRem(12);
+        @include cancelBtnColor(background, 1);
         @include fontStyle(5);
-        font-weight: 500;
-        color: rgba(77, 93, 115, 1);
-        border: none;
-        background-color: transparent;
-
+        color: var(--textColor-1);
+        padding: 0.5rem 1.5rem;
         @include hover {
-          background-color: rgba(244, 246, 255, 1);
+          background-color: rgb(159, 163, 186);
           color: rgba(74, 64, 224, 1);
         }
       }
 
       .confirm-btn {
-        min-width: pxToRem(100);
-        @include whrem(100, 40);
-        border-radius: pxToRem(12);
+        @include confirmBtnColor(background, 1);
         @include fontStyle(5);
-        font-weight: 700;
-        color: rgba(244, 241, 255, 1);
-        background: linear-gradient(135deg, rgba(74, 64, 224, 1) 0%, rgba(61, 48, 212, 1) 100%);
-        border: none;
-        box-shadow: 0px pxToRem(8) pxToRem(24) rgba(32, 48, 68, 0.12);
-        @include flexCenter;
-        gap: pxToRem(8);
 
+        color: var(--textColor-6);
+        padding: 0.5rem 1.5rem;
         @include hover {
           background: linear-gradient(135deg, rgba(59, 48, 191, 1) 0%, rgba(48, 36, 180, 1) 100%);
-          transform: translateY(-pxToRem(1));
-          box-shadow: 0px pxToRem(12) pxToRem(28) rgba(32, 48, 68, 0.16);
-        }
-
-        .btn-icon {
-          font-size: pxToRem(14);
+          color: rgba(255, 255, 245, 0.6);
         }
       }
     }

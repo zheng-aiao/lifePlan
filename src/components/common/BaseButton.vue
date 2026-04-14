@@ -5,7 +5,10 @@
     :disabled="disabled"
     @click="handleClick"
   >
-    <span class="iconfont" v-html="btnData.icon"></span>
+    <!-- 只显示图标：iconBtn=true -->
+    <!-- 只显示文字：textBtn=true -->
+    <!-- 显示图标+文字：默认情况（iconBtn=false且textBtn=false） -->
+    <span v-if="!textBtn" class="iconfont" v-html="btnData.icon"></span>
     <span v-if="!iconBtn" class="text">{{ label || btnData.label }}</span>
   </button>
 </template>
@@ -24,6 +27,10 @@ const props = defineProps({
     default: '',
   },
   iconBtn: {
+    type: Boolean,
+    default: false,
+  },
+  textBtn: {
     type: Boolean,
     default: false,
   },
@@ -48,17 +55,13 @@ const handleClick = (e) => {
 @use '@/assets/scss/rules' as *;
 
 .base-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flexCenter;
   gap: pxToRem(8);
+  @include fontStyle(4);
   padding: pxToRem(12) pxToRem(24);
   border: none;
   border-radius: pxToRem(8);
   background-color: var(--background);
-  color: var(--textColor-1);
-  font-size: pxToRem(14);
-  font-weight: 400;
   cursor: pointer;
   transition: all 0.3s ease;
 

@@ -22,12 +22,7 @@
       </div>
 
       <div class="button-container">
-        <BaseButton
-          type="icon-text"
-          text="新建任务"
-          icon="@/assets/images/Frame_1_59.png"
-          @click="handleNewTask"
-        />
+        <BaseButton class="action-btn" type="add" label="新建任务" @click="handleNewTask" />
       </div>
     </div>
 
@@ -110,8 +105,9 @@ const handleNewTask = () => {
 const handleTaskCreated = (taskData) => {
   console.log('任务创建成功:', taskData);
   emit('taskCreated', taskData);
-  // 使用事件总线通知dayView组件刷新数据
-  eventBus.emit('taskCreated', taskData);
+  // 使用事件总线通知dayView组件刷新数据，传递当前日期
+  const today = new Date().toISOString().split('T')[0];
+  eventBus.emit('taskCreated', today);
 };
 </script>
 
@@ -141,6 +137,10 @@ const handleTaskCreated = (taskData) => {
     display: flex;
     justify-content: center;
     align-items: center;
+    .action-btn {
+      color: rgba(74, 64, 224, 1);
+      background-color: transparent;
+    }
   }
 }
 </style>

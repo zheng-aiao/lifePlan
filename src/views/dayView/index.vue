@@ -653,10 +653,10 @@ onUnmounted(() => {
 });
 
 // 处理任务创建成功事件
-const handleTaskCreated = async (taskData) => {
-  console.log('收到任务创建成功事件:', taskData);
+const handleTaskCreated = async (date) => {
+  console.log('收到任务创建成功事件，日期:', date);
   // 刷新任务数据
-  await loadTaskDetails(currentDate.value);
+  await loadTaskDetails(date);
 };
 </script>
 

@@ -143,33 +143,10 @@ const buttomPadding = computed(() => {
   return viewportHeight.value / 2;
 });
 
-// 时间刻度位置计算（加上顶部留白偏移，并考虑展开任务的偏移）
+// 时间刻度位置计算（加上顶部留白偏移）
 const getTickPosition = (hourIndex) => {
-  const hour = START_HOUR + hourIndex;
   const basePosition = topPadding.value + hourIndex * HOUR_HEIGHT;
-
-  // 计算在该整点时间之前结束的所有展开任务造成的偏移
-  let offset = 0;
-  for (let i = 0; i < tasks.value.length; i++) {
-    const task = tasks.value[i];
-    const taskBaseHeight = getTaskBaseHeight(task);
-    const taskActualHeight = getTaskActualHeight(task, i);
-
-    // 只考虑展开的任务
-    if (taskActualHeight <= taskBaseHeight) continue;
-
-    const extraHeight = taskActualHeight - taskBaseHeight;
-    const [start, end] = task.timeRange.split('-');
-    const endParsed = parseTime(end);
-    const taskEndHour = endParsed.hour + endParsed.min / 60;
-
-    // 如果任务结束时间在该整点之前，累加偏移
-    if (taskEndHour <= hour) {
-      offset += extraHeight;
-    }
-  }
-
-  return basePosition + offset;
+  return basePosition;
 };
 
 // 格式化小时显示
@@ -188,93 +165,27 @@ const getTimePosition = (hour, minute = 0) => {
   return topPadding.value + (hour - START_HOUR + minute / 60) * HOUR_HEIGHT;
 };
 
-// 计算任务时长（小时）
-const getTaskDuration = (timeRange) => {
-  const [start, end] = timeRange.split('-');
-  const startHour = parseTime(start);
-  const endHour = parseTime(end);
-  const startDecimal = startHour.hour + startHour.min / 60;
-  const endDecimal = endHour.hour + endHour.min / 60;
-  let duration = endDecimal - startDecimal;
-  // 限制在 0.5 - 12 小时之间
-  return Math.max(0.5, Math.min(12, duration));
-};
-
-// 计算任务的基础高度（由时长决定）
+// 计算任务的基础高度（固定高度）
 const getTaskBaseHeight = (task) => {
-  const duration = getTaskDuration(task.timeRange);
-  return Math.max(TASK_MIN_HEIGHT, duration * HOUR_HEIGHT);
+  return TASK_MIN_HEIGHT * 2; // 固定高度：120px（1小时）
 };
 
-// 计算任务内容完全展开所需的高度
+// 计算任务内容完全展开所需的高度（固定高度）
 const calculateTaskContentHeight = (task) => {
-  // 实际测量的高度值
-  const HEADER_HEIGHT = 72; // 头部高度（包含内边距）
-  const FOOTER_HEIGHT = 72; // 底部高度（包含内边距）
-  const SECTION_HEADER_HEIGHT = 36; // 区域头部高度
-  const SUBTASK_ITEM_HEIGHT = 32; // 子任务项高度
-  const ACTIVITY_ITEM_HEIGHT = 36; // 活动项高度
-  const SECTION_PADDING = 40; // 区域内边距总和（上下各 16px + 底部 24px）
-  const SECTION_GAP = 12; // 子任务/活动项之间的间距
-  const EMPTY_LIST_HEIGHT = 48; // 空列表高度（包含内边距）
-
-  let height = HEADER_HEIGHT + FOOTER_HEIGHT;
-
-  const subTaskCount = task.subTasks?.length || 0;
-  const activityCount = task.activities?.length || 0;
-
-  if (subTaskCount > 0 || activityCount > 0) {
-    // 计算左侧子任务区域高度
-    const leftSectionHeight =
-      SECTION_HEADER_HEIGHT +
-      SECTION_PADDING +
-      subTaskCount * SUBTASK_ITEM_HEIGHT +
-      (subTaskCount - 1) * SECTION_GAP;
-
-    // 计算右侧活动区域高度
-    const rightSectionHeight =
-      SECTION_HEADER_HEIGHT +
-      SECTION_PADDING +
-      activityCount * ACTIVITY_ITEM_HEIGHT +
-      (activityCount - 1) * SECTION_GAP;
-
-    const contentHeight = Math.max(leftSectionHeight, rightSectionHeight);
-    height += contentHeight;
-  } else {
-    // 当内容为空时，计算空内容区域的高度
-    const emptyContentHeight =
-      SECTION_HEADER_HEIGHT + // 区域头部高度
-      SECTION_PADDING + // 区域内边距
-      EMPTY_LIST_HEIGHT; // 空列表高度
-
-    // 两个区域（左侧和右侧）
-    const contentHeight = emptyContentHeight * 2;
-    height += contentHeight;
-  }
-
-  // 添加额外的安全边距，确保所有内容都能显示
-  return height + 40;
+  return 300; // 固定展开高度：300px
 };
 
-// 获取任务的实际高度（根据时间高度和内容高度的关系决定）
+// 获取任务的实际高度（固定高度）
 const getTaskActualHeight = (task, index) => {
-  const baseHeight = getTaskBaseHeight(task);
-  const contentHeight = calculateTaskContentHeight(task);
-
-  // 按照文档要求：
-  // 时间高度 > 内容高度：由内容高度决定，内容高度最小为刻度间隔的一半（半小时）
-  // 内容高度 > 时间高度：由时间高度决定，时间刻度最小为刻度间隔的一半（半小时）
-  if (baseHeight > contentHeight) {
-    return Math.max(contentHeight, TASK_MIN_HEIGHT); // 内容高度至少为半小时
-  }
-  return Math.max(baseHeight, TASK_MIN_HEIGHT); // 时间高度至少为半小时
+  // 根据是否是活跃任务决定高度
+  // 活跃任务（展开态）：300px
+  // 非活跃任务（折叠态）：120px
+  return activeTaskIndex.value === index ? 300 : 120;
 };
 
-// 判断任务是否展开（高度超过时长决定的高度）
+// 判断任务是否展开（根据活跃状态）
 const isTaskExpanded = (task, index) => {
-  const baseHeight = getTaskBaseHeight(task);
-  const contentHeight = calculateTaskContentHeight(task);
-  return contentHeight > baseHeight;
+  return activeTaskIndex.value === index;
 };
 
 // 展开任务的起止时间刻度
@@ -310,9 +221,8 @@ const expandedTaskTicks = computed(() => {
 const getTaskOffset = (taskIndex) => {
   let offset = 0;
   for (let i = 0; i < taskIndex; i++) {
-    const task = tasks.value[i];
-    const baseHeight = getTaskBaseHeight(task);
-    const actualHeight = getTaskActualHeight(task, i);
+    const actualHeight = getTaskActualHeight(tasks.value[i], i);
+    const baseHeight = 120; // 固定基础高度
     // 如果任务展开，累加额外高度
     if (actualHeight > baseHeight) {
       offset += actualHeight - baseHeight;

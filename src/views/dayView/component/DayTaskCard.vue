@@ -9,94 +9,135 @@
     }"
     :body-style="{ padding: 0, position: 'relative' }"
   >
-    <div class="card-wrapper">
-      <div class="card-header">
-        <div class="header-left">
-          <div class="title-row">
-            <BaseButton class="action-btn" type="task" iconBtn />
-            <span class="task-title">{{ taskData.title }}</span>
-            <div class="meta-row">
-              <BaseButton class="action-btn" type="clock" iconBtn />
+    <div class="card-wrapper" :class="{ 'is-expanded': isExpanded }">
+      <!-- 展开态模板：完整结构（头部 + 左右两栏 + 底部） -->
+      <template v-if="isExpanded">
+        <div class="card-header">
+          <div class="header-left">
+            <div class="title-row">
+              <BaseButton class="action-btn" type="task" iconBtn />
+              <span class="task-title">{{ taskData.title }}</span>
+              <div class="meta-row">
+                <BaseButton class="action-btn" type="clock" iconBtn />
+                <span class="time-range">{{ taskData.timeRange }}</span>
+                <span class="status-tag" :class="taskData.taskStatus">{{
+                  taskData.statusText || '进行中'
+                }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="header-right" v-if="isTaskActive">
+            <BaseButton class="action-btn" type="add" label="新增" @click.stop="handleAddSubTask" />
+            <BaseButton
+              class="action-btn"
+              :type="taskData.taskStatus === 1 ? 'pause' : 'start'"
+              :label="startStopButtonInfo.text"
+              @click.stop="handlePause"
+            />
+            <BaseButton class="action-btn" type="delay" label="延时" @click.stop="handleDelay" />
+          </div>
+        </div>
+
+        <div class="card-content">
+          <div class="left-section">
+            <div class="section-header">
+              <BaseButton class="action-btn" type="taskProcess" iconBtn />
+              <span>任务清单</span>
+            </div>
+            <div class="sub-task-list">
+              <div
+                v-for="(subTask, idx) in taskData.subTasks"
+                :key="idx"
+                class="sub-task-item"
+                @click.stop="toggleSubTask(idx)"
+              >
+                <div class="checkbox" :class="{ checked: subTask.completed }">
+                  <el-icon v-if="subTask.completed"><Check /></el-icon>
+                </div>
+                <span class="sub-task-text" :class="{ completed: subTask.completed }">
+                  {{ subTask.text }}
+                </span>
+              </div>
+              <div v-if="!taskData.subTasks || !taskData.subTasks.length" class="empty-list">
+                暂无子任务
+              </div>
+            </div>
+          </div>
+
+          <div class="right-section">
+            <div class="section-header">
+              <BaseButton class="action-btn" type="active" iconBtn />
+              <span>活动日志</span>
+            </div>
+            <div class="activity-list">
+              <div v-for="(activity, idx) in taskData.activities" :key="idx" class="activity-item">
+                <div class="activity-indicator" :class="activity.type"></div>
+                <div class="activity-content">
+                  <div class="activity-time">{{ activity.time }} - {{ activity.typeText }}</div>
+                  <div class="activity-desc">{{ activity.description }}</div>
+                </div>
+              </div>
+              <div v-if="!taskData.activities || !taskData.activities.length" class="empty-list">
+                暂无活动日志
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="duration-info">
+            <span class="duration-label">已用时:</span>
+            <span class="duration-value">{{ taskData.actualDuration }}</span>
+          </div>
+          <div v-if="isTaskActive" class="footer-buttons">
+            <BaseButton
+              class="abandon-btn"
+              type="cancel"
+              label="放弃"
+              @click.stop="handleAbandon"
+            />
+            <BaseButton
+              class="complete-btn"
+              type="confirm"
+              label="完成"
+              @click.stop="handleFeedback"
+            />
+          </div>
+        </div>
+      </template>
+
+      <!-- 折叠态模板：独立专用结构 -->
+      <template v-else>
+        <div class="collapsed-content">
+          <div class="collapsed-header">
+            <div class="collapsed-left">
+              <BaseButton class="action-btn" type="task" iconBtn />
+              <span class="task-title">{{ taskData.title }}</span>
+            </div>
+            <div class="collapsed-right">
               <span class="time-range">{{ taskData.timeRange }}</span>
               <span class="status-tag" :class="taskData.taskStatus">{{
                 taskData.statusText || '进行中'
               }}</span>
             </div>
           </div>
-        </div>
-        <div class="header-right" v-if="isTaskActive">
-          <BaseButton class="action-btn" type="add" label="新增" @click.stop="handleAddSubTask" />
-          <BaseButton
-            class="action-btn"
-            :type="taskData.taskStatus === 1 ? 'pause' : 'start'"
-            :label="startStopButtonInfo.text"
-            @click.stop="handlePause"
-          />
-          <BaseButton class="action-btn" type="delay" label="延时" @click.stop="handleDelay" />
-        </div>
-      </div>
-
-      <div class="card-content" :class="{ 'is-expanded': isExpanded }">
-        <div class="left-section">
-          <div class="section-header">
-            <BaseButton class="action-btn" type="taskProcess" iconBtn />
-            <span>任务清单</span>
-          </div>
-          <div class="sub-task-list">
-            <div
-              v-for="(subTask, idx) in taskData.subTasks"
-              :key="idx"
-              class="sub-task-item"
-              @click.stop="toggleSubTask(idx)"
-            >
-              <div class="checkbox" :class="{ checked: subTask.completed }">
-                <el-icon v-if="subTask.completed"><Check /></el-icon>
-              </div>
-              <span class="sub-task-text" :class="{ completed: subTask.completed }">
-                {{ subTask.text }}
-              </span>
+          <div class="collapsed-footer">
+            <div class="duration-info">
+              <span class="duration-label">已用时:</span>
+              <span class="duration-value">{{ taskData.actualDuration }}</span>
             </div>
-            <div v-if="!taskData.subTasks || !taskData.subTasks.length" class="empty-list">
-              暂无子任务
+            <div v-if="isTaskActive" class="collapsed-actions">
+              <BaseButton
+                class="action-btn"
+                :type="taskData.taskStatus === 1 ? 'pause' : 'start'"
+                :label="startStopButtonInfo.text"
+                @click.stop="handlePause"
+              />
+              <BaseButton class="action-btn" type="delay" label="延时" @click.stop="handleDelay" />
             </div>
           </div>
         </div>
-
-        <div class="right-section">
-          <div class="section-header">
-            <BaseButton class="action-btn" type="active" iconBtn />
-            <span>活动日志</span>
-          </div>
-          <div class="activity-list">
-            <div v-for="(activity, idx) in taskData.activities" :key="idx" class="activity-item">
-              <div class="activity-indicator" :class="activity.type"></div>
-              <div class="activity-content">
-                <div class="activity-time">{{ activity.time }} - {{ activity.typeText }}</div>
-                <div class="activity-desc">{{ activity.description }}</div>
-              </div>
-            </div>
-            <div v-if="!taskData.activities || !taskData.activities.length" class="empty-list">
-              暂无活动日志
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-footer">
-        <div class="duration-info">
-          <span class="duration-label">已用时:</span>
-          <span class="duration-value">{{ taskData.actualDuration }}</span>
-        </div>
-        <div v-if="isTaskActive" class="footer-buttons">
-          <BaseButton class="abandon-btn" type="cancel" label="放弃" @click.stop="handleAbandon" />
-          <BaseButton
-            class="complete-btn"
-            type="confirm"
-            label="完成"
-            @click.stop="handleFeedback"
-          />
-        </div>
-      </div>
+      </template>
     </div>
 
     <div class="resize-handle" @mousedown="startResize" title="拖动调整任务时长"></div>
@@ -231,95 +272,10 @@ const startStopButtonInfo = computed(() => {
 
 // 注意：子任务和活动日志数据由父组件提供，组件内不再主动加载
 
-// 计算任务的基础高度（由时长决定）
-const getTaskBaseHeight = () => {
-  const TASK_MIN_HEIGHT = 60; // 半小时任务的最小高度（像素）
-  const HOUR_HEIGHT = TASK_MIN_HEIGHT * 2; // 1 小时的高度（120px）
-
-  // 从时间范围计算时长
-  const [start, end] = taskData.value.timeRange.split('-');
-  const [startHour, startMinute] = start.split(':').map(Number);
-  const [endHour, endMinute] = end.split(':').map(Number);
-
-  // 计算时长（小时）
-  const duration = endHour + endMinute / 60 - (startHour + startMinute / 60);
-
-  // 限制在 0.5 - 12 小时之间
-  const clampedDuration = Math.max(0.5, Math.min(12, duration));
-
-  return Math.max(TASK_MIN_HEIGHT, clampedDuration * HOUR_HEIGHT);
-};
-
-// 计算任务内容完全展开所需的高度
-const calculateTaskContentHeight = () => {
-  const HEADER_HEIGHT = 60; // 头部高度（包含内边距）
-  const FOOTER_HEIGHT = 72; // 底部高度（包含内边距）
-  const SECTION_HEADER_HEIGHT = 36; // 区域头部高度
-  const SUBTASK_ITEM_HEIGHT = 32; // 子任务项高度
-  const ACTIVITY_ITEM_HEIGHT = 36; // 活动项高度
-  const CONTENT_PADDING = 24; // 内容区域上下内边距总和
-  const SECTION_PADDING = 40; // 区域内边距总和（上下各16px + 底部24px）
-  const SECTION_GAP = 12; // 子任务/活动项之间的间距
-  const EMPTY_LIST_HEIGHT = 48; // 空列表高度（包含内边距）
-
-  let height = HEADER_HEIGHT + FOOTER_HEIGHT;
-
-  const subTaskCount = taskData.value.subTasks?.length || 0;
-  const activityCount = taskData.value.activities?.length || 0;
-
-  if (subTaskCount > 0 || activityCount > 0) {
-    const leftSectionHeight =
-      SECTION_HEADER_HEIGHT +
-      SECTION_PADDING +
-      subTaskCount * SUBTASK_ITEM_HEIGHT +
-      (subTaskCount - 1) * SECTION_GAP;
-    const rightSectionHeight =
-      SECTION_HEADER_HEIGHT +
-      SECTION_PADDING +
-      activityCount * ACTIVITY_ITEM_HEIGHT +
-      (activityCount - 1) * SECTION_GAP;
-
-    const contentHeight = Math.max(leftSectionHeight, rightSectionHeight);
-    height += contentHeight + CONTENT_PADDING;
-  } else {
-    // 当内容为空时，计算空内容区域的高度
-    const emptyContentHeight =
-      SECTION_HEADER_HEIGHT + // 区域头部高度
-      SECTION_PADDING + // 区域内边距
-      EMPTY_LIST_HEIGHT; // 空列表高度
-
-    // 两个区域（左侧和右侧）
-    const contentHeight = emptyContentHeight * 2;
-    height += contentHeight;
-  }
-
-  return height + 40; // 添加安全边距
-};
-
-// 检查当前时间是否在任务时间范围内
-const isCurrentTimeInTaskRange = computed(() => {
-  if (!taskData.value.timeRange) return false;
-
-  const [start, end] = taskData.value.timeRange.split('-');
-  const [startHour, startMinute] = start.split(':').map(Number);
-  const [endHour, endMinute] = end.split(':').map(Number);
-
-  const now = new Date();
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
-
-  // 计算当前时间的分钟数
-  const currentTotalMinutes = currentHour * 60 + currentMinute;
-  const startTotalMinutes = startHour * 60 + startMinute;
-  const endTotalMinutes = endHour * 60 + endMinute;
-
-  return currentTotalMinutes >= startTotalMinutes && currentTotalMinutes <= endTotalMinutes;
-});
-
 // 卡片的展开状态
 const isExpanded = computed(() => {
-  // 当手动选中，或当前时间在任务时间范围内，卡片高度自动切换为展开高度
-  return props.isActive || isCurrentTimeInTaskRange.value;
+  // 只有手动选中（isActive）的卡片才展开，其他均为折叠状态
+  return props.isActive;
 });
 
 // 获取任务的实际高度（根据新的展示策略）
@@ -628,7 +584,12 @@ const handleAddTaskItemCancel = () => {
 .card-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: pxToRem(120);
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.is-expanded {
+    height: pxToRem(300);
+  }
 }
 
 .card-header {
@@ -745,20 +706,6 @@ const handleAddTaskItemCancel = () => {
   flex: 1;
   padding: 0 pxToRem(24);
   overflow: hidden;
-
-  // 默认不展开状态下隐藏详细内容
-  .left-section .sub-task-list,
-  .right-section .activity-list {
-    display: none;
-  }
-
-  // 展开状态下显示详细内容
-  &.is-expanded {
-    .left-section .sub-task-list,
-    .right-section .activity-list {
-      display: flex;
-    }
-  }
 
   .left-section {
     flex: 1;
@@ -1115,6 +1062,107 @@ const handleAddTaskItemCancel = () => {
 
   &:active {
     background: rgba(74, 64, 224, 0.2);
+  }
+}
+
+.collapsed-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: pxToRem(12) pxToRem(24);
+
+  .collapsed-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+
+    .collapsed-left {
+      display: flex;
+      align-items: center;
+      gap: pxToRem(12);
+
+      .task-title {
+        font-size: pxToRem(16);
+        font-family: 'Alibaba PuHuiTi-Medium';
+        font-weight: 500;
+        line-height: pxToRem(24);
+        color: rgba(32, 48, 68, 1);
+      }
+    }
+
+    .collapsed-right {
+      display: flex;
+      align-items: center;
+      gap: pxToRem(12);
+
+      .time-range {
+        font-size: pxToRem(14);
+        font-family: 'Inter-Medium';
+        font-weight: 500;
+        line-height: pxToRem(20);
+        color: rgba(100, 116, 139, 1);
+      }
+
+      .status-tag {
+        font-size: pxToRem(10);
+        font-family: 'Inter-SemiBold';
+        font-weight: 600;
+        line-height: pxToRem(15);
+        color: rgba(74, 64, 224, 1);
+        padding: pxToRem(2) pxToRem(8);
+        border-radius: pxToRem(9999);
+        background-color: rgba(210, 228, 255, 1);
+
+        &.completed {
+          color: rgba(34, 197, 94, 1);
+          background-color: rgba(220, 252, 231, 1);
+        }
+
+        &.delayed {
+          color: rgba(249, 115, 22, 1);
+          background-color: rgba(255, 237, 213, 1);
+        }
+      }
+    }
+  }
+
+  .collapsed-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: pxToRem(8);
+    border-top: pxToRem(1) solid rgb(229, 234, 238);
+
+    .duration-info {
+      display: flex;
+      align-items: center;
+      gap: pxToRem(8);
+
+      .duration-label {
+        font-size: pxToRem(12);
+        font-family: 'Alibaba PuHuiTi-Medium';
+        font-weight: 500;
+        line-height: pxToRem(16);
+        color: rgba(148, 163, 184, 1);
+      }
+
+      .duration-value {
+        font-size: pxToRem(14);
+        font-family: 'Alibaba PuHuiTi-Regular';
+        font-weight: 400;
+        line-height: pxToRem(20);
+        color: rgba(74, 64, 224, 1);
+      }
+    }
+
+    .collapsed-actions {
+      display: flex;
+      align-items: center;
+      gap: pxToRem(8);
+    }
   }
 }
 </style>

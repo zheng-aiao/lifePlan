@@ -231,8 +231,27 @@ const startStopButtonInfo = computed(() => {
 
 // 注意：子任务和活动日志数据由父组件提供，组件内不再主动加载
 
-const currentHeight = computed(() => {
-  // 基于任务内容动态计算高度（与父组件保持一致）
+// 计算任务的基础高度（由时长决定）
+const getTaskBaseHeight = () => {
+  const TASK_MIN_HEIGHT = 60; // 半小时任务的最小高度（像素）
+  const HOUR_HEIGHT = TASK_MIN_HEIGHT * 2; // 1 小时的高度（120px）
+
+  // 从时间范围计算时长
+  const [start, end] = taskData.value.timeRange.split('-');
+  const [startHour, startMinute] = start.split(':').map(Number);
+  const [endHour, endMinute] = end.split(':').map(Number);
+
+  // 计算时长（小时）
+  const duration = endHour + endMinute / 60 - (startHour + startMinute / 60);
+
+  // 限制在 0.5 - 12 小时之间
+  const clampedDuration = Math.max(0.5, Math.min(12, duration));
+
+  return Math.max(TASK_MIN_HEIGHT, clampedDuration * HOUR_HEIGHT);
+};
+
+// 计算任务内容完全展开所需的高度
+const calculateTaskContentHeight = () => {
   const HEADER_HEIGHT = 60; // 头部高度（包含内边距）
   const FOOTER_HEIGHT = 72; // 底部高度（包含内边距）
   const SECTION_HEADER_HEIGHT = 36; // 区域头部高度
@@ -241,6 +260,7 @@ const currentHeight = computed(() => {
   const CONTENT_PADDING = 24; // 内容区域上下内边距总和
   const SECTION_PADDING = 40; // 区域内边距总和（上下各16px + 底部24px）
   const SECTION_GAP = 12; // 子任务/活动项之间的间距
+  const EMPTY_LIST_HEIGHT = 48; // 空列表高度（包含内边距）
 
   let height = HEADER_HEIGHT + FOOTER_HEIGHT;
 
@@ -261,9 +281,34 @@ const currentHeight = computed(() => {
 
     const contentHeight = Math.max(leftSectionHeight, rightSectionHeight);
     height += contentHeight + CONTENT_PADDING;
+  } else {
+    // 当内容为空时，计算空内容区域的高度
+    const emptyContentHeight =
+      SECTION_HEADER_HEIGHT + // 区域头部高度
+      SECTION_PADDING + // 区域内边距
+      EMPTY_LIST_HEIGHT; // 空列表高度
+
+    // 两个区域（左侧和右侧）
+    const contentHeight = emptyContentHeight * 2;
+    height += contentHeight;
   }
 
   return height + 40; // 添加安全边距
+};
+
+// 获取任务的实际高度（根据时间高度和内容高度的关系决定）
+const currentHeight = computed(() => {
+  const baseHeight = getTaskBaseHeight();
+  const contentHeight = calculateTaskContentHeight();
+  const TASK_MIN_HEIGHT = 60; // 半小时任务的最小高度（像素）
+
+  // 按照文档要求：
+  // 时间高度 > 内容高度：由内容高度决定，内容高度最小为刻度间隔的一半（半小时）
+  // 内容高度 > 时间高度：由时间高度决定，时间刻度最小为刻度间隔的一半（半小时）
+  if (baseHeight > contentHeight) {
+    return Math.max(contentHeight, TASK_MIN_HEIGHT); // 内容高度至少为半小时
+  }
+  return Math.max(baseHeight, TASK_MIN_HEIGHT); // 时间高度至少为半小时
 });
 
 const hasContent = computed(() => {
@@ -679,6 +724,7 @@ const handleAddTaskItemCancel = () => {
   flex-direction: row;
   flex: 1;
   padding: 0 pxToRem(24);
+  overflow: hidden;
 
   .left-section {
     flex: 1;
@@ -686,12 +732,14 @@ const handleAddTaskItemCancel = () => {
     flex-direction: column;
     padding: pxToRem(16) pxToRem(24) pxToRem(24);
     border-right: pxToRem(1) solid rgba(248, 250, 252, 1);
+    overflow: hidden;
 
     .section-header {
       display: flex;
       align-items: center;
       gap: pxToRem(8);
       margin-bottom: pxToRem(16);
+      flex-shrink: 0;
 
       .el-icon {
         font-size: pxToRem(16);
@@ -712,6 +760,27 @@ const handleAddTaskItemCancel = () => {
       flex-direction: column;
       gap: pxToRem(12);
       flex: 1;
+      overflow-y: auto;
+      padding-right: pxToRem(8); /* 为滚动条预留空间 */
+
+      /* 自定义滚动条样式 */
+      &::-webkit-scrollbar {
+        width: pxToRem(6);
+      }
+
+      &::-webkit-scrollbar-track {
+        background: rgba(241, 245, 249, 1);
+        border-radius: pxToRem(3);
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 1);
+        border-radius: pxToRem(3);
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 116, 139, 1);
+      }
 
       .sub-task-item {
         display: flex;
@@ -777,12 +846,14 @@ const handleAddTaskItemCancel = () => {
     flex-direction: column;
     padding: pxToRem(16) pxToRem(24) pxToRem(24);
     background-color: rgba(248, 250, 252, 0.5);
+    overflow: hidden;
 
     .section-header {
       display: flex;
       align-items: center;
       gap: pxToRem(8);
       margin-bottom: pxToRem(16);
+      flex-shrink: 0;
 
       .el-icon {
         font-size: pxToRem(16);
@@ -803,6 +874,27 @@ const handleAddTaskItemCancel = () => {
       flex-direction: column;
       gap: pxToRem(16);
       flex: 1;
+      overflow-y: auto;
+      padding-right: pxToRem(8); /* 为滚动条预留空间 */
+
+      /* 自定义滚动条样式 */
+      &::-webkit-scrollbar {
+        width: pxToRem(6);
+      }
+
+      &::-webkit-scrollbar-track {
+        background: rgba(241, 245, 249, 1);
+        border-radius: pxToRem(3);
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 1);
+        border-radius: pxToRem(3);
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 116, 139, 1);
+      }
 
       .activity-item {
         display: flex;

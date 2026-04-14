@@ -256,16 +256,18 @@ const calculateTaskContentHeight = (task) => {
   return height + 40;
 };
 
-// 获取任务的实际高度（如果内容高度超过时长高度，直接使用内容高度）
+// 获取任务的实际高度（根据时间高度和内容高度的关系决定）
 const getTaskActualHeight = (task, index) => {
   const baseHeight = getTaskBaseHeight(task);
   const contentHeight = calculateTaskContentHeight(task);
 
-  // 如果内容高度超过时长决定的高度，直接使用内容高度
-  if (contentHeight > baseHeight) {
-    return contentHeight;
+  // 按照文档要求：
+  // 时间高度 > 内容高度：由内容高度决定，内容高度最小为刻度间隔的一半（半小时）
+  // 内容高度 > 时间高度：由时间高度决定，时间刻度最小为刻度间隔的一半（半小时）
+  if (baseHeight > contentHeight) {
+    return Math.max(contentHeight, TASK_MIN_HEIGHT); // 内容高度至少为半小时
   }
-  return baseHeight;
+  return Math.max(baseHeight, TASK_MIN_HEIGHT); // 时间高度至少为半小时
 };
 
 // 判断任务是否展开（高度超过时长决定的高度）

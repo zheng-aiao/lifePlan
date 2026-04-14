@@ -174,6 +174,20 @@ const handleSubmit = async () => {
     return;
   }
 
+  // 验证日任务的时间范围
+  if (formData.taskType === 3 && formData.planTime && formData.planTime.length === 2) {
+    const [startTime, endTime] = formData.planTime;
+    if (startTime && endTime) {
+      const [startHour, startMinute] = startTime.split(':').map(Number);
+      const [endHour, endMinute] = endTime.split(':').map(Number);
+      
+      if (endHour < startHour || (endHour === startHour && endMinute < startMinute)) {
+        ElMessage.warning('结束时间必须在开始时间之后');
+        return;
+      }
+    }
+  }
+
   submitting.value = true;
 
   let plannedStartTime = null;

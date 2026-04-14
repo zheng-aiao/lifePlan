@@ -144,7 +144,10 @@ const handleConfirm = async () => {
 
     await bizService.subTask.createSubTask(subTaskData);
     ElMessage.success('子任务添加成功');
+    // 确保正确触发confirm事件
     emit('confirm');
+    // 同时触发update:modelValue事件关闭弹窗
+    emit('update:modelValue', false);
   } catch (error) {
     console.error('添加子任务失败:', error);
     ElMessage.error('添加子任务失败，请稍后重试');

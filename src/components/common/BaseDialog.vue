@@ -141,7 +141,7 @@ const handleConfirm = () => {
 
   .dialog-body {
     flex: 1;
-    @include flexCenter(center, false, true);
+    @include flexCenter(flex-start, false, true);
     background-color: #fff;
     position: relative;
     padding: 0 pxToRem(24);

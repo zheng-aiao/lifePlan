@@ -268,12 +268,7 @@
     z-index: -2;
   }
 }
-
-/**
- * @name: before
- * @desc: before伪类添加
- * @use: @include before{ width: 20px; height: 20px; }
- */
+// 伪类添加
 @mixin before {
   &::before {
     content: '';
@@ -281,12 +276,6 @@
     @content;
   }
 }
-
-/**
- * @name: after
- * @desc: after伪类添加
- * @use: @include after{ width: 20px; height: 20px; }
- */
 @mixin after {
   &::after {
     content: '';
@@ -331,6 +320,7 @@
   box-shadow: var(--mapCardShadowColor);
 }
 
+// 下拉框样式
 @mixin dropdownStyle() {
   border-radius: pxToRem(12);
   border: 2px solid var(--dropdownBorderColor);
@@ -394,6 +384,7 @@ $font-config: (
     font-weight: var(--fontWeight-#{$level});
     line-height: var(--fontLineHeight-#{$level});
     min-height: var(--fontLineHeight-#{$level});
+    color: var(--textColor-#{$level});
   }
 }
 

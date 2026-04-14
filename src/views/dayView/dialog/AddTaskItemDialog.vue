@@ -162,6 +162,7 @@ const handleConfirm = async () => {
 .dialog-body {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: pxToRem(16);
   padding: pxToRem(12) pxToRem(20);
   height: 100%;

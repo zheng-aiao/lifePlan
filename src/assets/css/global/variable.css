@@ -13,12 +13,8 @@
   /* 弹窗大小变量 */
   --dialog-width-base: 900;
   --dialog-height-base: 600;
-  --dialog-header-height-base: 70;
-  --dialog-footer-height-base: 70;
   --dialog-width: 900;
   --dialog-height: 600;
-  --dialog-header-height: 70;
-  --dialog-footer-height: 70;
 }
 
 @media (min-width: 2040px) {
@@ -32,12 +28,9 @@
 
     --dialog-width-base: 1024;
     --dialog-height-base: 680;
-    --dialog-header-height-base: 80;
-    --dialog-footer-height-base: 80;
+
     --dialog-width: 1024;
     --dialog-height: 680;
-    --dialog-header-height: 80;
-    --dialog-footer-height: 80;
   }
 }
 
@@ -53,12 +46,8 @@
     /* 弹窗变量 */
     --dialog-width-base: 840;
     --dialog-height-base: 560;
-    --dialog-header-height-base: 64;
-    --dialog-footer-height-base: 64;
     --dialog-width: 840;
     --dialog-height: 560;
-    --dialog-header-height: 64;
-    --dialog-footer-height: 64;
   }
 }
 
@@ -74,12 +63,8 @@
     /* 弹窗变量 */
     --dialog-width-base: 768;
     --dialog-height-base: 512;
-    --dialog-header-height-base: 60;
-    --dialog-footer-height-base: 60;
     --dialog-width: 768;
     --dialog-height: 512;
-    --dialog-header-height: 60;
-    --dialog-footer-height: 60;
   }
 }
 
@@ -95,11 +80,8 @@
     /* 弹窗变量 */
     --dialog-width-base: 680;
     --dialog-height-base: 448;
-    --dialog-header-height-base: 56;
-    --dialog-footer-height-base: 56;
+
     --dialog-width: 680;
     --dialog-height: 448;
-    --dialog-header-height: 56;
-    --dialog-footer-height: 56;
   }
 }

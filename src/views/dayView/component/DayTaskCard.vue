@@ -106,27 +106,49 @@
         </div>
       </template>
 
-      <!-- 折叠态模板：独立专用结构 -->
+      <!-- 折叠态模板：一行三列布局 -->
       <template v-else>
         <div class="collapsed-content">
-          <div class="collapsed-header">
-            <div class="collapsed-left">
-              <BaseButton class="action-btn" type="task" iconBtn />
+          <!-- 第一列：标题概述信息 -->
+          <div class="collapsed-title-section">
+            <div class="title-info">
               <span class="task-title">{{ taskData.title }}</span>
-            </div>
-            <div class="collapsed-right">
-              <span class="time-range">{{ taskData.timeRange }}</span>
               <span class="status-tag" :class="taskData.taskStatus">{{
                 taskData.statusText || '进行中'
               }}</span>
             </div>
-          </div>
-          <div class="collapsed-footer">
-            <div class="duration-info">
-              <span class="duration-label">已用时:</span>
-              <span class="duration-value">{{ taskData.actualDuration }}</span>
+            <div class="meta-info">
+              <span class="time-range">{{ taskData.timeRange }}</span>
             </div>
-            <div v-if="isTaskActive" class="collapsed-actions">
+          </div>
+
+          <!-- 第二列：子任务进度信息 -->
+          <div class="collapsed-progress-section">
+            <div class="progress-info">
+              <div class="progress-header">
+                <span class="progress-desc">
+                  {{ completedSubTaskCount }}/{{
+                    taskData.subTasks?.length || 0
+                  }}
+                  子任务已完成</span
+                >
+                <span class="progress-percentage">{{ subTaskProgressPercentage }}%</span>
+              </div>
+              <div class="progress-bar">
+                <span
+                  class="progress-fill"
+                  :style="{ width: `${subTaskProgressPercentage}%` }"
+                ></span>
+              </div>
+            </div>
+            <div class="add-btn">
+              <BaseButton type="add" iconBtn @click.stop="handleAddSubTask" />
+            </div>
+          </div>
+
+          <!-- 第三列：操作按钮 -->
+          <div class="collapsed-actions-section">
+            <div v-if="isTaskActive" class="action-buttons">
               <BaseButton
                 class="action-btn"
                 :type="taskData.taskStatus === 1 ? 'pause' : 'start'"
@@ -134,6 +156,18 @@
                 @click.stop="handlePause"
               />
               <BaseButton class="action-btn" type="delay" label="延时" @click.stop="handleDelay" />
+              <BaseButton
+                class="action-btn"
+                type="cancel"
+                label="放弃"
+                @click.stop="handleAbandon"
+              />
+              <BaseButton
+                class="action-btn"
+                type="confirm"
+                label="完成"
+                @click.stop="handleFeedback"
+              />
             </div>
           </div>
         </div>
@@ -292,6 +326,19 @@ const hasContent = computed(() => {
     (taskData.value.subTasks && taskData.value.subTasks.length > 0) ||
     (taskData.value.activities && taskData.value.activities.length > 0)
   );
+});
+
+// 计算已完成的子任务数量
+const completedSubTaskCount = computed(() => {
+  if (!taskData.value.subTasks || taskData.value.subTasks.length === 0) return 0;
+  return taskData.value.subTasks.filter((subTask) => subTask.completed).length;
+});
+
+// 计算子任务进度百分比
+const subTaskProgressPercentage = computed(() => {
+  const total = taskData.value.subTasks?.length || 0;
+  if (total === 0) return 0;
+  return Math.round((completedSubTaskCount.value / total) * 100);
 });
 
 const toggleSubTask = async (idx) => {
@@ -1067,44 +1114,31 @@ const handleAddTaskItemCancel = () => {
 
 .collapsed-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100%;
   padding: pxToRem(12) pxToRem(24);
+  gap: pxToRem(24);
+  align-items: center;
 
-  .collapsed-header {
+  // 第一列：标题概述信息
+  .collapsed-title-section {
+    flex: 2;
+    min-width: 0;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    flex: 1;
+    flex-direction: column;
 
-    .collapsed-left {
+    .title-info {
       display: flex;
       align-items: center;
       gap: pxToRem(12);
+      margin-bottom: pxToRem(4);
 
       .task-title {
-        font-size: pxToRem(16);
-        font-family: 'Alibaba PuHuiTi-Medium';
-        font-weight: 500;
-        line-height: pxToRem(24);
-        color: rgba(32, 48, 68, 1);
+        font-size: var(--fontSize-1);
+        font-weight: var(--fontWeight-1);
+        line-height: var(--fontLineHeight-1);
+        color: var(--textColor-1);
       }
-    }
-
-    .collapsed-right {
-      display: flex;
-      align-items: center;
-      gap: pxToRem(12);
-
-      .time-range {
-        font-size: pxToRem(14);
-        font-family: 'Inter-Medium';
-        font-weight: 500;
-        line-height: pxToRem(20);
-        color: rgba(100, 116, 139, 1);
-      }
-
       .status-tag {
         font-size: pxToRem(10);
         font-family: 'Inter-SemiBold';
@@ -1126,42 +1160,93 @@ const handleAddTaskItemCancel = () => {
         }
       }
     }
-  }
 
-  .collapsed-footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: pxToRem(8);
-    border-top: pxToRem(1) solid rgb(229, 234, 238);
-
-    .duration-info {
+    .meta-info {
       display: flex;
       align-items: center;
       gap: pxToRem(8);
 
-      .duration-label {
+      .time-range {
         font-size: pxToRem(12);
-        font-family: 'Alibaba PuHuiTi-Medium';
+        font-family: 'Inter-Medium';
         font-weight: 500;
         line-height: pxToRem(16);
-        color: rgba(148, 163, 184, 1);
-      }
-
-      .duration-value {
-        font-size: pxToRem(14);
-        font-family: 'Alibaba PuHuiTi-Regular';
-        font-weight: 400;
-        line-height: pxToRem(20);
-        color: rgba(74, 64, 224, 1);
+        color: rgba(100, 116, 139, 1);
       }
     }
+  }
 
-    .collapsed-actions {
+  // 第二列：子任务进度信息
+  .collapsed-progress-section {
+    flex: 2;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: pxToRem(20);
+    border-right: pxToRem(2) solid rgba(100, 116, 139, 0.3);
+
+    .progress-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: pxToRem(12);
+
+      .progress-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+
+        .progress-desc {
+          font-size: pxToRem(12);
+          font-weight: 500;
+          line-height: pxToRem(16);
+        }
+
+        .progress-percentage {
+          font-size: pxToRem(12);
+          font-weight: 500;
+          line-height: pxToRem(16);
+          color: rgba(74, 64, 224, 1);
+        }
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: pxToRem(8);
+        background-color: rgba(220, 233, 255, 1);
+        border-radius: pxToRem(9999);
+        overflow: hidden;
+
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, rgba(74, 64, 224, 1) 0%, rgba(151, 149, 255, 1) 100%);
+          border-radius: pxToRem(9999);
+          transition: width 0.3s ease;
+        }
+      }
+    }
+    .add-btn {
+      padding-right: pxToRem(20);
+    }
+  }
+
+  // 第三列：操作按钮
+  .collapsed-actions-section {
+    flex: 3;
+    min-width: 0;
+    align-items: flex-end;
+
+    .action-buttons {
       display: flex;
       align-items: center;
-      gap: pxToRem(8);
+      justify-content: space-around;
+      gap: pxToRem(4);
+      .action-btn {
+        padding: pxToRem(8) pxToRem(12);
+        border-radius: pxToRem(4);
+        background-color: rgba(248, 250, 252, 1);
+      }
     }
   }
 }

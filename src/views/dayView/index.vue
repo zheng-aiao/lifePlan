@@ -22,6 +22,7 @@
               <div
                 v-for="hour in 17"
                 :key="hour"
+                v-show="!isHourInTaskRange(hour + 6)"
                 class="time-scale-item"
                 :class="{
                   'is-task-boundary': isTaskBoundary(hour + 6),
@@ -32,7 +33,7 @@
                 <div class="time-line"></div>
               </div>
 
-              <!-- 非整点任务边界刻度 -->
+              <!-- 任务边界刻度（包括整点和非整点） -->
               <div
                 v-for="(tick, index) in taskBoundaryTicks"
                 :key="`boundary-${index}`"
@@ -143,10 +144,33 @@ const buttomPadding = computed(() => {
   return viewportHeight.value / 2;
 });
 
-// 时间刻度位置计算（加上顶部留白偏移）
+// 时间刻度位置计算（加上顶部留白偏移，并考虑展开任务的偏移）
 const getTickPosition = (hourIndex) => {
+  const hour = START_HOUR + hourIndex;
   const basePosition = topPadding.value + hourIndex * HOUR_HEIGHT;
-  return basePosition;
+
+  // 计算在该整点时间之前结束的所有展开任务造成的偏移
+  let offset = 0;
+  for (let i = 0; i < tasks.value.length; i++) {
+    const task = tasks.value[i];
+    const actualHeight = getTaskActualHeight(task, i);
+    const baseHeight = 120; // 固定基础高度
+
+    // 只考虑展开的任务
+    if (actualHeight <= baseHeight) continue;
+
+    const extraHeight = actualHeight - baseHeight;
+    const [start, end] = task.timeRange.split('-');
+    const endParsed = parseTime(end);
+    const taskEndHour = endParsed.hour + endParsed.min / 60;
+
+    // 如果任务结束时间在该整点之前，累加偏移
+    if (taskEndHour <= hour) {
+      offset += extraHeight;
+    }
+  }
+
+  return basePosition + offset;
 };
 
 // 格式化小时显示
@@ -240,10 +264,26 @@ const getTaskStartPosition = (task, index) => {
   return basePosition + offset;
 };
 
-// 判断整点刻度是否应该隐藏（因为被展开的任务覆盖）
-// 根据需求，不应该隐藏任何整点刻度
-const shouldHideHourTick = (hour) => {
-  return false;
+// 判断整点刻度是否在任务范围内（应该隐藏）
+const isHourInTaskRange = (hour) => {
+  return tasks.value.some((task) => {
+    const [start, end] = task.timeRange.split('-');
+    const startParsed = parseTime(start);
+    const endParsed = parseTime(end);
+
+    // 检查该整点是否在任务时间范围内（不包括边界）
+    const hourDecimal = hour;
+    const startDecimal = startParsed.hour + startParsed.min / 60;
+    const endDecimal = endParsed.hour + endParsed.min / 60;
+
+    // 如果整点是任务的开始或结束时间，不隐藏
+    if (hourDecimal === startDecimal || hourDecimal === endDecimal) {
+      return false;
+    }
+
+    // 如果整点在任务范围内，隐藏
+    return hourDecimal > startDecimal && hourDecimal < endDecimal;
+  });
 };
 
 // 判断是否是任务边界时间（整点）
@@ -261,7 +301,7 @@ const isTaskBoundary = (hour) => {
   });
 };
 
-// 获取所有任务的边界时间（包括非整点）
+// 获取所有任务的边界时间（包括整点和非整点）
 const taskBoundaryTicks = computed(() => {
   const ticks = [];
 
@@ -276,22 +316,19 @@ const taskBoundaryTicks = computed(() => {
     const actualHeight = getTaskActualHeight(task, index);
     const endPosition = startPosition + actualHeight;
 
-    // 只添加非整点的边界时间
-    if (startParsed.min !== 0) {
-      ticks.push({
-        position: startPosition,
-        label: start,
-        type: 'start',
-      });
-    }
+    // 添加开始时间刻度（包括整点和非整点）
+    ticks.push({
+      position: startPosition,
+      label: start,
+      type: 'start',
+    });
 
-    if (endParsed.min !== 0) {
-      ticks.push({
-        position: endPosition,
-        label: end,
-        type: 'end',
-      });
-    }
+    // 添加结束时间刻度（包括整点和非整点）
+    ticks.push({
+      position: endPosition,
+      label: end,
+      type: 'end',
+    });
   });
 
   return ticks;

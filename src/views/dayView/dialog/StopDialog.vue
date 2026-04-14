@@ -210,7 +210,7 @@ watch(visible, (newValue) => {
           font-size: pxToRem(12);
           font-weight: 400;
           line-height: pxToRem(18);
-          color: rgba(32, 48, 68, 1);
+          color: var(--textColor-1);
           padding: 0;
 
           &::placeholder {

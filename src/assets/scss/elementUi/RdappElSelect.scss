@@ -5,83 +5,14 @@
   width: 100%;
   height: pxToRem(38);
   color: var(--textColor-1);
-
-  &:hover {
-    .el-input__inner {
-      border-color: rgba(var(--color), 1);
-    }
-  }
+  // border: pxToRem(1) solid var(--dropdownBorderColor);
 
   // 2.x 新增的包装层
   .el-select__wrapper {
     width: 100%;
     height: 100%;
-  }
-
-  .el-input {
-    height: inherit;
-    margin: 0;
-    border-radius: pxToRem(8);
-
-    // 下拉箭头样式（兼容2.x的.el-select__caret）
-    .el-input__suffix,
-    .el-select__caret {
-      .el-input__suffix-inner {
-        .el-input__icon,
-        .el-select__caret-icon {
-          &::before {
-            color: var(--textColor-2);
-            font-size: pxToRem(18);
-          }
-        }
-      }
-    }
-
-    &.is-focus {
-      .el-input__inner {
-        @include secondButtonActive;
-        border: pxToRem(2) solid rgb(var(--color));
-        background: rgba(var(--color), 0.3);
-
-        @include lightTheme {
-          background-color: transparent;
-        }
-      }
-    }
-
-    &.is-disabled {
-      .el-input__inner {
-        background-color: rgba(var(--color), 0.1);
-        border-color: rgba(var(--color), 0.1);
-        color: var(--textColor-4);
-
-        .el-input__suffix,
-        .el-select__caret {
-          .el-input__suffix-inner {
-            .el-input__icon,
-            .el-select__caret-icon {
-              color: var(--textColor-4);
-            }
-          }
-        }
-
-        &:hover {
-          border-color: colorValue(color, 1);
-        }
-      }
-    }
-  }
-
-  .el-input__inner {
-    height: inherit !important;
-    color: var(--textColor-1);
-    border-radius: pxToRem(8);
-    background-color: rgba(var(--color), 0.2);
-    border: pxToRem(1) solid rgba(var(--color), 0.2);
-
-    &[disabled] {
-      opacity: 1 !important;
-    }
+    background: var(--dropdownBackgroundColor);
+    //box-shadow: var(--dropdownShadowColor);
   }
 
   // 多选模式

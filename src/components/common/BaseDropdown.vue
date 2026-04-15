@@ -66,12 +66,12 @@ const getTaskTypeName = (taskType) => {
 @use '@/assets/scss/rules' as *;
 
 .parent-task-selector {
+  width: 100%;
   height: pxToRem(40);
   background: rgba(234, 241, 255, 0.7);
   border-radius: pxToRem(8);
   box-shadow: none;
   border: none;
-  padding: pxToRem(12) pxToRem(16);
   position: relative;
   display: flex;
   align-items: center;

@@ -13,7 +13,7 @@
   --gray: 194, 202, 209;
   --blue: 71, 164, 255;
   --violet: 91, 25, 231;
-
+  --skyblue: 234, 241, 255;
   --model: 255, 255, 255;
   --color: 94, 99, 105;
   --background: 245, 250, 255;
@@ -35,6 +35,7 @@
   --mapCardShadowColor: 0 calc(4 * 1rem / 16) calc(10 * 1rem / 16) 0 rgba(var(--color), 0.2);
   /* 下拉框 */
   --dropdownBorderColor: transparent;
+  --dropdownBackgroundColor: rgb(var(--skyblue));
   --dropdownShadowColor: 0 calc(4 * 1rem / 16) calc(10 * 1rem / 16) 0 rgba(var(--color), 0.4);
   /* 弹窗 */
   --dialogBorderColor: transparent;

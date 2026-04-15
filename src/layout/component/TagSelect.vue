@@ -126,7 +126,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, onMounted } from 'vue';
 import { Close, Plus, Check } from '@element-plus/icons-vue';
 
 const props = defineProps({
@@ -305,12 +305,46 @@ const createTag = () => {
   newTagColor.value = presetColors[0];
 };
 
+// 处理任务类型变化，自动选择对应标签
+const handleTaskTypeChange = (taskType) => {
+  // 查找与当前任务类型匹配的标签
+  const typeTag = allTags.value.find((tag) => tag.type === taskType);
+
+  // 如果找到匹配的标签
+  if (typeTag) {
+    // 确保selectedTags是数组
+    const currentTags = Array.isArray(selectedTags.value) ? [...selectedTags.value] : [];
+
+    // 移除所有其他类型标签（只保留通用标签）
+    const filteredTags = currentTags.filter((t) => t.type === null);
+
+    // 确保当前类型标签在数组中
+    if (!filteredTags.some((t) => t.id === typeTag.id)) {
+      filteredTags.unshift(typeTag);
+    }
+
+    // 更新选中的标签
+    selectedTags.value = filteredTags;
+    emit('change', selectedTags.value);
+  }
+};
+
+// 监听任务类型变化
 watch(
   () => props.taskType,
   (newType) => {
-    const typeTag = allTags.value.find((tag) => tag.type === newType);
-    if (typeTag && !selectedTags.value.some((t) => t.id === typeTag.id)) {
-      selectedTags.value = [typeTag, ...selectedTags.value.filter((t) => t.type === null)];
+    handleTaskTypeChange(newType);
+  },
+  { immediate: true }
+);
+
+// 监听modelValue变化，确保与taskType保持同步
+watch(
+  () => props.modelValue,
+  (newTags) => {
+    // 只有当modelValue为空数组时，才自动选择对应标签
+    if (newTags.length === 0) {
+      handleTaskTypeChange(props.taskType);
     }
   },
   { immediate: true }

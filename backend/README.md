@@ -53,7 +53,7 @@ backend/
 ├── src/main/resources/
 │   ├── application.yml             # 配置文件
 │   ├── db/
-│   │   └── init.sql               # 数据库初始化脚本
+│   │   └── mysql-postgre-init.sql               # 数据库初始化脚本
 │   └── mapper/                     # MyBatis XML 映射文件
 │       ├── TaskMapper.xml
 │       ├── SubTaskMapper.xml
@@ -78,7 +78,7 @@ CREATE DATABASE life_plan DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_
 
 2. 执行初始化脚本：
 ```bash
-mysql -u root -p life_plan < src/main/resources/db/init.sql
+mysql -u root -p life_plan < src/main/resources/db/mysql-postgre-init.sql
 ```
 
 3. 修改 `application.yml` 中的数据库配置：

@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://aws-1-eu-west-3.pooler.supabase.com:6543/postgres
+    username: postgres.ropeeonpiwgdbknhjqyi
+    password: eE4bYAvkh8rWsLI7
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/postgre-init.sql
+      continue-on-error: true

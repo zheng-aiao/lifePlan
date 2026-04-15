@@ -21,26 +21,11 @@
           <span>任务标题</span>
           <span class="char-count">{{ formData.title.length }}/50</span>
         </div>
-        <el-input
+        <BaseInput
           v-model="formData.title"
           placeholder="给你的目标起个好名字..."
           maxlength="50"
           class="form-input"
-        />
-      </div>
-
-      <div class="form-item">
-        <div class="form-label">
-          <span>描述</span>
-          <span class="char-count">{{ formData.description.length }}/200</span>
-        </div>
-        <el-input
-          v-model="formData.description"
-          type="textarea"
-          placeholder="添加更多细节或步骤..."
-          maxlength="200"
-          :rows="3"
-          class="form-textarea"
         />
       </div>
 
@@ -63,22 +48,40 @@
           </el-radio-group>
         </div>
       </div>
-      <div class="form-item">
-        <div class="form-label">
-          <span>计划时间</span>
+
+      <div class="form-row">
+        <div class="form-item form-item-half">
+          <div class="form-label">
+            <span>计划时间</span>
+          </div>
+          <BaseDate v-model="formData.planTime" :task-type="formData.taskType" />
         </div>
-        <BaseDate v-model="formData.planTime" :task-type="formData.taskType" />
+
+        <div class="form-item form-item-half">
+          <div class="form-label">
+            <span>父任务</span>
+            <span class="optional-label">(可选)</span>
+          </div>
+          <BaseDropdown
+            v-model="formData.parentId"
+            :options="parentTaskList"
+            placeholder="选择父任务..."
+          />
+        </div>
       </div>
 
       <div class="form-item">
         <div class="form-label">
-          <span>父任务</span>
-          <span class="optional-label">(可选)</span>
+          <span>任务详情</span>
+          <span class="char-count">{{ formData.description.length }}/200</span>
         </div>
-        <BaseDropdown
-          v-model="formData.parentId"
-          :options="parentTaskList"
-          placeholder="选择父任务..."
+        <BaseInput
+          v-model="formData.description"
+          type="textarea"
+          placeholder="添加更多细节或步骤..."
+          maxlength="200"
+          :rows="3"
+          class="form-textarea"
         />
       </div>
     </div>
@@ -94,6 +97,7 @@ import BaseTab from '@/components/common/BaseTab.vue';
 import TagSelect from '@/layout/component/TagSelect.vue';
 import BaseDate from '@/components/common/BaseDate.vue';
 import BaseDropdown from '@/components/common/BaseDropdown.vue';
+import BaseInput from '@/components/common/BaseInput.vue';
 import bizService from '@/utils/bizService';
 
 const props = defineProps({
@@ -180,7 +184,7 @@ const handleSubmit = async () => {
     if (startTime && endTime) {
       const [startHour, startMinute] = startTime.split(':').map(Number);
       const [endHour, endMinute] = endTime.split(':').map(Number);
-      
+
       if (endHour < startHour || (endHour === startHour && endMinute < startMinute)) {
         ElMessage.warning('结束时间必须在开始时间之后');
         return;
@@ -264,6 +268,11 @@ watch(
   display: flex;
   flex-direction: column;
   gap: pxToRem(12);
+
+  .form-input,
+  .form-textarea {
+    @include formItemStyle;
+  }
 }
 
 .form-item-half {
@@ -292,49 +301,6 @@ watch(
   }
 }
 
-.form-input {
-  :deep(.el-input__wrapper) {
-    background: rgba(234, 241, 255, 1);
-    border-radius: pxToRem(8);
-    box-shadow: none;
-    border: none;
-    padding: pxToRem(12) pxToRem(16);
-
-    &.is-focus {
-      box-shadow: 0 0 0 1px rgba(74, 64, 224, 1);
-    }
-  }
-
-  :deep(.el-input__inner) {
-    font-size: pxToRem(14);
-    color: rgba(77, 93, 115, 1);
-
-    &::placeholder {
-      color: rgba(139, 154, 181, 1);
-    }
-  }
-}
-
-.form-textarea {
-  :deep(.el-textarea__inner) {
-    background: rgba(234, 241, 255, 1);
-    border-radius: pxToRem(8);
-    box-shadow: none;
-    border: none;
-    padding: pxToRem(12) pxToRem(16);
-    min-height: pxToRem(88) !important;
-    resize: none;
-
-    &:focus {
-      box-shadow: 0 0 0 1px rgba(74, 64, 224, 1);
-    }
-
-    &::placeholder {
-      color: rgba(139, 154, 181, 1);
-    }
-  }
-}
-
 .priority-radio-group {
   display: flex;
   gap: pxToRem(16);
@@ -343,88 +309,6 @@ watch(
   .priority-label {
     font-size: pxToRem(14);
     font-weight: 500;
-  }
-}
-
-.plan-time-picker {
-  display: flex;
-  align-items: center;
-  background: rgba(234, 241, 255, 1);
-  border-radius: pxToRem(8);
-  border-left: 4px solid rgba(74, 64, 224, 1);
-  overflow: hidden;
-
-  .time-picker-left {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: pxToRem(12) pxToRem(16);
-    background: rgba(74, 64, 224, 0.08);
-
-    .calendar-icon {
-      font-size: pxToRem(18);
-      color: rgba(74, 64, 224, 1);
-    }
-  }
-
-  .time-picker-content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    padding: pxToRem(8) pxToRem(16);
-    min-height: pxToRem(44);
-
-    .time-picker {
-      width: 100%;
-
-      :deep(.el-input__wrapper) {
-        background: transparent;
-        box-shadow: none;
-        padding: 0;
-        border: none;
-      }
-
-      :deep(.el-input__inner) {
-        font-size: pxToRem(14);
-        font-weight: 500;
-        color: rgba(32, 48, 68, 1);
-
-        &::placeholder {
-          color: rgba(139, 154, 181, 1);
-        }
-      }
-
-      :deep(.el-range-input) {
-        font-size: pxToRem(14);
-        font-weight: 500;
-        color: rgba(32, 48, 68, 1);
-
-        &::placeholder {
-          color: rgba(139, 154, 181, 1);
-        }
-      }
-
-      :deep(.el-range-separator) {
-        font-size: pxToRem(14);
-        font-weight: 500;
-        color: rgba(77, 93, 115, 1);
-        padding: 0 pxToRem(8);
-      }
-
-      :deep(.el-input__prefix),
-      :deep(.el-input__suffix),
-      :deep(.el-input__suffix-inner) {
-        display: none;
-      }
-
-      :deep(.el-range__icon) {
-        display: none;
-      }
-
-      :deep(.el-input__icon) {
-        display: none;
-      }
-    }
   }
 }
 
@@ -444,54 +328,6 @@ watch(
 
   .time-picker {
     flex: 1;
-
-    :deep(.el-input__wrapper) {
-      background: transparent;
-      box-shadow: none;
-      padding: 0;
-      border: none;
-    }
-
-    :deep(.el-input__inner) {
-      font-size: pxToRem(14);
-      font-weight: 500;
-      color: rgba(32, 48, 68, 1);
-
-      &::placeholder {
-        color: rgba(139, 154, 181, 1);
-      }
-    }
-
-    :deep(.el-range-input) {
-      font-size: pxToRem(14);
-      font-weight: 500;
-      color: rgba(32, 48, 68, 1);
-
-      &::placeholder {
-        color: rgba(139, 154, 181, 1);
-      }
-    }
-
-    :deep(.el-range-separator) {
-      font-size: pxToRem(14);
-      font-weight: 500;
-      color: rgba(77, 93, 115, 1);
-      padding: 0 pxToRem(4);
-    }
-
-    :deep(.el-input__prefix),
-    :deep(.el-input__suffix),
-    :deep(.el-input__suffix-inner) {
-      display: none;
-    }
-
-    :deep(.el-range__icon) {
-      display: none;
-    }
-
-    :deep(.el-input__icon) {
-      display: none;
-    }
   }
 }
 </style>

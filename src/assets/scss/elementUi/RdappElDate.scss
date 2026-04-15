@@ -364,6 +364,13 @@ div.el-date-editor {
   }
 }
 
+// 时间范围选择器： 背景色、大小
+.el-date-editor.el-range-editor.time-picker {
+  background-color: inherit;
+  @include wh(100%);
+  height: pxToRem(38);
+}
+
 // 日月年类型特殊处理
 div.el-date-picker {
   width: fit-content;

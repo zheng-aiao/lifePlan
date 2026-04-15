@@ -174,7 +174,7 @@ const handleConfirm = () => {
         @include confirmBtnColor(background, 1);
         @include fontStyle(5);
 
-        color: var(--textColor-6);
+        color: var(--textColor-5);
         padding: 0.5rem 1.5rem;
         @include hover {
           background: linear-gradient(135deg, rgba(59, 48, 191, 1) 0%, rgba(48, 36, 180, 1) 100%);

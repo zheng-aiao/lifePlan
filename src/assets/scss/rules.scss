@@ -319,6 +319,13 @@
   box-shadow: var(--dialogShadowColor);
 }
 
+// 弹窗表单项样式混入
+@mixin formItemStyle {
+  background-color: var(--formItemBackgroundColor);
+  border-radius: pxToRem(8);
+  border: none;
+}
+
 // 前景色样式(普通卡片)
 @mixin foregroundStyle() {
   border-radius: pxToRem(12);

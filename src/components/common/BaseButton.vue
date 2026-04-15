@@ -77,10 +77,12 @@ const handleClick = (e) => {
   .iconfont {
     font-size: pxToRem(16);
     line-height: 1;
+    color: var(--textColor-1);
   }
 
   .text {
     white-space: nowrap;
+    color: var(--textColor-1);
   }
 
   &.icon-only {

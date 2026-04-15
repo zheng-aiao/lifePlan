@@ -5,9 +5,6 @@
   @include fontStyle(5);
   height: inherit;
   color: var(--textColor-1);
-  border-radius: 8px;
-  border: 1px solid rgba(var(--color), 0.2);
-  background: rgba(var(--color), 0.2);
   line-height: initial;
   padding-left: pxToRem(12);
 
@@ -23,9 +20,9 @@
 
   @include focus {
     border-color: colorValue(color, 1);
-    box-shadow:
-      0 pxToRem(-3) pxToRem(6) 0 colorValue(color) inset,
-      0 pxToRem(2) pxToRem(4) 0 colorValue(color) inset;
+    // box-shadow:
+    //   0 pxToRem(-3) pxToRem(6) 0 colorValue(color) inset,
+    //   0 pxToRem(2) pxToRem(4) 0 colorValue(color) inset;
   }
 
   &[disabled='disabled'] {
@@ -60,18 +57,17 @@
   }
 }
 
-@include mainContentSelector {
-  $inputInnerHeight: pxToRem(38);
-  .el-autocomplete {
-    width: 100%;
-  }
-  .el-input {
-    width: 100%;
-    height: $inputInnerHeight;
+.el-autocomplete {
+  width: 100%;
+}
+.el-input {
+  width: 100%;
+  height: pxToRem(38);
 
-    .el-input__inner {
-      @include inputInner;
-    }
+  .el-input__wrapper {
+    height: inherit;
+    padding: 0;
+    background-color: inherit;
 
     &:has(.el-input__prefix) {
       .el-input__inner {
@@ -87,6 +83,9 @@
       .el-input__icon {
         font-size: pxToRem(18);
       }
+    }
+    .el-input__inner {
+      @include inputInner;
     }
 
     .el-input__suffix {
@@ -114,21 +113,22 @@
       }
     }
   }
+}
 
-  .el-textarea {
-    .el-textarea__inner {
-      @include inputInner;
-      height: pxToRem(80);
-      max-height: pxToRem(200);
-      resize: none;
-    }
-    .el-input__count {
-      background: transparent;
-      color: var(--textColor-1);
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-    }
+.el-textarea {
+  .el-textarea__inner {
+    @include inputInner;
+    background-color: inherit;
+    height: pxToRem(80);
+    max-height: pxToRem(200);
+    resize: none;
+  }
+  .el-input__count {
+    background: transparent;
+    color: var(--textColor-1);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
   }
 }

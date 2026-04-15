@@ -690,34 +690,6 @@ const handleAddTaskItemCancel = () => {
     display: flex;
     align-items: center;
     gap: pxToRem(8);
-
-    .action-btn {
-      display: flex;
-      align-items: center;
-      gap: pxToRem(8);
-      padding: pxToRem(8) pxToRem(12);
-      border-radius: pxToRem(4);
-      background-color: rgba(248, 250, 252, 1);
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:hover {
-        background-color: rgba(74, 64, 224, 0.1);
-      }
-
-      .el-icon {
-        font-size: pxToRem(14);
-        color: rgba(71, 85, 105, 1);
-      }
-
-      span {
-        font-size: pxToRem(12);
-        font-family: 'Alibaba PuHuiTi-Medium';
-        font-weight: 500;
-        line-height: pxToRem(16);
-        color: rgba(71, 85, 105, 1);
-      }
-    }
   }
 }
 
@@ -1218,11 +1190,6 @@ const handleAddTaskItemCancel = () => {
       align-items: center;
       justify-content: space-around;
       gap: pxToRem(4);
-      .action-btn {
-        padding: pxToRem(8) pxToRem(12);
-        border-radius: pxToRem(4);
-        background-color: rgba(248, 250, 252, 1);
-      }
     }
   }
 }

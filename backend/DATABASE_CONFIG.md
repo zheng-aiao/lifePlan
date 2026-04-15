@@ -35,6 +35,7 @@ spring:
 在运行项目时，您可以通过命令行参数指定要使用的数据库配置：
 
 #### 使用MySQL数据库
+
 ```bash
 mvn spring-boot:run
 ```
@@ -46,6 +47,7 @@ mvn spring-boot:run -Dspring.profiles.active=mysql
 ```
 
 #### 使用PostgreSQL数据库
+
 ```bash
 mvn spring-boot:run -Dspring.profiles.active=postgre
 ```
@@ -61,8 +63,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/life_plan?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root  # 您的MySQL用户名
-    password: Nucleus!  # 您的MySQL密码
+    username: root # 您的MySQL用户名
+    password: Nucleus! # 您的MySQL密码
 ```
 
 ### PostgreSQL配置
@@ -74,8 +76,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://aws-1-eu-west-3.pooler.supabase.com:6543/postgres
-    username: postgres.ropeeonpiwgdbknhjqyi  # 您的PostgreSQL用户名
-    password: eE4bYAvkh8rWsLI7  # 您的PostgreSQL密码
+    username: postgres.ropeeonpiwgdbknhjqyi # 您的PostgreSQL用户名
+    password: eE4bYAvkh8rWsLI7 # 您的PostgreSQL密码
 ```
 
 ## 端口配置
@@ -84,7 +86,7 @@ spring:
 
 ```yaml
 server:
-  port: 8083  # 修改为您想要的端口
+  port: 8083 # 修改为您想要的端口
   servlet:
     context-path: /api
 ```
@@ -102,6 +104,7 @@ mvn spring-boot:run -Dspring.profiles.active=postgre
 ```
 
 项目启动后，您可以通过以下URL访问：
+
 ```
 http://localhost:8083/api
 ```

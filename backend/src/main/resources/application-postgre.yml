@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://aws-1-eu-west-3.pooler.supabase.com:6543/postgres
+    url: jdbc:postgresql://aws-1-eu-west-3.pooler.supabase.com:6543/postgres?prepareThreshold=0&cachePrepStmts=false&preparedStatementCacheQueries=0
     username: postgres.ropeeonpiwgdbknhjqyi
     password: eE4bYAvkh8rWsLI7
     hikari:
@@ -10,7 +10,6 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-      connection-test-query: SELECT 1
 
   sql:
     init:

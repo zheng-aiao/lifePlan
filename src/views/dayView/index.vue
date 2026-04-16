@@ -612,9 +612,8 @@ const handleTaskCreated = async (date) => {
 <style scoped lang="scss">
 @use '@/assets/scss/rules' as *;
 .view-container {
-  display: flex;
-  height: 100%;
-  width: 100%;
+  @include wh(100%, 100%);
+  @include flexCenter;
   background-color: rgba(244, 246, 255, 1);
 
   .day-view {
@@ -627,7 +626,9 @@ const handleTaskCreated = async (date) => {
 
     .day-view-left {
       flex: 1;
-      padding: var(--content-padding);
+      @include flexCenter(flex-start, center, true);
+      gap: pxToRem(16);
+      padding: pxToRem(20) pxToRem(16);
     }
 
     .day-view-main {

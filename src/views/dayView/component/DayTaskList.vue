@@ -41,9 +41,10 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch } from 'vue';
+import { computed, ref, onMounted, watch, onUnmounted } from 'vue';
 import bizService from '@/utils/bizService';
 import BaseTag from '@/components/common/BaseTag.vue';
+import eventBus from '@/utils/eventBus';
 
 const props = defineProps({
   title: {
@@ -123,6 +124,9 @@ const getCategoryColor = (category) => {
 // 组件挂载时加载任务数据
 onMounted(() => {
   loadTasksByType();
+
+  // 监听任务创建成功事件，重新加载任务数据
+  eventBus.on('taskCreated', loadTasksByType);
 });
 
 // 监听日期变化，重新加载任务数据
@@ -132,156 +136,121 @@ watch(
     loadTasksByType();
   }
 );
+
+// 组件卸载时移除事件监听
+onUnmounted(() => {
+  eventBus.off('taskCreated', loadTasksByType);
+});
 </script>
 
 <style scoped lang="scss">
 @use '@/assets/scss/rules' as *;
 
 .task-card {
-  width: 100%;
-  height: pxToRem(310);
-  position: relative;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: pxToRem(16);
+  @include flexCenter(flex-start, center, true);
+  gap: pxToRem(20);
+  @include wh(100%, pxToRem(310));
+  padding: pxToRem(20) pxToRem(16);
+  background-color: rgba(248, 250, 252, 1);
+  border-radius: pxToRem(8);
 
   .card-header {
-    width: 100%;
-    height: pxToRem(20);
+    @include wh(100%, pxToRem(20));
+    @include flexCenter(space-between, center);
     position: relative;
     flex-shrink: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
 
     .header-left {
       .title-text {
-        font-size: pxToRem(14);
+        @include fontStyle(5);
         font-family: 'Alibaba PuHuiTi-Regular';
-        font-weight: 400;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
         letter-spacing: pxToRem(1.4);
-        line-height: pxToRem(20);
         text-transform: uppercase;
         color: rgba(32, 48, 68, 1);
         margin: 0;
+        @include oneLineTextHidden;
       }
-    }
-
-    .header-right {
-      /* 标签样式已移至BaseTag组件 */
     }
   }
 
   .tasks-container {
-    width: 100%;
-    height: pxToRem(280);
+    @include wh(100%, pxToRem(240));
+    @include flexCenter(flex-start, center, true);
+    gap: pxToRem(15);
     position: relative;
     flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: pxToRem(10);
-    justify-content: flex-start;
-    align-items: center;
+    overflow: auto;
+    @include scrollBarStyle();
 
     .task-item {
-      width: 100%;
-      height: pxToRem(60);
-      overflow: hidden;
-      position: relative;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      @include wh(100%, pxToRem(70));
+      @include flexCenter(center, center, true);
       padding: pxToRem(16);
       border-radius: pxToRem(8);
       box-shadow: 0 pxToRem(1) pxToRem(2) 0 rgba(0, 0, 0, 0.05);
       background-color: rgba(255, 255, 255, 1);
       border-left: pxToRem(4) solid;
+      position: relative;
+      flex-shrink: 0;
+      overflow: hidden;
 
       .task-content {
-        width: calc(100% - pxToRem(32));
-        height: pxToRem(43);
+        @include wh(calc(100% - pxToRem(32)), pxToRem(43));
+        @include flexCenter(flex-start, center, true);
+        gap: pxToRem(8);
         position: relative;
         flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        gap: pxToRem(8);
 
         .task-header {
-          width: 100%;
-          height: pxToRem(20);
+          @include wh(100%, pxToRem(20));
+          @include flexCenter(space-between, center);
           position: relative;
           flex-shrink: 0;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
 
           .task-title {
-            font-size: pxToRem(14);
+            @include fontStyle(5);
             font-family: 'Alibaba PuHuiTi-Regular';
-            font-weight: 400;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            line-height: pxToRem(20);
             color: rgba(32, 48, 68, 1);
             margin: 0;
+            flex: 1;
+            @include oneLineTextHidden;
           }
-
-          /* 标签样式已移至BaseTag组件 */
         }
 
         .task-progress {
-          width: 100%;
-          height: pxToRem(15);
+          @include wh(100%, pxToRem(15));
+          @include flexCenter(flex-start, center);
+          gap: pxToRem(12);
           position: relative;
           flex-shrink: 0;
-          display: flex;
-          flex-direction: row;
-          gap: pxToRem(12);
-          align-items: center;
 
           .progress-bar {
             flex: 1;
-            height: pxToRem(6);
-            overflow: hidden;
-            position: relative;
-            flex-shrink: 0;
+            @include whrem(0, 6);
             border-radius: pxToRem(9999);
             background-color: rgba(220, 233, 255, 1);
+            position: relative;
+            flex-shrink: 0;
+            overflow: hidden;
 
             .progress-fill {
-              height: 100%;
+              @include wh(100%, 100%);
               position: absolute;
               left: 0;
               top: 0;
-              bottom: 0;
             }
           }
 
           .progress-percentage {
-            width: pxToRem(21.84);
-            height: pxToRem(15);
+            @include whrem(22, 15);
+            @include flexCenter;
             position: relative;
             flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
 
             .percentage-text {
               font-size: pxToRem(10);
               font-family: 'Inter-Semi Bold';
               font-weight: 700;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              line-height: pxToRem(15);
               color: rgba(104, 120, 143, 1);
               margin: 0;
             }

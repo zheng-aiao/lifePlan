@@ -222,7 +222,7 @@
 }
 
 /** 默认滚动条样式 */
-@mixin scrollBarStyle($color: var(--bgColor)) {
+@mixin scrollBarStyle($color: var(--skyblue)) {
   // 修改滚动条默认样式
   &::-webkit-scrollbar {
     width: pxToRem(5);

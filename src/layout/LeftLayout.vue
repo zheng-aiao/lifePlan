@@ -105,7 +105,7 @@ const handleNewTask = () => {
 const handleTaskCreated = (taskData) => {
   console.log('任务创建成功:', taskData);
   emit('taskCreated', taskData);
-  // 使用事件总线通知dayView组件刷新数据，传递当前日期
+  // 使用事件总线通知dayView组件和DayTaskList组件刷新数据，传递当前日期
   const today = new Date().toISOString().split('T')[0];
   eventBus.emit('taskCreated', today);
 };

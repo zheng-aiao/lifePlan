@@ -4,7 +4,7 @@
       <div class="day-view-left">
         <TaskCardList :title="'年度任务'" :type="'year'" :date="currentDate" />
         <TaskCardList :title="'月度任务'" :type="'month'" :date="currentDate" />
-        <TaskCardList :title="'未完成任务'" :type="'day'" :date="currentDate" />
+        <TaskCardList :title="'未完成日任务'" :type="'day'" :date="currentDate" />
       </div>
       <div class="day-view-main">
         <DayTaskHandle @updateTasks="handleUpdateTasks" />
@@ -380,8 +380,16 @@ const handleScroll = ({ scrollTop: st }) => {
   activeTaskIndex.value = closestIndex;
 };
 
-// 当前日期
-const currentDate = ref(new Date().toISOString().split('T')[0]);
+// 当前日期（使用本地时间）
+const formatCurrentDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const currentDate = ref(formatCurrentDate());
 
 // 计算当前时间对应的页面位置
 const getCurrentTimePosition = () => {

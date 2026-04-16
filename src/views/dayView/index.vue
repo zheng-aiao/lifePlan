@@ -4,7 +4,7 @@
       <div class="day-view-left">
         <TaskCardList :title="'年度任务'" :type="'year'" :date="currentDate" />
         <TaskCardList :title="'月度任务'" :type="'month'" :date="currentDate" />
-        <TaskCardList :title="'临时任务'" :type="'day'" :date="currentDate" />
+        <TaskCardList :title="'未完成任务'" :type="'day'" :date="currentDate" />
       </div>
       <div class="day-view-main">
         <DayTaskHandle @updateTasks="handleUpdateTasks" />

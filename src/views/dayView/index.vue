@@ -627,7 +627,7 @@ const handleTaskCreated = async (date) => {
     .day-view-left {
       flex: 1;
       @include flexCenter(flex-start, center, true);
-      gap: pxToRem(16);
+      gap: pxToRem(20);
       padding: pxToRem(20) pxToRem(16);
     }
 

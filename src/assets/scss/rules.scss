@@ -1,6 +1,7 @@
 @use 'sass:math';
 @use 'sass:map';
 @use 'sass:list';
+@use '@/assets/css/global/theme.css';
 
 // [颜色] 白色;
 @mixin whiteColor($alpha, $style, $isImportant: false) {
@@ -222,27 +223,39 @@
 }
 
 /** 默认滚动条样式 */
-@mixin scrollBarStyle($color: var(--skyblue)) {
+@mixin scrollBarStyle($color) {
   // 修改滚动条默认样式
   &::-webkit-scrollbar {
     width: pxToRem(5);
-    height: 100%;
+    height: pxToRem(5);
     border-radius: pxToRem(4);
   }
 
   /* 滚动槽 */
   &::-webkit-scrollbar-track {
     background: transparent;
+    border-radius: pxToRem(4);
   }
 
   /* 滚动条滑块 */
   &::-webkit-scrollbar-thumb {
     border-radius: pxToRem(3);
-    background: $color;
+    background: rgba($color, 0.3);
+    min-height: pxToRem(20);
+
+    &:hover {
+      background: rgba($color, 0.5);
+    }
   }
 
   &::-webkit-scrollbar-corner {
     background-color: transparent;
+  }
+
+  /* Firefox 滚动条样式 */
+  & {
+    scrollbar-width: thin;
+    scrollbar-color: rgba($color, 0.3) transparent;
   }
 }
 

@@ -147,6 +147,7 @@ onUnmounted(() => {
 @use '@/assets/scss/rules' as *;
 
 .task-card {
+  flex: 1;
   @include flexCenter(flex-start, center, true);
   gap: pxToRem(20);
   @include wh(100%, pxToRem(310));
@@ -162,13 +163,9 @@ onUnmounted(() => {
 
     .header-left {
       .title-text {
-        @include fontStyle(5);
-        font-family: 'Alibaba PuHuiTi-Regular';
-        letter-spacing: pxToRem(1.4);
-        text-transform: uppercase;
-        color: rgba(32, 48, 68, 1);
-        margin: 0;
+        @include fontStyle(4);
         @include oneLineTextHidden;
+        color: var(--textColor-1);
       }
     }
   }
@@ -180,7 +177,7 @@ onUnmounted(() => {
     position: relative;
     flex-shrink: 0;
     overflow: auto;
-    @include scrollBarStyle();
+    @include scrollBarStyle(var(--violet));
 
     .task-item {
       @include wh(100%, pxToRem(70));

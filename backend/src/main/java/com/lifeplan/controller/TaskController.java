@@ -6,6 +6,7 @@ import com.lifeplan.dto.TaskUpdateDTO;
 import com.lifeplan.entity.Task;
 import com.lifeplan.service.TaskService;
 import com.lifeplan.vo.TaskInfoVO;
+import com.lifeplan.vo.TaskVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -69,6 +70,15 @@ public class TaskController {
             @RequestParam(required = false) String category) {
         Long userId = 1L;
         List<TaskInfoVO> tasks = taskService.getTaskDetailsByDate(date, userId);
+        return Result.success(tasks);
+    }
+    
+    @GetMapping("/type/{taskType}/date/{date}")
+    public Result<List<TaskVO>> getTasksByTypeAndDate(
+            @PathVariable Integer taskType,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        Long userId = 1L;
+        List<TaskVO> tasks = taskService.getTasksByTypeAndDate(taskType, date, userId);
         return Result.success(tasks);
     }
     

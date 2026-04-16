@@ -17,5 +17,9 @@ public interface TaskMapper extends BaseMapper<Task> {
                                      @Param("taskStatus") Integer taskStatus,
                                      @Param("userId") Long userId);
     
+    List<Task> selectByTypeAndDateRange(@Param("taskType") Integer taskType, 
+                                        @Param("date") LocalDate date,
+                                        @Param("userId") Long userId);
+    
     int updateTaskStatus(@Param("id") Long id, @Param("taskStatus") Integer taskStatus);
 }

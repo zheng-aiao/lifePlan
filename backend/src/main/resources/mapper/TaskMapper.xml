@@ -53,6 +53,17 @@
         </if>
         ORDER BY planned_start_time ASC
     </select>
+    
+    <select id="selectByTypeAndDateRange" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM task
+        WHERE user_id = #{userId}
+          AND is_deleted = 0
+          AND task_type = #{taskType}
+          AND planned_start_time &lt;= CAST(CONCAT(#{date}, ' 23:59:59') AS TIMESTAMP)
+          AND planned_end_time &gt;= CAST(CONCAT(#{date}, ' 00:00:00') AS TIMESTAMP)
+        ORDER BY task_priority DESC
+    </select>
 
     <update id="updateTaskStatus">
         UPDATE task

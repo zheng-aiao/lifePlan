@@ -47,6 +47,11 @@ const taskService = {
     return request.get(`/tasks/date/${date}`, { params });
   },
 
+  // 根据任务类型和日期获取任务详情列表（包含子任务和活动日志）
+  getTasksByTypeAndDate: (taskType, date, params = {}) => {
+    return request.get(`/tasks/type/${taskType}/date/${date}`, { params });
+  },
+
   // 更新任务
   updateTask: (taskId, data) => {
     return request.put(`/tasks/${taskId}`, data);

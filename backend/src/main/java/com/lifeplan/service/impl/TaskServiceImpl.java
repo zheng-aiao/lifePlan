@@ -14,6 +14,7 @@ import com.lifeplan.mapper.TaskMapper;
 import com.lifeplan.mapper.TaskStatusChangeMapper;
 import com.lifeplan.service.TaskService;
 import com.lifeplan.vo.TaskInfoVO;
+import com.lifeplan.vo.TaskVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,16 +26,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements TaskService {
-    
+
     @Autowired
     private TaskMapper taskMapper;
-    
+
     @Autowired
     private TaskStatusChangeMapper taskStatusChangeMapper;
-    
+
     @Autowired
     private SubTaskMapper subTaskMapper;
-    
+
     @Override
     @Transactional
     public Task createTask(TaskCreateDTO dto) {
@@ -45,23 +46,24 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         task.setIsDeleted(0);
         task.setCreatedAt(LocalDateTime.now());
         task.setUpdatedAt(LocalDateTime.now());
-        
-        if (task.getSubTaskGroup() == null || task.getSubTaskGroup().isEmpty()) {
+
+
+        if (task.getTaskType() == 3 && (task.getSubTaskGroup() == null || task.getSubTaskGroup().isEmpty())) {
             task.setSubTaskGroup(IdUtil.simpleUUID());
         }
-        
+
         if (task.getUserId() == null) {
             task.setUserId(1L);
         }
-        
+
         save(task);
-        
+
         // 为新创建的任务添加活动日志
         createStatusChange(task.getId(), 0, "创建任务", task.getUserId());
-        
+
         return task;
     }
-    
+
     @Override
     @Transactional
     public Task updateTask(Long id, TaskUpdateDTO dto) {
@@ -69,7 +71,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         if (task == null) {
             throw new BusinessException("任务不存在");
         }
-        
+
         if (dto.getTitle() != null) task.setTitle(dto.getTitle());
         if (dto.getDescription() != null) task.setDescription(dto.getDescription());
         if (dto.getCategory() != null) task.setCategory(dto.getCategory());
@@ -77,12 +79,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         if (dto.getTaskProgress() != null) task.setTaskProgress(dto.getTaskProgress());
         if (dto.getPlannedStartTime() != null) task.setPlannedStartTime(dto.getPlannedStartTime());
         if (dto.getPlannedEndTime() != null) task.setPlannedEndTime(dto.getPlannedEndTime());
-        
+
         task.setUpdatedAt(LocalDateTime.now());
         updateById(task);
         return task;
     }
-    
+
     @Override
     @Transactional
     public void deleteTask(Long id) {
@@ -122,17 +124,17 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         vo.setActivities(activityLogs);
         return vo;
     }
-    
+
     @Override
     public List<TaskInfoVO> getTaskDetailsByDate(LocalDate date, Long userId) {
         // 查询当日所有任务
         List<Task> tasks = taskMapper.selectByDate(date, userId);
-        
+
         // 转换为 VO 并填充子任务和活动日志
         return tasks.stream().map(task -> {
             TaskInfoVO vo = new TaskInfoVO();
             BeanUtil.copyProperties(task, vo);
-            
+
             // 查询子任务列表
             if (task.getSubTaskGroup() != null && !task.getSubTaskGroup().isEmpty()) {
                 List<SubTask> subTasks = subTaskMapper.selectBySubTaskGroup(task.getSubTaskGroup());
@@ -144,7 +146,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
                 }).collect(Collectors.toList());
                 vo.setSubTasks(subTaskInfos);
             }
-            
+
             // 查询活动日志列表
             List<TaskStatusChange> statusChanges = taskStatusChangeMapper.selectByTaskId(task.getId());
             List<TaskInfoVO.ActivityLog> activityLogs = statusChanges.stream().map(change -> {
@@ -153,11 +155,24 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
                 return activityLog;
             }).collect(Collectors.toList());
             vo.setActivities(activityLogs);
-            
+
             return vo;
         }).collect(Collectors.toList());
     }
-    
+
+    @Override
+    public List<TaskVO> getTasksByTypeAndDate(Integer taskType, LocalDate date, Long userId) {
+        // 查询指定类型且日期在计划时间范围内的任务，按优先级排序
+        List<Task> tasks = taskMapper.selectByTypeAndDateRange(taskType, date, userId);
+
+        // 转换为TaskVO并计算进度
+        return tasks.stream().map(task -> {
+            TaskVO vo = new TaskVO();
+            BeanUtil.copyProperties(task, vo);
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
     @Override
     @Transactional
     public Task startTask(Long id, Long userId) {
@@ -165,16 +180,16 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         if (task == null) {
             throw new BusinessException("任务不存在");
         }
-        
+
         task.setTaskStatus(1);
         task.setActualStartTime(LocalDateTime.now());
         task.setUpdatedAt(LocalDateTime.now());
         updateById(task);
-        
+
         createStatusChange(id, 1, "开始任务", userId);
         return task;
     }
-    
+
     @Override
     @Transactional
     public Task pauseTask(Long id, String reason, Long userId) {
@@ -182,15 +197,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         if (task == null) {
             throw new BusinessException("任务不存在");
         }
-        
+
         task.setTaskStatus(2);
         task.setUpdatedAt(LocalDateTime.now());
         updateById(task);
-        
+
         createStatusChange(id, 2, reason, userId);
         return task;
     }
-    
+
     @Override
     @Transactional
     public Task resumeTask(Long id, Long userId) {
@@ -198,15 +213,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         if (task == null) {
             throw new BusinessException("任务不存在");
         }
-        
+
         task.setTaskStatus(1);
         task.setUpdatedAt(LocalDateTime.now());
         updateById(task);
-        
+
         createStatusChange(id, 3, "恢复任务", userId);
         return task;
     }
-    
+
     @Override
     @Transactional
     public Task completeTask(Long id, String feedback, Long userId) {
@@ -214,22 +229,22 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         if (task == null) {
             throw new BusinessException("任务不存在");
         }
-        
+
         task.setTaskStatus(3);
         task.setActualEndTime(LocalDateTime.now());
         task.setTaskProgress(100);
         task.setUpdatedAt(LocalDateTime.now());
-        
+
         if (task.getActualStartTime() != null) {
             long duration = java.time.Duration.between(task.getActualStartTime(), task.getActualEndTime()).toMinutes();
             task.setActualDuration((int) duration);
         }
-        
+
         updateById(task);
         createStatusChange(id, 4, feedback, userId);
         return task;
     }
-    
+
     @Override
     @Transactional
     public Task abandonTask(Long id, String reason, Long userId) {
@@ -237,15 +252,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         if (task == null) {
             throw new BusinessException("任务不存在");
         }
-        
+
         task.setTaskStatus(4);
         task.setUpdatedAt(LocalDateTime.now());
         updateById(task);
-        
+
         createStatusChange(id, 5, reason, userId);
         return task;
     }
-    
+
     @Override
     @Transactional
     public Task delayTask(Long id, String reason, Long userId) {
@@ -253,15 +268,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         if (task == null) {
             throw new BusinessException("任务不存在");
         }
-        
+
         task.setTaskStatus(4);
         task.setUpdatedAt(LocalDateTime.now());
         updateById(task);
-        
+
         createStatusChange(id, 6, reason, userId);
         return task;
     }
-    
+
     private void createStatusChange(Long taskId, Integer changeType, String feedbackContent, Long userId) {
         TaskStatusChange change = new TaskStatusChange();
         change.setTaskId(taskId);

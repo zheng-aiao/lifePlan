@@ -146,11 +146,42 @@ const todayDate = computed(() => {
   return `${year}/${month}/${day}`;
 });
 
-const parentTaskList = ref([
-  { id: 1, title: '年度学习计划', taskType: 1 },
-  { id: 2, title: '3月阅读计划', taskType: 2 },
-  { id: 3, title: '今天晨跑', taskType: 3 },
-]);
+const parentTaskList = ref([]);
+
+// 获取父任务列表
+const loadParentTasks = async () => {
+  try {
+    const now = new Date();
+    const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    let parentTaskType = null;
+    if (formData.taskType === 2) {
+      // 月任务的父任务是年任务
+      parentTaskType = 1;
+    } else if (formData.taskType === 3) {
+      // 日任务的父任务是月任务
+      parentTaskType = 2;
+    }
+
+    if (parentTaskType) {
+      const response = await bizService.task.getTasksByTypeAndDate(parentTaskType, date);
+      if (response.data && response.data) {
+        parentTaskList.value = response.data.map((task) => ({
+          id: task.id,
+          title: task.title,
+          taskType: task.taskType,
+          taskGroup: task.taskGroup,
+        }));
+      }
+    } else {
+      // 年任务没有父任务
+      parentTaskList.value = [];
+    }
+  } catch (error) {
+    console.error('加载父任务列表失败:', error);
+    parentTaskList.value = [];
+  }
+};
 
 const handleClose = () => {
   dialogVisible.value = false;
@@ -170,6 +201,15 @@ const resetForm = () => {
   formData.priority = 2;
   formData.planTime = null;
   formData.parentId = null;
+};
+
+// 生成UUID函数
+const generateUUID = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 };
 
 const handleSubmit = async () => {
@@ -217,6 +257,18 @@ const handleSubmit = async () => {
     }
   }
 
+  // 处理taskGroup
+  let taskGroup = null;
+  if (formData.parentId) {
+    // 如果有父任务，直接使用父任务的taskGroup
+    // 这里假设parentTaskList中的每个选项都有taskGroup属性
+    const parentTask = parentTaskList.value.find((task) => task.id === formData.parentId);
+    taskGroup = parentTask ? parentTask.taskGroup : generateUUID();
+  } else {
+    // 如果没有父任务，生成一个新的UUID
+    taskGroup = generateUUID();
+  }
+
   const submitData = {
     title: formData.title,
     taskType: formData.taskType,
@@ -224,6 +276,7 @@ const handleSubmit = async () => {
     category: formData.tags.length > 0 ? formData.tags[0].name : null,
     taskPriority: formData.priority,
     parentId: formData.parentId,
+    taskGroup: taskGroup,
     plannedStartTime,
     plannedEndTime,
   };
@@ -241,10 +294,24 @@ const handleSubmit = async () => {
   }
 };
 
+// 监听任务类型变化
 watch(
   () => formData.taskType,
   () => {
     formData.planTime = null;
+    formData.parentId = null; // 重置父任务选择
+    loadParentTasks(); // 重新加载父任务列表
+  }
+);
+
+// 监听弹窗显示状态变化
+watch(
+  () => dialogVisible.value,
+  (newValue) => {
+    if (newValue) {
+      // 弹窗打开时加载父任务列表
+      loadParentTasks();
+    }
   }
 );
 </script>

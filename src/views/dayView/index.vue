@@ -95,7 +95,6 @@ import DayTaskHandle from './component/DayTaskHandle.vue';
 import { mapTaskStatusText } from '@/emun/constant';
 import eventBus from '@/utils/eventBus';
 import bizService from '@/utils/bizService';
-import { yearlyTasks, monthlyTasks, temporaryTasks } from '@/mock/day.js';
 
 // 常量定义
 const START_HOUR = 7; // 时间线从 7 点开始
@@ -110,6 +109,11 @@ const scrollTop = ref(0);
 
 // 任务数据 - 从后端加载
 const tasks = ref([]);
+
+// 左侧任务列表数据
+const yearlyTasks = ref([]);
+const monthlyTasks = ref([]);
+const temporaryTasks = ref([]);
 
 // 视口高度（用于计算上下留白）
 const viewportHeight = ref(600);
@@ -433,9 +437,47 @@ const scrollToCurrentTime = () => {
   scrollbarRef.value.wrapRef.scrollTop = scrollPosition;
 };
 
+// 加载指定类型的任务数据
+const loadTasksByType = async (taskType, date, taskList) => {
+  try {
+    const response = await bizService.task.getTasksByTypeAndDate(taskType, date);
+    if (response.data && response.data) {
+      taskList.value = response.data.map((task) => ({
+        id: task.id,
+        title: task.title,
+        category: task.category,
+        progress: task.taskProgress,
+        color: getTaskColor(task.category),
+      }));
+    }
+  } catch (error) {
+    console.error(`加载${taskType}任务失败:`, error);
+  }
+};
+
+// 获取任务颜色
+const getTaskColor = (category) => {
+  switch (category) {
+    case '工作':
+      return 'rgba(151, 149, 255, 1)';
+    case '学习':
+      return 'rgba(248, 160, 16, 1)';
+    case '健身':
+      return 'rgba(105, 246, 184, 1)';
+    default:
+      return 'rgba(151, 149, 255, 1)';
+  }
+};
+
 // 刷新任务数据
 const refreshTaskData = async () => {
   await loadTaskDetails(currentDate.value);
+  // 同时加载左侧不同类型的任务
+  await Promise.all([
+    loadTasksByType(1, currentDate.value, yearlyTasks), // 年度任务
+    loadTasksByType(2, currentDate.value, monthlyTasks), // 月度任务
+    loadTasksByType(3, currentDate.value, temporaryTasks), // 临时任务（日任务）
+  ]);
   // 刷新后滚动到当前时间点
   nextTick(() => {
     scrollToCurrentTime();
@@ -574,16 +616,28 @@ const formatDuration = (minutes) => {
   return `${mins}min`;
 };
 
-const handleUpdateTasks = (newDate) => {
+const handleUpdateTasks = async (newDate) => {
   console.log('获取该日期的任务详情', newDate);
   currentDate.value = newDate;
-  loadTaskDetails(newDate);
+  await loadTaskDetails(newDate);
+  // 同时加载左侧不同类型的任务
+  await Promise.all([
+    loadTasksByType(1, newDate, yearlyTasks), // 年度任务
+    loadTasksByType(2, newDate, monthlyTasks), // 月度任务
+    loadTasksByType(3, newDate, temporaryTasks), // 临时任务（日任务）
+  ]);
 };
 
 // 初始化视口高度并滚动到 7 点位置
 onMounted(async () => {
   // 加载任务详情（从后端获取完整数据）
   await loadTaskDetails(currentDate.value);
+  // 加载左侧不同类型的任务
+  await Promise.all([
+    loadTasksByType(1, currentDate.value, yearlyTasks), // 年度任务
+    loadTasksByType(2, currentDate.value, monthlyTasks), // 月度任务
+    loadTasksByType(3, currentDate.value, temporaryTasks), // 临时任务（日任务）
+  ]);
 
   nextTick(() => {
     if (scrollbarRef.value?.wrapRef) {
@@ -606,7 +660,7 @@ onUnmounted(() => {
 const handleTaskCreated = async (date) => {
   console.log('收到任务创建成功事件，日期:', date);
   // 刷新任务数据
-  await loadTaskDetails(date);
+  await refreshTaskData();
 };
 </script>
 

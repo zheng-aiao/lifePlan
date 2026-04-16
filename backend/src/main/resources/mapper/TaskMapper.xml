@@ -72,4 +72,13 @@
         WHERE id = #{id}
     </update>
 
+    <update id="batchUpdateUncompletedTasks">
+        UPDATE task
+        SET task_status = 4,
+            updated_at = NOW()
+        WHERE is_deleted = 0
+          AND task_status < 3
+          AND DATE(planned_end_time) = #{today}
+    </update>
+
 </mapper>

@@ -22,4 +22,9 @@ public interface TaskMapper extends BaseMapper<Task> {
                                         @Param("userId") Long userId);
     
     int updateTaskStatus(@Param("id") Long id, @Param("taskStatus") Integer taskStatus);
+    
+    /**
+     * 批量更新当天未完成任务的状态为未完成（task_status = 4）
+     */
+    int batchUpdateUncompletedTasks(@Param("today") LocalDate today);
 }

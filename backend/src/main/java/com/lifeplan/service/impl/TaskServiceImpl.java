@@ -174,6 +174,19 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
     }
 
     @Override
+    public List<TaskVO> getIncompleteDailyTasks(Long userId) {
+        // 查询状态为未完成的日任务
+        List<Task> tasks = taskMapper.selectIncompleteDailyTasks(userId);
+
+        // 转换为TaskVO
+        return tasks.stream().map(task -> {
+            TaskVO vo = new TaskVO();
+            BeanUtil.copyProperties(task, vo);
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public Task startTask(Long id, Long userId) {
         Task task = getById(id);

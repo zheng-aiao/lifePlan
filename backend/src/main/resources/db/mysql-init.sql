@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS task (
     title VARCHAR(200) NOT NULL COMMENT '任务标题',
     description TEXT COMMENT '任务描述',
     category VARCHAR(50) COMMENT '任务分类：工作/学习/健身/生活等',
-    task_type TINYINT NOT NULL COMMENT '任务类型：1-年度任务 2-月度任务 3-日任务 4-延时任务',
-    task_status TINYINT DEFAULT 0 COMMENT '任务状态：0-待开始 1-进行中 2-暂停中 3-已完成 4-未完成',
+    task_type TINYINT NOT NULL COMMENT '任务类型：1-年度任务 2-月度任务 3-日任务',
+    task_status TINYINT DEFAULT 0 COMMENT '任务状态：0-待开始 1-进行中 2-暂停中 3-已完成 4-未完成 5-已放弃',
     task_group VARCHAR(50) DEFAULT '' COMMENT '任务组别',
     task_priority TINYINT DEFAULT 1 COMMENT '优先级：1-低 2-中 3-高',
     task_progress INT DEFAULT 0 COMMENT '进度百分比 0-100',
@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS task (
     user_id BIGINT NOT NULL COMMENT '所属用户ID',
     
     is_deleted TINYINT DEFAULT 0 COMMENT '是否删除：0-否 1-是',
+    is_delayed TINYINT DEFAULT 0 COMMENT '是否延时：0-否 1-是',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     

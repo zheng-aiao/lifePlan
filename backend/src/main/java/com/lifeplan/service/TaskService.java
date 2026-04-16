@@ -31,6 +31,13 @@ public interface TaskService extends IService<Task> {
      */
     List<TaskVO> getTasksByTypeAndDate(Integer taskType, LocalDate date, Long userId);
     
+    /**
+     * 查询状态为未完成的日任务（taskType=3, taskStatus=4）
+     * @param userId 用户ID
+     * @return 任务列表
+     */
+    List<TaskVO> getIncompleteDailyTasks(Long userId);
+    
     Task startTask(Long id, Long userId);
     
     Task pauseTask(Long id, String reason, Long userId);

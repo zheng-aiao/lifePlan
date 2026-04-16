@@ -52,6 +52,11 @@ const taskService = {
     return request.get(`/tasks/type/${taskType}/date/${date}`, { params });
   },
 
+  // 获取未完成的日任务
+  getIncompleteDailyTasks: (params = {}) => {
+    return request.get('/tasks/incomplete', { params });
+  },
+
   // 更新任务
   updateTask: (taskId, data) => {
     return request.put(`/tasks/${taskId}`, data);

@@ -52,7 +52,15 @@ const loadTasksByType = async () => {
   if (!taskType) return;
 
   try {
-    const response = await bizService.task.getTasksByTypeAndDate(taskType, props.date);
+    let response;
+    // 日任务（taskType=3）获取未完成的任务
+    if (taskType === 3) {
+      response = await bizService.task.getIncompleteDailyTasks();
+    } else {
+      // 年任务和月任务使用原有接口
+      response = await bizService.task.getTasksByTypeAndDate(taskType, props.date);
+    }
+
     if (response.data && response.data) {
       tasks.value = response.data.map((task) => ({
         id: task.id,

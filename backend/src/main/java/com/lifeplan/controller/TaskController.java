@@ -82,6 +82,13 @@ public class TaskController {
         return Result.success(tasks);
     }
     
+    @GetMapping("/incomplete")
+    public Result<List<TaskVO>> getIncompleteDailyTasks() {
+        Long userId = 1L;
+        List<TaskVO> tasks = taskService.getIncompleteDailyTasks(userId);
+        return Result.success(tasks);
+    }
+    
     @PostMapping("/{id}/start")
     public Result<Map<String, Object>> startTask(@PathVariable Long id) {
         Long userId = 1L;

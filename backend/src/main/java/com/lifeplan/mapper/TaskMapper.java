@@ -27,4 +27,9 @@ public interface TaskMapper extends BaseMapper<Task> {
      * 批量更新当天未完成任务的状态为未完成（task_status = 4）
      */
     int batchUpdateUncompletedTasks(@Param("today") LocalDate today);
+    
+    /**
+     * 查询状态为未完成的日任务（taskType=3, taskStatus=4）
+     */
+    List<Task> selectIncompleteDailyTasks(@Param("userId") Long userId);
 }

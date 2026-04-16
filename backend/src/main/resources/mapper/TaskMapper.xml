@@ -75,10 +75,21 @@
     <update id="batchUpdateUncompletedTasks">
         UPDATE task
         SET task_status = 4,
+            is_delayed = 1,
             updated_at = NOW()
         WHERE is_deleted = 0
-          AND task_status < 3
+          AND task_status &lt; 3
           AND DATE(planned_end_time) = #{today}
     </update>
+
+    <select id="selectIncompleteDailyTasks" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM task
+        WHERE is_deleted = 0
+          AND task_type = 3
+          AND task_status = 4
+          AND user_id = #{userId}
+        ORDER BY planned_end_time ASC
+    </select>
 
 </mapper>

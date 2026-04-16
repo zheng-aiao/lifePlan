@@ -48,7 +48,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
+import bizService from '@/utils/bizService';
 
 const props = defineProps({
   title: {
@@ -59,11 +60,42 @@ const props = defineProps({
     type: String,
     default: 'year',
   },
-  tasks: {
-    type: Array,
-    default: () => [],
+  date: {
+    type: String,
+    required: true,
   },
 });
+
+// 任务数据
+const tasks = ref([]);
+
+// 任务类型映射
+const taskTypeMap = {
+  year: 1,
+  month: 2,
+  day: 3,
+};
+
+// 加载指定类型的任务数据
+const loadTasksByType = async () => {
+  const taskType = taskTypeMap[props.type];
+  if (!taskType) return;
+
+  try {
+    const response = await bizService.task.getTasksByTypeAndDate(taskType, props.date);
+    if (response.data && response.data) {
+      tasks.value = response.data.map((task) => ({
+        id: task.id,
+        title: task.title,
+        category: task.category,
+        progress: task.taskProgress,
+        color: getCategoryColor(task.category),
+      }));
+    }
+  } catch (error) {
+    console.error(`加载${props.type}任务失败:`, error);
+  }
+};
 
 const timeTag = computed(() => {
   const now = new Date();
@@ -93,6 +125,19 @@ const getCategoryColor = (category) => {
       return 'rgba(151, 149, 255, 1)';
   }
 };
+
+// 组件挂载时加载任务数据
+onMounted(() => {
+  loadTasksByType();
+});
+
+// 监听日期变化，重新加载任务数据
+watch(
+  () => props.date,
+  () => {
+    loadTasksByType();
+  }
+);
 </script>
 
 <style scoped lang="scss">

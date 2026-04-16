@@ -9,33 +9,7 @@
       </div>
     </div>
     <div class="tasks-container">
-      <div
-        v-for="task in tasks"
-        :key="task.id"
-        class="task-item"
-        :style="{ borderLeftColor: task.color }"
-      >
-        <div class="task-content">
-          <div class="task-header">
-            <p class="task-title">{{ task.title }}</p>
-            <BaseTag>{{ task.category }}</BaseTag>
-          </div>
-          <div class="task-progress">
-            <div class="progress-bar">
-              <div
-                class="progress-fill"
-                :style="{
-                  width: task.progress + '%',
-                  backgroundColor: task.color,
-                }"
-              ></div>
-            </div>
-            <div class="progress-percentage">
-              <p class="percentage-text">{{ task.progress }}%</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <TaskItemCard v-for="task in tasks" :key="task.id" :task="task" />
     </div>
   </div>
 </template>
@@ -44,6 +18,7 @@
 import { computed, ref, onMounted, watch, onUnmounted } from 'vue';
 import bizService from '@/utils/bizService';
 import BaseTag from '@/components/common/BaseTag.vue';
+import TaskItemCard from '@/views/dayView/component/TaskItemCard.vue';
 import eventBus from '@/utils/eventBus';
 
 const props = defineProps({
@@ -84,6 +59,9 @@ const loadTasksByType = async () => {
         title: task.title,
         category: task.category,
         progress: task.taskProgress,
+        plannedStartTime: task.plannedStartTime,
+        plannedEndTime: task.plannedEndTime,
+        taskType: task.taskType,
         color: getCategoryColor(task.category),
       }));
     }
@@ -178,83 +156,6 @@ onUnmounted(() => {
     flex-shrink: 0;
     overflow: auto;
     @include scrollBarStyle(var(--violet));
-
-    .task-item {
-      @include wh(100%, pxToRem(70));
-      @include flexCenter(center, center, true);
-      padding: pxToRem(16);
-      border-radius: pxToRem(8);
-      box-shadow: 0 pxToRem(1) pxToRem(2) 0 rgba(0, 0, 0, 0.05);
-      background-color: rgba(255, 255, 255, 1);
-      border-left: pxToRem(4) solid;
-      position: relative;
-      flex-shrink: 0;
-      overflow: hidden;
-
-      .task-content {
-        @include wh(calc(100% - pxToRem(32)), pxToRem(43));
-        @include flexCenter(flex-start, center, true);
-        gap: pxToRem(8);
-        position: relative;
-        flex-shrink: 0;
-
-        .task-header {
-          @include wh(100%, pxToRem(20));
-          @include flexCenter(space-between, center);
-          position: relative;
-          flex-shrink: 0;
-
-          .task-title {
-            @include fontStyle(5);
-            font-family: 'Alibaba PuHuiTi-Regular';
-            color: rgba(32, 48, 68, 1);
-            margin: 0;
-            flex: 1;
-            @include oneLineTextHidden;
-          }
-        }
-
-        .task-progress {
-          @include wh(100%, pxToRem(15));
-          @include flexCenter(flex-start, center);
-          gap: pxToRem(12);
-          position: relative;
-          flex-shrink: 0;
-
-          .progress-bar {
-            flex: 1;
-            @include whrem(0, 6);
-            border-radius: pxToRem(9999);
-            background-color: rgba(220, 233, 255, 1);
-            position: relative;
-            flex-shrink: 0;
-            overflow: hidden;
-
-            .progress-fill {
-              @include wh(100%, 100%);
-              position: absolute;
-              left: 0;
-              top: 0;
-            }
-          }
-
-          .progress-percentage {
-            @include whrem(22, 15);
-            @include flexCenter;
-            position: relative;
-            flex-shrink: 0;
-
-            .percentage-text {
-              font-size: pxToRem(10);
-              font-family: 'Inter-Semi Bold';
-              font-weight: 700;
-              color: rgba(104, 120, 143, 1);
-              margin: 0;
-            }
-          }
-        }
-      }
-    }
   }
 }
 </style>

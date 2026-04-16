@@ -2,9 +2,9 @@
   <div class="view-container">
     <div class="day-view">
       <div class="day-view-left">
-        <DayTaskList :title="'年度任务'" :type="'year'" :date="currentDate" />
-        <DayTaskList :title="'月度任务'" :type="'month'" :date="currentDate" />
-        <DayTaskList :title="'临时任务'" :type="'day'" :date="currentDate" />
+        <TaskCardList :title="'年度任务'" :type="'year'" :date="currentDate" />
+        <TaskCardList :title="'月度任务'" :type="'month'" :date="currentDate" />
+        <TaskCardList :title="'临时任务'" :type="'day'" :date="currentDate" />
       </div>
       <div class="day-view-main">
         <DayTaskHandle @updateTasks="handleUpdateTasks" />
@@ -89,7 +89,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick, onUnmounted } from 'vue';
 import AsideRight from '@/views/dayView/component/AsideRight.vue';
-import DayTaskList from '@/views/dayView/component/DayTaskList.vue';
+import TaskCardList from '@/views/dayView/component/TaskCardList.vue';
 import DayTaskCard from './component/DayTaskCard.vue';
 import DayTaskHandle from './component/DayTaskHandle.vue';
 import { mapTaskStatusText } from '@/emun/constant';

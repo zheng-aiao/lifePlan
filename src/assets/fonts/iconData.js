@@ -13,6 +13,7 @@ export const iconData = {
 
   delay: { icon: '&#xe629;', label: '延时', groupBy: 'dayView' },
   clock: { icon: '&#xe74f;', label: '时钟', groupBy: 'dayView' },
+  smallClock: { icon: '&#xe6df;', label: '小钟表', groupBy: 'dayView' },
   start: { icon: '&#xe616;', label: '启动', groupBy: 'dayView' },
   pause: { icon: '&#xe619;', label: '暂停', groupBy: 'dayView' },
 
@@ -23,4 +24,6 @@ export const iconData = {
   cancel: { icon: '&#xe64c;', label: '取消', groupBy: 'dayView' },
 
   add: { icon: '&#xe6fc;', label: '新增', groupBy: 'dayView' },
+
+  detail: { icon: '&#xe633;', label: '详情', groupBy: 'dayView' },
 };

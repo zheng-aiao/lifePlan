@@ -5,9 +5,7 @@
         <p class="title-text">{{ title }}</p>
       </div>
       <div class="header-right">
-        <div class="year-badge">
-          <p class="year-text">{{ timeTag }}</p>
-        </div>
+        <BaseTag>{{ timeTag }}</BaseTag>
       </div>
     </div>
     <div class="tasks-container">
@@ -20,12 +18,7 @@
         <div class="task-content">
           <div class="task-header">
             <p class="task-title">{{ task.title }}</p>
-            <div
-              class="task-category"
-              :style="{ backgroundColor: getCategoryColor(task.category) }"
-            >
-              <p class="category-text">{{ task.category }}</p>
-            </div>
+            <BaseTag>{{ task.category }}</BaseTag>
           </div>
           <div class="task-progress">
             <div class="progress-bar">
@@ -50,6 +43,7 @@
 <script setup>
 import { computed, ref, onMounted, watch } from 'vue';
 import bizService from '@/utils/bizService';
+import BaseTag from '@/components/common/BaseTag.vue';
 
 const props = defineProps({
   title: {
@@ -179,28 +173,7 @@ watch(
     }
 
     .header-right {
-      .year-badge {
-        width: pxToRem(56);
-        height: pxToRem(19);
-        position: relative;
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        padding: pxToRem(2) pxToRem(8);
-        border-radius: pxToRem(9999);
-        background-color: rgba(210, 228, 255, 1);
-
-        .year-text {
-          font-size: pxToRem(10);
-          font-family: 'Inter-Semi Bold';
-          font-weight: 700;
-          display: flex;
-          justify-content: center;
-          line-height: pxToRem(15);
-          color: rgba(74, 64, 224, 1);
-          margin: 0;
-        }
-      }
+      /* 标签样式已移至BaseTag组件 */
     }
   }
 
@@ -262,29 +235,7 @@ watch(
             margin: 0;
           }
 
-          .task-category {
-            width: pxToRem(36);
-            height: pxToRem(19);
-            position: relative;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            padding: pxToRem(2) pxToRem(8);
-            border-radius: pxToRem(9999);
-
-            .category-text {
-              font-size: pxToRem(10);
-              font-family: 'Alibaba PuHuiTi-Regular';
-              font-weight: 400;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              line-height: pxToRem(15);
-              text-transform: uppercase;
-              color: rgba(20, 0, 126, 1);
-              margin: 0;
-            }
-          }
+          /* 标签样式已移至BaseTag组件 */
         }
 
         .task-progress {

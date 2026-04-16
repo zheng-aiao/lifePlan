@@ -390,6 +390,11 @@ $font-config: (
     line-height: 22,
     weight: 400,
   ),
+  6: (
+    size: 12,
+    line-height: 20,
+    weight: 400,
+  ),
 );
 // 字体样式
 @mixin fontStyle($level: 4, $onlyUseSize: false) {

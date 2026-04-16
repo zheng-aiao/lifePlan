@@ -34,4 +34,6 @@ public class TaskCreateDTO {
     private Long parentId;
     
     private Long userId;
+    
+    private Integer isDelayed;
 }

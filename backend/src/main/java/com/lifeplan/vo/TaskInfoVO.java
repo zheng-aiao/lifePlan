@@ -47,6 +47,8 @@ public class TaskInfoVO implements Serializable {
     
     private Long userId;
     
+    private Integer isDelayed;
+    
     private LocalDateTime createdAt;
     
     private LocalDateTime updatedAt;

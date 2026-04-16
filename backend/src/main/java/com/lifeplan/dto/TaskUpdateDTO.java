@@ -22,4 +22,6 @@ public class TaskUpdateDTO {
     private LocalDateTime plannedStartTime;
     
     private LocalDateTime plannedEndTime;
+    
+    private Integer isDelayed;
 }

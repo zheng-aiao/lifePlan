@@ -1,14 +1,31 @@
 <template>
   <div class="task-item-card" :style="{ borderLeftColor: task.color }">
-    <div class="task-content">
-      <div class="task-header">
+    <div class="task-header">
+      <div class="task-header-left">
         <p class="task-title">{{ task.title }}</p>
-
+        <BaseTag>{{ task.category }}</BaseTag>
+      </div>
+      <div class="task-header-right">
         <div v-if="task.plannedStartTime || task.plannedEndTime" class="task-time">
-          <span class="iconfont time-icon" v-html="`&#xe74f`"></span>
+          <span class="iconfont time-icon" v-html="'&#xe74f;'"></span>
           <span class="time-text">{{ formatTimeRange }}</span>
         </div>
-        <BaseTag>{{ task.category }}</BaseTag>
+      </div>
+    </div>
+    <div class="task-content">
+      <div class="task-progress">
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            :style="{
+              width: task.progress + '%',
+              backgroundColor: task.color,
+            }"
+          ></div>
+        </div>
+        <p class="percentage-text">{{ task.progress }}%</p>
+      </div>
+      <div class="task-actions">
         <BaseButton
           class="action-btn"
           type="add"
@@ -21,24 +38,8 @@
           iconBtn
           @click.stop="showDetail = true"
         ></BaseButton>
-
-      </div>
-      <div class="task-progress">
-        <div class="progress-bar">
-          <div
-            class="progress-fill"
-            :style="{
-              width: task.progress + '%',
-              backgroundColor: task.color,
-            }"
-          ></div>
-        </div>
-        <div class="progress-percentage">
-          <p class="percentage-text">{{ task.progress }}%</p>
-        </div>
       </div>
     </div>
-
     <!-- 详情悬浮弹窗 -->
     <Transition name="fade">
       <div v-if="showDetail" class="detail-popup" @click="showDetail = false">
@@ -130,8 +131,8 @@ const formatTimeRange = computed(() => {
 
 .task-item-card {
   @include wh(100%, pxToRem(70));
-  @include flexCenter;
-  padding: pxToRem(10) pxToRem(10);;
+  @include flexCenter(center, center, true);
+  padding: pxToRem(12) pxToRem(16);
   border-radius: pxToRem(8);
   box-shadow: 0 pxToRem(1) pxToRem(2) 0 rgba(0, 0, 0, 0.05);
   background-color: rgba(255, 255, 255, 1);
@@ -139,45 +140,88 @@ const formatTimeRange = computed(() => {
   position: relative;
   flex-shrink: 0;
   overflow: hidden;
+  gap: pxToRem(12);
 
-  .task-content {
-    @include wh(calc(100% - pxToRem(20)), 100%);
-    @include flexCenter(center, center, true);
-    gap: pxToRem(12);
- 
+  .task-header {
+    @include wh(100%, pxToRem(24));
+    @include flexCenter(space-between, center);
+    position: relative;
 
-    .task-header {
-      @include wh(100%, pxToRem(24));
+    .task-header-left {
       @include flexCenter(flex-start, center);
       gap: pxToRem(8);
-
+      min-width: 0;
 
       .task-title {
-        @include fontStyle(5);
-        color: rgba(32, 48, 68, 1);
+        @include fontStyle(2);
+        color: var(--textColor-1);
         margin: 0;
         flex: 1;
         min-width: 0;
         @include oneLineTextHidden;
       }
+    }
+
+    .task-header-right {
+      flex-shrink: 0;
 
       .task-time {
         @include flexCenter(center, center);
         gap: pxToRem(4);
-        padding: pxToRem(2) pxToRem(6);
-        background: rgba(234, 241, 255, 1);
-        border-radius: pxToRem(4);
-        flex-shrink: 0;
 
         .time-icon {
           font-size: pxToRem(10);
         }
 
         .time-text {
-          font-size: pxToRem(11);
-          color: rgba(77, 93, 115, 0.8);
+          font-size: pxToRem(12);
+          color: rgba(104, 120, 143, 1);
+          font-weight: 500;
         }
       }
+    }
+  }
+
+  .task-content {
+    @include wh(100%, pxToRem(16));
+    @include flexCenter(space-between, center);
+    gap: pxToRem(20);
+
+    .task-progress {
+      flex: 1;
+      @include flexCenter(space-between, center);
+      gap: pxToRem(16);
+
+      .progress-bar {
+        flex: 1;
+        @include wh(100%, pxToRem(6));
+        border-radius: pxToRem(9999);
+        background-color: rgba(220, 233, 255, 1);
+        position: relative;
+        overflow: hidden;
+
+        .progress-fill {
+          @include wh(100%, 100%);
+          position: absolute;
+          left: 0;
+          top: 0;
+          border-radius: pxToRem(9999);
+        }
+      }
+
+      .percentage-text {
+        font-size: pxToRem(12);
+        font-weight: 500;
+        color: rgba(104, 120, 143, 1);
+        margin: 0;
+        flex-shrink: 0;
+      }
+    }
+
+    .task-actions {
+      @include flexCenter(center, center);
+      gap: pxToRem(8);
+      flex-shrink: 0;
 
       .action-btn {
         @include whrem(24, 24);
@@ -187,63 +231,10 @@ const formatTimeRange = computed(() => {
         background: rgba(245, 250, 255, 1);
         cursor: pointer;
         transition: all 0.2s ease;
-        flex-shrink: 0;
-
-        .action-icon {
-          font-size: pxToRem(14);
-        }
 
         &:hover {
           background: rgba(74, 64, 224, 0.1);
           transform: scale(1.1);
-        }
-
-        &.detail-btn:hover {
-          background: rgba(74, 64, 224, 0.1);
-        }
-
-        &.add-btn:hover {
-          background: rgba(31, 202, 108, 0.1);
-        }
-      }
-    }
-
-    .task-progress {
-      @include wh(100%, pxToRem(15));
-      @include flexCenter(flex-start, center);
-      gap: pxToRem(12);
-      position: relative;
-      flex-shrink: 0;
-
-      .progress-bar {
-        flex: 1;
-        @include whrem(0, 6);
-        border-radius: pxToRem(9999);
-        background-color: rgba(220, 233, 255, 1);
-        position: relative;
-        flex-shrink: 0;
-        overflow: hidden;
-
-        .progress-fill {
-          @include wh(100%, 100%);
-          position: absolute;
-          left: 0;
-          top: 0;
-        }
-      }
-
-      .progress-percentage {
-        @include whrem(22, 15);
-        @include flexCenter;
-        position: relative;
-        flex-shrink: 0;
-
-        .percentage-text {
-          font-size: pxToRem(10);
-          font-family: 'Inter-Semi Bold';
-          font-weight: 700;
-          color: rgba(104, 120, 143, 1);
-          margin: 0;
         }
       }
     }

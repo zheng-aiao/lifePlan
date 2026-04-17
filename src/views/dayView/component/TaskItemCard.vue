@@ -28,15 +28,16 @@
       <div class="task-actions">
         <BaseButton
           class="action-btn"
-          type="add"
-          iconBtn
-          @click.stop="$emit('addSubTask', task)"
-        ></BaseButton>
-        <BaseButton
-          class="action-btn"
           type="detail"
           iconBtn
           @click.stop="showDetail = true"
+        ></BaseButton>
+        <BaseButton
+          v-if="task.taskStatus === 4"
+          class="action-btn"
+          type="assgin"
+          iconBtn
+          @click.stop="$emit('addSubTask', task)"
         ></BaseButton>
       </div>
     </div>

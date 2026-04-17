@@ -6,6 +6,27 @@
   "description": "时光序网站图标",
   "glyphs": [
     {
+      "icon_id": "1691536",
+      "name": "分配",
+      "font_class": "fenpei",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "8212128",
+      "name": "分配",
+      "font_class": "fenpei1",
+      "unicode": "e78e",
+      "unicode_decimal": 59278
+    },
+    {
+      "icon_id": "10020167",
+      "name": "分配",
+      "font_class": "fenpei2",
+      "unicode": "e712",
+      "unicode_decimal": 59154
+    },
+    {
       "icon_id": "1638281",
       "name": "下箭头",
       "font_class": "xiajiantou",

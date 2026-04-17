@@ -26,6 +26,9 @@ export const iconData = {
   cancel: { icon: '&#xe64c;', label: '取消', groupBy: 'dayView' },
 
   add: { icon: '&#xe6fc;', label: '新增', groupBy: 'dayView' },
+  // assgin: { icon: '&#xe62f;', label: '分配', groupBy: 'dayView' },
+  assgin: { icon: '&#xe78e;', label: '分配', groupBy: 'dayView' },
+  // assgin: { icon: '&#xe712;', label: '分配', groupBy: 'dayView' },
 
   detail: { icon: '&#xe633;', label: '详情', groupBy: 'dayView' },
 };

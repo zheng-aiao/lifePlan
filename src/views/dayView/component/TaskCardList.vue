@@ -49,6 +49,7 @@ const loadTasksByType = async () => {
         plannedStartTime: task.plannedStartTime,
         plannedEndTime: task.plannedEndTime,
         taskType: task.taskType,
+        taskStatus: task.taskStatus,
         color: getCategoryColor(task.category),
       }));
     }

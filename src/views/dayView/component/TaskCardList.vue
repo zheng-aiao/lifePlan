@@ -1,13 +1,5 @@
 <template>
   <div class="task-card">
-    <div class="card-header">
-      <div class="header-left">
-        <p class="title-text">{{ title }}</p>
-      </div>
-      <div class="header-right">
-        <BaseTag>{{ timeTag }}</BaseTag>
-      </div>
-    </div>
     <div class="tasks-container">
       <TaskItemCard v-for="task in tasks" :key="task.id" :task="task" />
     </div>
@@ -15,20 +7,15 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch, onUnmounted } from 'vue';
+import { ref, onMounted, watch, onUnmounted } from 'vue';
 import bizService from '@/utils/bizService';
-import BaseTag from '@/components/common/BaseTag.vue';
 import TaskItemCard from '@/views/dayView/component/TaskItemCard.vue';
 import eventBus from '@/utils/eventBus';
 
 const props = defineProps({
-  title: {
-    type: String,
-    default: '年度任务',
-  },
   type: {
     type: String,
-    default: 'year',
+    default: '',
   },
   date: {
     type: String,
@@ -39,26 +26,18 @@ const props = defineProps({
 // 任务数据
 const tasks = ref([]);
 
-// 任务类型映射
-const taskTypeMap = {
-  year: 1,
-  month: 2,
-  day: 3,
-};
-
 // 加载指定类型的任务数据
 const loadTasksByType = async () => {
-  const taskType = taskTypeMap[props.type];
-  if (!taskType) return;
+  if (!props.type) return;
 
   try {
     let response;
     // 日任务（taskType=3）获取未完成的任务
-    if (taskType === 3) {
+    if (props.type === 4) {
       response = await bizService.task.getIncompleteDailyTasks();
     } else {
       // 年任务和月任务使用原有接口
-      response = await bizService.task.getTasksByTypeAndDate(taskType, props.date);
+      response = await bizService.task.getTasksByTypeAndDate(props.type, props.date);
     }
 
     if (response.data && response.data) {
@@ -77,22 +56,6 @@ const loadTasksByType = async () => {
     console.error(`加载${props.type}任务失败:`, error);
   }
 };
-
-const timeTag = computed(() => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const week = Math.ceil(now.getDate() / 7);
-
-  switch (props.type) {
-    case 'year':
-      return `${year}年`;
-    case 'month':
-      return `${month}月`;
-    default:
-      return `第${week}周`;
-  }
-});
 
 const getCategoryColor = (category) => {
   switch (category) {
@@ -133,37 +96,19 @@ onUnmounted(() => {
 @use '@/assets/scss/rules' as *;
 
 .task-card {
-  flex: 1;
-  @include flexCenter(flex-start, center, true);
-  gap: pxToRem(20);
-  @include wh(100%, pxToRem(310));
-  padding: pxToRem(20) pxToRem(16);
+  @include wh(100%);
+  @include flexCenter;
   background-color: rgba(248, 250, 252, 1);
-  border-radius: pxToRem(8);
-
-  .card-header {
-    @include wh(100%, pxToRem(20));
-    @include flexCenter(space-between, center);
-    position: relative;
-    flex-shrink: 0;
-
-    .header-left {
-      .title-text {
-        @include fontStyle(4);
-        @include oneLineTextHidden;
-        color: var(--textColor-1);
-      }
-    }
-  }
+  border-radius: 0 0 pxToRem(8) pxToRem(8);
+  padding: pxToRem(20) pxToRem(16);
 
   .tasks-container {
-    @include wh(100%, pxToRem(240));
+    @include wh(100%);
     @include flexCenter(flex-start, center, true);
     gap: pxToRem(15);
-    position: relative;
-    flex-shrink: 0;
-    overflow: auto;
+    overflow-y: auto;
     @include scrollBarStyle(var(--violet));
+    min-height: 0;
   }
 }
 </style>

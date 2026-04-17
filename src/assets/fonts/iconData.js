@@ -19,6 +19,8 @@ export const iconData = {
 
   right: { icon: '&#xe62b;', label: '下一个', groupBy: 'dayView' },
   left: { icon: '&#xe604;', label: '上一个', groupBy: 'dayView' },
+  top: { icon: '&#xe612;', label: '上箭头', groupBy: 'dayView' },
+  bottom: { icon: '&#xe611;', label: '下箭头', groupBy: 'dayView' },
 
   confirm: { icon: '&#xe62a;', label: '确认', groupBy: 'dayView' },
   cancel: { icon: '&#xe64c;', label: '取消', groupBy: 'dayView' },

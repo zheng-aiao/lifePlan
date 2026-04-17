@@ -1,11 +1,7 @@
 <template>
   <div class="view-container">
     <div class="day-view">
-      <div class="day-view-left">
-        <TaskCardList :title="'年度任务'" :type="'year'" :date="currentDate" />
-        <TaskCardList :title="'月度任务'" :type="'month'" :date="currentDate" />
-        <TaskCardList :title="'未完成日任务'" :type="'day'" :date="currentDate" />
-      </div>
+      <AsideLeft />
       <div class="day-view-main">
         <DayTaskHandle @updateTasks="handleUpdateTasks" />
         <el-scrollbar ref="scrollbarRef" class="day-scroll-container" @scroll="handleScroll">
@@ -88,8 +84,8 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick, onUnmounted } from 'vue';
+import AsideLeft from '@/views/dayView/component/AsideLeft.vue';
 import AsideRight from '@/views/dayView/component/AsideRight.vue';
-import TaskCardList from '@/views/dayView/component/TaskCardList.vue';
 import DayTaskCard from './component/DayTaskCard.vue';
 import DayTaskHandle from './component/DayTaskHandle.vue';
 import { mapTaskStatusText } from '@/emun/constant';
@@ -634,9 +630,7 @@ const handleTaskCreated = async (date) => {
 
     .day-view-left {
       flex: 1;
-      @include flexCenter(flex-start, center, true);
-      gap: pxToRem(20);
-      padding: pxToRem(20) pxToRem(16);
+      height: 100%;
     }
 
     .day-view-main {

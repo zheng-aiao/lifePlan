@@ -1,0 +1,19 @@
+# 任务列表
+
+## 概要介绍
+1. 设计目的： 能快速看到当前日期下正在进行的各维度任务。方便了解某个任务概要以及创建对应子任务
+2. 展示内容： 以时间维度为单位，根据用户与系统的反馈频率设置不同时间周期的任务分类，如年度任务、季度任务、月任务、周任务、未完成日任务等
+
+## 组件设计
+组件名称： AsideLeft.vue
+
+### 结构设计：
+- 各维度任务列表折叠，只显示简要信息（标题，标签：年月日，折叠按钮），默认只展开未完成日任务列表。其余列表点击对应类别再展开，默认同一时刻只有一个列表展开其余折叠
+- 组件使用： 使用 TaskCardList.vue 组件实现每个维度的任务列标。 通过向该组件传递 title,type,date 参数实现不同类型任务列表的加载。
+
+### 交互设计：
+- AsideLeft组件属性： 在props中提供category参数，数组结构，用来控制左侧展示哪些任务列表， 形如：[{title: '年度任务', type: 1},{title: '月度任务', type: 2},{title: '未完成日任务', type: 4}]
+- AsideLeft组件datetime参数： TaskCardList.vue 组件需要date参数，在该组件需要自己维护一个当前时间datetime，并在onMounted 、unOnMounted中用 eventBus注册和解除'taskCreated'事件,支持外侧调用该函数改变datetime更新 TaskCardList.vue子组件
+
+### 样式样式：
+flex布局，列排列。 优先使用rules.scss布局。 

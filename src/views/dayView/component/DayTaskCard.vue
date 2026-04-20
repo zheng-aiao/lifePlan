@@ -15,10 +15,25 @@
         <div class="card-header">
           <div class="header-left">
             <div class="title-row">
-              <BaseButton class="action-btn" type="task" iconBtn />
-              <span class="task-title">{{ taskData.title }}</span>
+              <BaseButton class="action-btn" type="task" iconBtn @click.stop="startTitleEdit" />
+              <div class="title-wrapper">
+                <input
+                  v-if="isEditingTitle"
+                  ref="titleInputRef"
+                  v-model="editTitle"
+                  class="task-title-input"
+                  @blur="saveTitle"
+                  @keyup.enter="saveTitle"
+                />
+                <span v-else class="task-title">{{ taskData.title }}</span>
+              </div>
               <div class="meta-row">
-                <BaseButton class="action-btn" type="clock" iconBtn />
+                <BaseButton
+                  class="action-btn"
+                  type="clock"
+                  iconBtn
+                  @click.stop="showTimePicker = true"
+                />
                 <span class="time-range">{{ taskData.timeRange }}</span>
                 <span class="status-tag" :class="taskData.taskStatus">{{
                   taskData.statusText || '进行中'
@@ -224,17 +239,25 @@
       @confirm="handleAddTaskItemConfirm"
       @cancel="handleAddTaskItemCancel"
     />
+
+    <!-- 时间选择器弹窗 -->
+    <TimePickerDialog
+      :visible="showTimePicker"
+      @close="showTimePicker = false"
+      @confirm="handleTimePickerConfirm"
+    />
   </el-card>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 import { ElMessage } from 'element-plus';
 import BaseButton from '@/components/common/BaseButton.vue';
 import DelayDialog from '../dialog/DelayDialog.vue';
 import AssetDialog from '../dialog/AssetDialog.vue';
 import StopDialog from '../dialog/StopDialog.vue';
 import AddTaskItemDialog from '../dialog/AddTaskItemDialog.vue';
+import TimePickerDialog from '../dialog/TimePickerDialog.vue';
 import { mapTaskStatusText } from '@/emun/constant';
 import bizService from '@/utils/bizService';
 import { formatDateMD } from '@/utils/dateUtil';
@@ -280,6 +303,14 @@ const abandonDialogVisible = ref(false);
 const isResizing = ref(false);
 const startY = ref(0);
 const startHeight = ref(0);
+
+// 标题编辑相关
+const isEditingTitle = ref(false);
+const editTitle = ref('');
+const titleInputRef = ref(null);
+
+// 时间选择器相关
+const showTimePicker = ref(false);
 
 // 使用ref包装任务数据，确保响应式更新
 const taskData = ref({ ...props.task });
@@ -513,6 +544,59 @@ const handleAddSubTask = () => {
   addTaskItemDialogVisible.value = true;
 };
 
+// 开始编辑标题
+const startTitleEdit = () => {
+  editTitle.value = taskData.value.title;
+  isEditingTitle.value = true;
+  nextTick(() => {
+    if (titleInputRef.value) {
+      titleInputRef.value.focus();
+      titleInputRef.value.select();
+    }
+  });
+};
+
+// 保存标题
+const saveTitle = async () => {
+  const newTitle = editTitle.value.trim();
+  if (!newTitle) {
+    ElMessage.warning('标题不能为空');
+    editTitle.value = taskData.value.title;
+    return;
+  }
+  if (newTitle === taskData.value.title) {
+    isEditingTitle.value = false;
+    return;
+  }
+  try {
+    await bizService.task.updateTask(taskData.value.id, { title: newTitle });
+    taskData.value.title = newTitle;
+    ElMessage.success('标题修改成功');
+  } catch (error) {
+    console.error('修改标题失败:', error);
+    ElMessage.error('修改标题失败');
+    editTitle.value = taskData.value.title;
+  }
+  isEditingTitle.value = false;
+};
+
+// 时间选择器确认处理
+const handleTimePickerConfirm = async (timeRange) => {
+  const [startTime, endTime] = timeRange;
+  try {
+    await bizService.task.updateTask(taskData.value.id, {
+      plannedStartTime: `${new Date().toISOString().split('T')[0]}T${startTime}:00`,
+      plannedEndTime: `${new Date().toISOString().split('T')[0]}T${endTime}:00`,
+    });
+    taskData.value.timeRange = `${startTime}-${endTime}`;
+    ElMessage.success('时间修改成功');
+  } catch (error) {
+    console.error('修改时间失败:', error);
+    ElMessage.error('修改时间失败');
+  }
+  showTimePicker.value = false;
+};
+
 // 获取任务详情
 const loadTaskDetails = async () => {
   try {
@@ -658,12 +742,33 @@ const handleAddTaskItemCancel = () => {
       align-items: center;
       gap: pxToRem(12);
 
-      .task-title {
-        font-size: pxToRem(20);
-        font-family: 'Alibaba PuHuiTi-Medium';
-        font-weight: 500;
-        line-height: pxToRem(28);
-        color: rgba(32, 48, 68, 1);
+      .title-wrapper {
+        display: flex;
+        align-items: center;
+
+        .task-title {
+          font-size: pxToRem(20);
+          font-family: 'Alibaba PuHuiTi-Medium';
+          font-weight: 500;
+          line-height: pxToRem(28);
+          color: rgba(32, 48, 68, 1);
+          cursor: text;
+        }
+
+        .task-title-input {
+          font-size: pxToRem(20);
+          font-family: 'Alibaba PuHuiTi-Medium';
+          font-weight: 500;
+          line-height: pxToRem(28);
+          color: rgba(32, 48, 68, 1);
+          border: pxToRem(2) solid rgba(74, 64, 224, 1);
+          border-radius: pxToRem(6);
+          padding: pxToRem(4) pxToRem(12);
+          outline: none;
+          background: rgba(240, 242, 255, 1);
+          min-width: pxToRem(120);
+          max-width: pxToRem(300);
+        }
       }
       .meta-row {
         display: flex;

@@ -41,39 +41,9 @@
         ></BaseButton>
       </div>
     </div>
-    <!-- 详情悬浮弹窗 -->
-    <Transition name="fade">
-      <div v-if="showDetail" class="detail-popup" @click="showDetail = false">
-        <div class="popup-content" @click.stop>
-          <div class="popup-header">
-            <h3 class="popup-title">{{ task.title }}</h3>
-            <button class="popup-close" @click="showDetail = false">✕</button>
-          </div>
-          <div class="popup-body">
-            <div class="detail-item">
-              <span class="detail-label">类别</span>
-              <span class="detail-value">{{ task.category }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">进度</span>
-              <span class="detail-value">{{ task.progress }}%</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">开始时间</span>
-              <span class="detail-value">{{ task.plannedStartTime || '未设置' }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">结束时间</span>
-              <span class="detail-value">{{ task.plannedEndTime || '未设置' }}</span>
-            </div>
-            <div v-if="task.description" class="detail-item">
-              <span class="detail-label">描述</span>
-              <p class="detail-description">{{ task.description }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Transition>
+
+    <!-- 详情弹窗组件 -->
+    <TaskDetailDialog :visible="showDetail" :task="props.task" @close="showDetail = false" />
 
     <TimePickerPopup
       :visible="showTimePicker"
@@ -89,6 +59,7 @@ import { ref, computed } from 'vue';
 import BaseTag from '@/components/common/BaseTag.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
 import TimePickerPopup from '@/components/common/TimePickerPopup.vue';
+import TaskDetailDialog from '@/views/dayView/dialog/TaskDetailDialog.vue';
 
 const props = defineProps({
   task: {
@@ -271,93 +242,6 @@ const formatTimeRange = computed(() => {
         &:hover {
           background: rgba(74, 64, 224, 0.1);
           transform: scale(1.1);
-        }
-      }
-    }
-  }
-}
-
-/* 详情弹窗样式 */
-.detail-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  @include flexCenter;
-  z-index: 1000;
-  padding: pxToRem(20);
-
-  .popup-content {
-    @include wh(auto, auto);
-    min-width: pxToRem(320);
-    max-width: pxToRem(400);
-    background: #fff;
-    border-radius: pxToRem(12);
-    box-shadow: 0 pxToRem(12) pxToRem(24) rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-
-    .popup-header {
-      @include flexCenter(space-between, center);
-      padding: pxToRem(16) pxToRem(20);
-      border-bottom: pxToRem(1) solid rgba(0, 0, 0, 0.06);
-
-      .popup-title {
-        @include fontStyle(4);
-        color: rgba(32, 48, 68, 1);
-        margin: 0;
-      }
-
-      .popup-close {
-        @include whrem(24, 24);
-        @include flexCenter;
-        border: none;
-        background: rgba(0, 0, 0, 0.05);
-        border-radius: pxToRem(6);
-        cursor: pointer;
-        font-size: pxToRem(14);
-        color: rgba(77, 93, 115, 0.6);
-
-        &:hover {
-          background: rgba(0, 0, 0, 0.1);
-        }
-      }
-    }
-
-    .popup-body {
-      padding: pxToRem(16) pxToRem(20);
-
-      .detail-item {
-        @include flexCenter(flex-start, center, true);
-        gap: pxToRem(8);
-        padding: pxToRem(8) 0;
-        border-bottom: pxToRem(1) dashed rgba(0, 0, 0, 0.06);
-
-        &:last-child {
-          border-bottom: none;
-        }
-
-        .detail-label {
-          @include whrem(60);
-          font-size: pxToRem(13);
-          color: rgba(139, 154, 181, 1);
-          flex-shrink: 0;
-        }
-
-        .detail-value {
-          font-size: pxToRem(13);
-          color: rgba(32, 48, 68, 1);
-          flex: 1;
-        }
-
-        .detail-description {
-          flex: 1;
-          font-size: pxToRem(13);
-          color: rgba(32, 48, 68, 1);
-          line-height: 1.6;
-          margin: 0;
-          white-space: pre-wrap;
         }
       }
     }

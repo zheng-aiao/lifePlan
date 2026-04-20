@@ -19,14 +19,23 @@
         <!-- 弹窗主体内容 -->
         <div class="popup-body">
           <div class="detail-content">
-            <p class="detail-text">{{ task.description || '暂无任务详情' }}</p>
+            <textarea
+              v-if="isEditing"
+              v-model="editDescription"
+              class="detail-textarea"
+              placeholder="请输入任务详情"
+              autofocus
+            ></textarea>
+            <p v-else class="detail-text">{{ task.description || '暂无任务详情' }}</p>
           </div>
         </div>
 
         <!-- 弹窗底部操作 -->
         <div class="popup-footer">
-          <button class="btn-edit">编辑任务</button>
-          <button class="btn-close" @click="$emit('close')">关闭</button>
+          <button class="btn-edit" :class="{ 'btn-save': isEditing }" @click="handleButtonClick">
+            {{ isEditing ? '保存' : '编辑任务' }}
+          </button>
+          <button class="btn-close" @click="handleClose">关闭</button>
         </div>
       </div>
     </div>
@@ -34,7 +43,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, watch } from 'vue';
+import bizService from '@/utils/bizService';
 
 const props = defineProps({
   visible: {
@@ -47,7 +57,66 @@ const props = defineProps({
   },
 });
 
-defineEmits(['close']);
+const emit = defineEmits(['close', 'update']);
+
+// 编辑状态
+const isEditing = ref(false);
+// 编辑内容
+const editDescription = ref('');
+
+// 监听任务变化，同步编辑内容
+watch(
+  () => props.task,
+  (newTask) => {
+    editDescription.value = newTask.description || '';
+  },
+  { immediate: true }
+);
+
+// 监听弹窗关闭，重置编辑状态
+watch(
+  () => props.visible,
+  (newVisible) => {
+    if (!newVisible) {
+      isEditing.value = false;
+    }
+  }
+);
+
+// 按钮点击处理
+const handleButtonClick = () => {
+  if (isEditing.value) {
+    handleSave();
+  } else {
+    handleEdit();
+  }
+};
+
+// 进入编辑模式
+const handleEdit = () => {
+  isEditing.value = true;
+};
+
+// 保存编辑
+const handleSave = async () => {
+  try {
+    await bizService.task.updateTask(props.task.id, {
+      description: editDescription.value,
+    });
+    // 通知父组件数据已更新
+    emit('update');
+    // 退出编辑模式
+    isEditing.value = false;
+  } catch (error) {
+    console.error('保存任务失败:', error);
+  }
+};
+
+// 关闭弹窗
+const handleClose = () => {
+  isEditing.value = false;
+  emit('close');
+};
 
 // 获取优先级文本
 const getPriorityText = (priority) => {
@@ -208,7 +277,7 @@ const formatHeaderDate = computed(() => {
     }
 
     .popup-body {
-      max-height: pxToRem(320);
+      max-height: pxToRem(600);
       min-height: pxToRem(120);
       overflow-y: auto;
       background: rgba(250, 252, 255, 1);
@@ -226,6 +295,28 @@ const formatHeaderDate = computed(() => {
           margin: 0;
           white-space: pre-wrap;
           word-break: break-all;
+        }
+
+        .detail-textarea {
+          width: 100%;
+          min-height: pxToRem(120);
+          font-size: pxToRem(14);
+          color: rgba(32, 48, 68, 1);
+          line-height: 1.8;
+          padding: pxToRem(8);
+          border: pxToRem(1) solid rgba(220, 233, 255, 1);
+          border-radius: pxToRem(8);
+          resize: none;
+          outline: none;
+          font-family: inherit;
+
+          &:focus {
+            border-color: rgba(74, 64, 224, 1);
+          }
+
+          &::placeholder {
+            color: rgba(187, 199, 214, 1);
+          }
         }
       }
     }
@@ -251,6 +342,16 @@ const formatHeaderDate = computed(() => {
 
         &:hover {
           color: rgba(74, 64, 224, 1);
+        }
+
+        &.btn-save {
+          background: rgba(74, 64, 224, 1);
+          color: #fff;
+
+          &:hover {
+            background: rgba(54, 44, 204, 1);
+            color: #fff;
+          }
         }
       }
 

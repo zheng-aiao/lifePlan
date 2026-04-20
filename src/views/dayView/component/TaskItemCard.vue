@@ -43,7 +43,12 @@
     </div>
 
     <!-- 详情弹窗组件 -->
-    <TaskDetailDialog :visible="showDetail" :task="props.task" @close="showDetail = false" />
+    <TaskDetailDialog
+      :visible="showDetail"
+      :task="props.task"
+      @close="showDetail = false"
+      @update="handleTaskUpdate"
+    />
 
     <TimePickerDialog
       :visible="showTimePicker"
@@ -97,6 +102,12 @@ const handleTimeConfirm = async (timeRange) => {
 
     showTimePicker.value = false;
   }
+};
+
+// 处理任务更新
+const handleTaskUpdate = () => {
+  // 通知父组件刷新任务数据
+  eventBus.emit('taskUpdated', props.task.id);
 };
 
 const formatTimeRange = computed(() => {

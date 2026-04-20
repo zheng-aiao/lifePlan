@@ -20,7 +20,7 @@
         <result column="actual_duration" property="actualDuration"/>
         <result column="parent_id" property="parentId"/>
         <result column="user_id" property="userId"/>
-        <result column="is_delayed" property="isDelayed"/>
+        <result column="is_delay_processed" property="isDelayProcessed"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
@@ -29,7 +29,7 @@
     <sql id="Base_Column_List">
         id, title, description, category, task_type, task_status, task_group, task_priority,
         task_progress, sub_task_group, planned_start_time, planned_end_time, actual_start_time,
-        actual_end_time, actual_duration, parent_id, user_id, is_delayed, is_deleted, created_at, updated_at
+        actual_end_time, actual_duration, parent_id, user_id, is_delay_processed, is_deleted, created_at, updated_at
     </sql>
 
     <select id="selectByDate" resultMap="BaseResultMap">
@@ -54,7 +54,7 @@
         </if>
         ORDER BY planned_start_time ASC
     </select>
-    
+
     <select id="selectByTypeAndDateRange" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"/>
         FROM task
@@ -76,7 +76,7 @@
     <update id="batchUpdateUncompletedTasks">
         UPDATE task
         SET task_status = 4,
-            is_delayed = 1,
+            is_delay_processed = 1,
             updated_at = NOW()
         WHERE is_deleted = 0
           AND task_status &lt; 3
@@ -89,6 +89,7 @@
         WHERE is_deleted = 0
           AND task_type = 3
           AND task_status = 4
+          AND is_delay_processed = 0
           AND user_id = #{userId}
         ORDER BY planned_end_time ASC
     </select>

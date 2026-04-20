@@ -9,19 +9,20 @@ import com.lifeplan.vo.TaskVO;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskService extends IService<Task> {
-    
+
     Task createTask(TaskCreateDTO dto);
-    
+
     Task updateTask(Long id, TaskUpdateDTO dto);
-    
+
     void deleteTask(Long id);
 
     TaskInfoVO getTaskDetailsById(Long taskId, Long userId);
 
     List<TaskInfoVO> getTaskDetailsByDate(LocalDate date, Long userId);
-    
+
     /**
      * 查询指定类型且日期在计划时间范围内的任务，按优先级排序
      * @param taskType 任务类型
@@ -30,24 +31,34 @@ public interface TaskService extends IService<Task> {
      * @return 任务列表
      */
     List<TaskVO> getTasksByTypeAndDate(Integer taskType, LocalDate date, Long userId);
-    
+
     /**
      * 查询状态为未完成的日任务（taskType=3, taskStatus=4）
      * @param userId 用户ID
      * @return 任务列表
      */
     List<TaskVO> getIncompleteDailyTasks(Long userId);
-    
+
     Task startTask(Long id, Long userId);
-    
+
     Task pauseTask(Long id, String reason, Long userId);
-    
+
     Task resumeTask(Long id, Long userId);
-    
+
     Task completeTask(Long id, String feedback, Long userId);
-    
+
     Task abandonTask(Long id, String reason, Long userId);
-    
+
     Task delayTask(Long id, String reason, Long userId);
+
+    /**
+     * 重新分配任务
+     * @param id 原任务ID
+     * @param startTime 新的开始时间
+     * @param endTime 新的结束时间
+     * @param userId 用户ID
+     * @return 包含新任务ID和原任务更新结果的Map
+     */
+    Map<String, Object> reallocateTask(Long id, String startTime, String endTime, Long userId);
 
 }

@@ -14,8 +14,8 @@ import eventBus from '@/utils/eventBus';
 
 const props = defineProps({
   type: {
-    type: String,
-    default: '',
+    type: Number,
+    default: null,
   },
   date: {
     type: String,
@@ -42,14 +42,7 @@ const loadTasksByType = async () => {
 
     if (response.data && response.data) {
       tasks.value = response.data.map((task) => ({
-        id: task.id,
-        title: task.title,
-        category: task.category,
-        progress: task.taskProgress,
-        plannedStartTime: task.plannedStartTime,
-        plannedEndTime: task.plannedEndTime,
-        taskType: task.taskType,
-        taskStatus: task.taskStatus,
+        ...task,
         color: getCategoryColor(task.category),
       }));
     }

@@ -37,7 +37,7 @@
           class="action-btn"
           type="assgin"
           iconBtn
-          @click.stop="$emit('addSubTask', task)"
+          @click.stop="showTimePicker = true"
         ></BaseButton>
       </div>
     </div>
@@ -74,6 +74,13 @@
         </div>
       </div>
     </Transition>
+
+    <TimePickerPopup
+      :visible="showTimePicker"
+      :task="props.task"
+      @close="showTimePicker = false"
+      @confirm="handleTimeConfirm"
+    />
   </div>
 </template>
 
@@ -81,6 +88,7 @@
 import { ref, computed } from 'vue';
 import BaseTag from '@/components/common/BaseTag.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
+import TimePickerPopup from '@/components/common/TimePickerPopup.vue';
 
 const props = defineProps({
   task: {
@@ -89,9 +97,36 @@ const props = defineProps({
   },
 });
 
-defineEmits(['addSubTask']);
+defineEmits(['addSubTask', 'addSubTaskWithTime']);
 
 const showDetail = ref(false);
+const showTimePicker = ref(false);
+
+import bizService from '@/utils/bizService';
+import eventBus from '@/utils/eventBus';
+import { combineDateAndTime, getCurrentDateString } from '@/utils/dateUtil';
+
+// 处理时间选择确认
+const handleTimeConfirm = async (timeRange) => {
+  if (timeRange && timeRange.length === 2) {
+    const [startTime, endTime] = timeRange;
+
+    try {
+      // 调用后端重新分配任务接口，传递任务ID和新的开始结束时间
+      const response = await bizService.task.reallocateTask(props.task.id, startTime, endTime);
+
+      // 发送任务创建成功的事件，用于刷新界面
+      eventBus.emit('taskCreated', getCurrentDateString());
+
+      console.log('任务重新分配成功:', response);
+    } catch (error) {
+      console.error('任务重新分配失败:', error);
+      // 可以在这里添加错误提示给用户
+    }
+
+    showTimePicker.value = false;
+  }
+};
 
 const formatTimeRange = computed(() => {
   const { plannedStartTime, plannedEndTime, taskType } = props.task;
@@ -327,26 +362,5 @@ const formatTimeRange = computed(() => {
       }
     }
   }
-}
-
-/* 弹窗过渡动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter-active .popup-content,
-.fade-leave-active .popup-content {
-  transition: transform 0.2s ease;
-}
-
-.fade-enter-from .popup-content,
-.fade-leave-to .popup-content {
-  transform: scale(0.95);
 }
 </style>

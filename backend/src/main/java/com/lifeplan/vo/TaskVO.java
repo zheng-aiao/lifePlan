@@ -27,7 +27,7 @@ public class TaskVO implements Serializable {
     private Integer actualDuration;
     private Long parentId;
     private Long userId;
-    private Integer isDelayed;
+    private Integer isDelayProcessed;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

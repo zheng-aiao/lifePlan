@@ -7,6 +7,14 @@ const taskService = {
     return request.post('/tasks', data);
   },
 
+  // 重新分配任务
+  reallocateTask: (taskId, startTime, endTime) => {
+    return request.post(`/tasks/${taskId}/reallocate`, {
+      startTime,
+      endTime,
+    });
+  },
+
   // 开始任务
   startTask: (taskId) => {
     return request.post(`/tasks/${taskId}/start`);

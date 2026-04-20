@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -288,6 +289,64 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
 
         createStatusChange(id, 6, reason, userId);
         return task;
+    }
+
+    @Override
+    @Transactional
+    public Map<String, Object> reallocateTask(Long id, String startTime, String endTime, Long userId) {
+        // 获取原任务
+        Task originalTask = getById(id);
+        if (originalTask == null) {
+            throw new BusinessException("原任务不存在");
+        }
+
+        // 创建新任务，继承原任务的大部分属性
+        Task newTask = new Task();
+        newTask.setTitle(originalTask.getTitle());
+        newTask.setDescription(originalTask.getDescription());
+        newTask.setCategory(originalTask.getCategory());
+        newTask.setTaskType(3); // 新任务为日任务
+        newTask.setTaskStatus(0); // 新任务状态设为待开始
+        newTask.setTaskGroup(originalTask.getTaskGroup()); // 任务组保持一致
+        newTask.setTaskPriority(originalTask.getTaskPriority());
+        newTask.setTaskProgress(originalTask.getTaskProgress()); // 继承原任务进度
+        newTask.setSubTaskGroup(originalTask.getSubTaskGroup()); // 子任务组保持一致
+        newTask.setParentId(originalTask.getParentId());
+        newTask.setUserId(originalTask.getUserId());
+        newTask.setIsDelayProcessed(0); // 新任务保持未处理状态
+        newTask.setIsDeleted(0);
+        newTask.setCreatedAt(LocalDateTime.now()); // 新任务创建时间为当前时间
+        newTask.setUpdatedAt(LocalDateTime.now());
+
+        // 设置新的计划开始和结束时间
+        LocalDate today = LocalDate.now();
+        String[] startParts = startTime.split(":");
+        int startHour = Integer.parseInt(startParts[0]);
+        int startMinute = Integer.parseInt(startParts[1]);
+        newTask.setPlannedStartTime(LocalDateTime.of(today, java.time.LocalTime.of(startHour, startMinute)));
+
+        String[] endParts = endTime.split(":");
+        int endHour = Integer.parseInt(endParts[0]);
+        int endMinute = Integer.parseInt(endParts[1]);
+        newTask.setPlannedEndTime(LocalDateTime.of(today, java.time.LocalTime.of(endHour, endMinute)));
+
+        // 保存新任务
+        save(newTask);
+
+        // 更新原任务的isDelayProcessed状态为1，表示已被延时处理
+        originalTask.setIsDelayProcessed(1);
+        originalTask.setUpdatedAt(LocalDateTime.now());
+        updateById(originalTask);
+
+        // 为新任务添加活动日志
+        createStatusChange(newTask.getId(), 0, "创建任务", userId);
+
+        // 返回结果
+        Map<String, Object> result = new java.util.HashMap<>();
+        result.put("newTaskId", newTask.getId());
+        result.put("originalTaskUpdated", true);
+        result.put("originalTaskId", originalTask.getId());
+        return result;
     }
 
     private void createStatusChange(Long taskId, Integer changeType, String feedbackContent, Long userId) {

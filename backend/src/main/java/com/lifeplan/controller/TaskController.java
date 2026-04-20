@@ -155,4 +155,14 @@ public class TaskController {
         data.put("task_status", task.getTaskStatus());
         return Result.success("任务已延时", data);
     }
+    
+    @PostMapping("/{id}/reallocate")
+    public Result<Map<String, Object>> reallocateTask(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        Long userId = 1L;
+        String startTime = request.get("startTime");
+        String endTime = request.get("endTime");
+        
+        Map<String, Object> result = taskService.reallocateTask(id, startTime, endTime, userId);
+        return Result.success("任务重新分配成功", result);
+    }
 }

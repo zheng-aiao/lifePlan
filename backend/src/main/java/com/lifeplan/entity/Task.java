@@ -45,7 +45,7 @@ public class Task implements Serializable {
     
     private Long userId;
     
-    private Integer isDelayed;
+    private Integer isDelayProcessed;
     
     @TableLogic
     private Integer isDeleted;

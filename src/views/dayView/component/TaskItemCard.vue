@@ -45,7 +45,7 @@
     <!-- 详情弹窗组件 -->
     <TaskDetailDialog :visible="showDetail" :task="props.task" @close="showDetail = false" />
 
-    <TimePickerPopup
+    <TimePickerDialog
       :visible="showTimePicker"
       :task="props.task"
       @close="showTimePicker = false"
@@ -58,7 +58,7 @@
 import { ref, computed } from 'vue';
 import BaseTag from '@/components/common/BaseTag.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
-import TimePickerPopup from '@/components/common/TimePickerPopup.vue';
+import TimePickerDialog from '@/views/dayView/dialog/TimePickerDialog.vue';
 import TaskDetailDialog from '@/views/dayView/dialog/TaskDetailDialog.vue';
 
 const props = defineProps({

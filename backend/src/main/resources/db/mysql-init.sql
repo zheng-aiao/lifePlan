@@ -87,6 +87,30 @@ CREATE TABLE IF NOT EXISTS task_status_change (
     INDEX idx_user (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务状态变更表';
 
+-- 创建任务类别表
+CREATE TABLE IF NOT EXISTS task_category (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '类别ID',
+    dict_key VARCHAR(50) NOT NULL COMMENT '类别键',
+    dict_value VARCHAR(100) NOT NULL COMMENT '类别值',
+    dict_type VARCHAR(50) NOT NULL COMMENT '类别类型',
+    sort_order INT DEFAULT 0 COMMENT '排序顺序',
+    status TINYINT DEFAULT 1 COMMENT '状态：0-禁用 1-启用',
+    description VARCHAR(500) COMMENT '描述',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    
+    INDEX idx_dict_type (dict_type),
+    INDEX idx_dict_key (dict_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务类别表';
+
+-- 插入任务类别初始化数据
+INSERT IGNORE INTO task_category (dict_key, dict_value, dict_type, sort_order, description) VALUES
+('1', '年任务', 'task_type', 1, '年度任务'),
+('2', '季度任务', 'task_type', 2, '季度任务'),
+('3', '月任务', 'task_type', 3, '月度任务'),
+('4', '周任务', 'task_type', 4, '周任务'),
+('5', '未完成日任务', 'task_type', 5, '未完成的日任务');
+
 -- 插入默认用户（如果不存在）
 INSERT IGNORE INTO user (username, password_hash, nickname, status) VALUES
 ('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '管理员', 1);

@@ -240,20 +240,20 @@ const handleSubmit = async () => {
   if (formData.planTime && formData.planTime.length === 2) {
     const [start, end] = formData.planTime;
     if (formData.taskType === 1) {
-      plannedStartTime = `${start}-01T00:00:00`;
+      plannedStartTime = `${start}-01 00:00:00`;
       const [year, month] = end.split('-');
       const lastDay = new Date(parseInt(year), parseInt(month), 0).getDate();
-      plannedEndTime = `${end}-${lastDay}T23:59:59`;
+      plannedEndTime = `${end}-${lastDay} 23:59:59`;
     } else if (formData.taskType === 2) {
-      plannedStartTime = `${start}T00:00:00`;
-      plannedEndTime = `${end}T23:59:59`;
+      plannedStartTime = `${start} 00:00:00`;
+      plannedEndTime = `${end} 23:59:59`;
     } else if (formData.taskType === 3) {
       const now = new Date();
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
-      plannedStartTime = `${year}-${month}-${day}T${start}:00`;
-      plannedEndTime = `${year}-${month}-${day}T${end}:00`;
+      plannedStartTime = `${year}-${month}-${day} ${start}:00`;
+      plannedEndTime = `${year}-${month}-${day} ${end}:00`;
     }
   }
 

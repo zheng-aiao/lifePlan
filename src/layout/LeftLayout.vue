@@ -64,23 +64,13 @@ const routeData = ref([
 const categories = ref([
   {
     id: 1,
-    name: '健身',
+    name: '任务类别',
     icon: new URL('@/assets/images/Frame_1_45.png', import.meta.url).href,
   },
   {
     id: 2,
-    name: '学习',
+    name: '标签管理',
     icon: new URL('@/assets/images/Frame_1_39.png', import.meta.url).href,
-  },
-  {
-    id: 3,
-    name: '工作',
-    icon: new URL('@/assets/images/Frame_1_33.png', import.meta.url).href,
-  },
-  {
-    id: 4,
-    name: '写作',
-    icon: new URL('@/assets/images/Frame_1_51.png', import.meta.url).href,
   },
 ]);
 

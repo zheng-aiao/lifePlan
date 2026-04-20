@@ -12,3 +12,8 @@ export const taskStatusTextMap = {
 export const mapTaskStatusText = (status) => {
   return taskStatusTextMap[status] || '待开始';
 };
+
+// 业务常量
+export const SYSTEM_DICT = {
+  TASK_CATAGORY: 'task_type',
+};

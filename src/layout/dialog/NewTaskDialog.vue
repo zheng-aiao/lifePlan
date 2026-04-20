@@ -89,7 +89,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Calendar, Check } from '@element-plus/icons-vue';
 import BaseDialog from '@/components/common/BaseDialog.vue';
@@ -99,6 +99,7 @@ import BaseDate from '@/components/common/BaseDate.vue';
 import BaseDropdown from '@/components/common/BaseDropdown.vue';
 import BaseInput from '@/components/common/BaseInput.vue';
 import bizService from '@/utils/bizService';
+import { SYSTEM_DICT } from '@/emun/constant';
 
 const props = defineProps({
   modelValue: {
@@ -126,25 +127,34 @@ const formData = reactive({
   parentId: null,
 });
 
-const taskTypes = [
-  { value: 1, label: '年任务' },
-  { value: 2, label: '月任务' },
-  { value: 3, label: '日任务' },
-];
+// 任务类型（从后端获取）
+const taskTypes = ref([]);
+
+// 获取任务类型数据
+const loadTaskTypes = async () => {
+  try {
+    const response = await bizService.taskCategory.getByDictType(SYSTEM_DICT.TASK_CATAGORY);
+    if (response.data && response.data.length > 0) {
+      taskTypes.value = response.data.map((item) => ({
+        value: parseInt(item.dictValue),
+        label: item.dictKey,
+      }));
+    }
+  } catch (error) {
+    console.error('加载任务类型失败:', error);
+  }
+};
+
+// 组件挂载时加载任务类型
+onMounted(async () => {
+  await loadTaskTypes();
+});
 
 const priorities = [
   { value: 3, label: '高', color: 'rgba(247, 75, 109, 1)' },
   { value: 2, label: '中', color: 'rgba(248, 160, 16, 1)' },
   { value: 1, label: '低', color: 'rgba(105, 246, 184, 1)' },
 ];
-
-const todayDate = computed(() => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}/${month}/${day}`;
-});
 
 const parentTaskList = ref([]);
 
@@ -307,9 +317,10 @@ watch(
 // 监听弹窗显示状态变化
 watch(
   () => dialogVisible.value,
-  (newValue) => {
+  async (newValue) => {
     if (newValue) {
       // 弹窗打开时加载父任务列表
+      await loadTaskTypes();
       loadParentTasks();
     }
   }

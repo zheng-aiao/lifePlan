@@ -76,7 +76,6 @@
     <update id="batchUpdateUncompletedTasks">
         UPDATE task
         SET task_status = 4,
-            is_delay_processed = 1,
             updated_at = NOW()
         WHERE is_deleted = 0
           AND task_status &lt; 3
@@ -87,7 +86,7 @@
         SELECT <include refid="Base_Column_List"/>
         FROM task
         WHERE is_deleted = 0
-          AND task_type = 3
+          AND task_type = 5
           AND task_status = 4
           AND is_delay_processed = 0
           AND user_id = #{userId}

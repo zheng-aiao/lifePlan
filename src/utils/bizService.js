@@ -117,9 +117,23 @@ const taskStatusChangeService = {
   },
 };
 
+// 任务类别相关服务
+const taskCategoryService = {
+  // 根据类型获取类别列表
+  getByDictType: (dictType) => {
+    return request.get(`/dict/type/${dictType}`);
+  },
+
+  // 获取任务类型列表
+  getTaskTypes: () => {
+    return request.get('/dict/types');
+  },
+};
+
 // 导出业务服务
 export default {
   task: taskService,
   subTask: subTaskService,
   taskStatusChange: taskStatusChangeService,
+  taskCategory: taskCategoryService,
 };

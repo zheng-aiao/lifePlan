@@ -28,21 +28,43 @@ import BaseButton from '@/components/common/BaseButton.vue';
 import TaskCardList from '@/views/dayView/component/TaskCardList.vue';
 import BaseTag from '@/components/common/BaseTag.vue';
 import eventBus from '@/utils/eventBus';
+import bizService from '@/utils/bizService';
+import { SYSTEM_DICT } from '@/emun/constant';
 
-// 任务组别配置
-const categories = ref([
-  { title: '年度任务', type: 1 },
-  { title: '月度任务', type: 2 },
-  { title: '未完成日任务', type: 4 },
-]);
+// 任务组别配置（从后端获取）
+const categories = ref([]);
 
 // 展开状态管理
-const expandedSections = ref(
-  categories.value.map((_, index) => index === categories.value.length - 1)
-); // 默认只展开最后一个（未完成日任务）
+const expandedSections = ref([]);
 
 // 当前日期
 const currentDate = ref(new Date().toISOString().split('T')[0]);
+
+// 初始化展开状态
+const initExpandedSections = () => {
+  expandedSections.value = categories.value.map(
+    (_, index) => index === categories.value.length - 1
+  );
+};
+
+// 获取任务类别数据
+const loadTaskCategories = async () => {
+  try {
+    const response = await bizService.taskCategory.getByDictType(SYSTEM_DICT.TASK_CATAGORY);
+    if (response.data && response.data.length > 0) {
+      categories.value = response.data.map((item) => ({
+        title: item.dictKey,
+        type: parseInt(item.dictValue),
+      }));
+    }
+    // 无论是否成功获取数据，都初始化展开状态（默认展开最后一项）
+    initExpandedSections();
+  } catch (error) {
+    console.error('加载任务类别失败:', error);
+    // 失败时也初始化展开状态，使用默认数据
+    initExpandedSections();
+  }
+};
 
 // 切换展开/折叠状态
 const toggleSection = (index) => {
@@ -71,14 +93,22 @@ const getTimeTag = (type) => {
       return `${year}年`;
     case 2:
       return `${month}月`;
+    case 3:
+      return `${month}月${now.getDate()}日`;
     case 4:
       return `第${week}周`;
+    case 5:
+      return `未完成`;
+    default:
+      return '';
   }
 };
 
 // 组件挂载时注册事件监听
 onMounted(() => {
   eventBus.on('taskCreated', handleTaskCreated);
+  // 先获取类别数据，获取完成后再初始化展开状态
+  loadTaskCategories();
 });
 
 // 组件卸载时移除事件监听

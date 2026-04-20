@@ -1,35 +1,29 @@
 package com.lifeplan.controller;
 
+import com.lifeplan.common.Result;
 import com.lifeplan.entity.TaskCategory;
 import com.lifeplan.service.TaskCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/task-category")
+@RequestMapping("/dict")
 public class TaskCategoryController {
-    
+
     @Autowired
     private TaskCategoryService taskCategoryService;
-    
-    /**
-     * 根据类型查询类别列表
-     */
+
     @GetMapping("/type/{dictType}")
-    public ResponseEntity<List<TaskCategory>> getByDictType(@PathVariable String dictType) {
+    public Result<List<TaskCategory>> getByDictType(@PathVariable String dictType) {
         List<TaskCategory> categories = taskCategoryService.getByDictType(dictType);
-        return ResponseEntity.ok(categories);
+        return Result.success(categories);
     }
-    
-    /**
-     * 获取任务类型列表
-     */
-    @GetMapping("/task-types")
-    public ResponseEntity<List<TaskCategory>> getTaskTypes() {
+
+    @GetMapping("/types")
+    public Result<List<TaskCategory>> getTaskTypes() {
         List<TaskCategory> taskTypes = taskCategoryService.getTaskTypes();
-        return ResponseEntity.ok(taskTypes);
+        return Result.success(taskTypes);
     }
 }

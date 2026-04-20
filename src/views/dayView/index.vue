@@ -499,30 +499,18 @@ const loadTaskDetails = async (date) => {
     const response = await bizService.task.getTaskDetailsByDate(date);
     if (response.data && response.data) {
       tasks.value = response.data.map((task) => ({
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        category: task.category,
-        taskType: task.taskType,
-        taskStatus: task.taskStatus,
+        ...task,
         statusText: mapTaskStatusText(task.taskStatus),
         timeRange: formatTimeRange(task.plannedStartTime, task.plannedEndTime),
         actualDuration: formatDuration(task.actualDuration),
-        subTaskGroup: task.subTaskGroup,
         borderColor: task.borderColor || 'rgba(74, 64, 224, 1)',
         bgColor: task.bgColor || 'rgba(255, 255, 255, 1)',
         opacity: task.opacity || 1,
         // 子任务列表（后端已返回）
         subTasks: task.subTasks
           ? task.subTasks.map((subTask) => ({
-              id: subTask.id,
-              text: subTask.title,
+              ...subTask,
               completed: subTask.status === 1,
-              taskId: subTask.taskId,
-              subTaskGroup: subTask.subTaskGroup,
-              sortOrder: subTask.sortOrder,
-              createdAt: subTask.createdAt,
-              updatedAt: subTask.updatedAt,
             }))
           : [],
         // 活动日志列表（后端已返回）

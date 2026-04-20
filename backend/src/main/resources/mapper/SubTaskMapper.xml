@@ -21,7 +21,7 @@
         SELECT <include refid="Base_Column_List"/>
         FROM sub_task
         WHERE sub_task_group = #{subTaskGroup}
-        ORDER BY sort_order ASC
+        ORDER BY status ASC, sort_order ASC
     </select>
 
     <update id="updateStatus">

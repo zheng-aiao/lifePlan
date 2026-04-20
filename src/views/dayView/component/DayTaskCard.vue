@@ -49,13 +49,22 @@
                 v-for="(subTask, idx) in taskData.subTasks"
                 :key="idx"
                 class="sub-task-item"
-                @click.stop="toggleSubTask(idx)"
+                @click.stop="
+                  !subTask.completed || isCompletedToday(subTask) ? toggleSubTask(idx) : null
+                "
+                :class="{ 'not-editable': subTask.completed && !isCompletedToday(subTask) }"
               >
                 <div class="checkbox" :class="{ checked: subTask.completed }">
                   <el-icon v-if="subTask.completed"><Check /></el-icon>
                 </div>
                 <span class="sub-task-text" :class="{ completed: subTask.completed }">
-                  {{ subTask.text }}
+                  {{ subTask.title }}
+                </span>
+                <span
+                  v-if="subTask.completed && !isCompletedToday(subTask) && subTask.finishTime"
+                  class="finish-time-tag"
+                >
+                  {{ formatDateMD(subTask.finishTime) }}
                 </span>
               </div>
               <div v-if="!taskData.subTasks || !taskData.subTasks.length" class="empty-list">
@@ -228,6 +237,7 @@ import StopDialog from '../dialog/StopDialog.vue';
 import AddTaskItemDialog from '../dialog/AddTaskItemDialog.vue';
 import { mapTaskStatusText } from '@/emun/constant';
 import bizService from '@/utils/bizService';
+import { formatDateMD } from '@/utils/dateUtil';
 
 const props = defineProps({
   task: {
@@ -512,14 +522,8 @@ const loadTaskDetails = async () => {
       // 更新任务的子任务列表
       const subTasks = taskResponse.subTasks
         ? taskResponse.subTasks.map((subTask) => ({
-            id: subTask.id,
-            text: subTask.title,
+            ...subTask,
             completed: subTask.status === 1,
-            taskId: subTask.taskId,
-            subTaskGroup: subTask.subTaskGroup,
-            sortOrder: subTask.sortOrder,
-            createdAt: subTask.createdAt,
-            updatedAt: subTask.updatedAt,
           }))
         : [];
 
@@ -571,6 +575,18 @@ const formatTime = (dateTimeStr) => {
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
+};
+
+// 检查子任务是否在当天完成
+const isCompletedToday = (subTask) => {
+  if (!subTask.finishTime) return false;
+  const finishDate = new Date(subTask.finishTime);
+  if (isNaN(finishDate.getTime())) return false; // 无效日期
+  const today = new Date();
+  // 重置时间部分，只比较日期
+  finishDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+  return finishDate.getTime() === today.getTime();
 };
 
 const handleAddTaskItemConfirm = async () => {
@@ -757,7 +773,17 @@ const handleAddTaskItemCancel = () => {
         gap: pxToRem(12);
         cursor: pointer;
 
-        &:hover {
+        &.not-editable {
+          cursor: not-allowed;
+
+          &:hover {
+            .sub-task-text {
+              color: rgba(148, 163, 184, 1);
+            }
+          }
+        }
+
+        &:hover:not(.not-editable) {
           .sub-task-text {
             color: rgba(74, 64, 224, 1);
           }
@@ -797,6 +823,18 @@ const handleAddTaskItemCancel = () => {
             text-decoration: line-through;
             color: rgba(148, 163, 184, 1);
           }
+        }
+
+        .finish-time-tag {
+          font-size: pxToRem(12);
+          font-family: 'Inter-Medium';
+          font-weight: 500;
+          line-height: pxToRem(16);
+          color: rgba(100, 116, 139, 1);
+          padding: pxToRem(2) pxToRem(8);
+          border-radius: pxToRem(9999);
+          background-color: rgba(241, 245, 249, 1);
+          margin-left: auto;
         }
       }
 

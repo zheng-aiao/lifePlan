@@ -43,3 +43,10 @@ export const formatDate = (date) => {
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
+
+export const formatDateMD = (dateStr) => {
+  const date = new Date(dateStr); // 先把字符串转成 Date 对象
+  const month = String(date.getMonth() + 1);
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${month}.${day}`;
+};

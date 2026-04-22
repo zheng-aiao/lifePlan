@@ -1,8 +1,8 @@
 INSERT INTO task_category (dict_key, dict_value, dict_type, sort_order, description) VALUES
-('ÄêÈÎÎñ', '1', 'task_type', 1, 'Äê¶ÈÈÎÎñ'),
-('¼¾¶ÈÈÎÎñ', '2', 'task_type', 2, '¼¾¶ÈÈÎÎñ'),
-('ÔÂÈÎÎñ', '3', 'task_type', 3, 'ÔÂ¶ÈÈÎÎñ'),
-('ÖÜÈÎÎñ', '4', 'task_type', 4, 'ÖÜÈÎÎñ'),
-('Î´Íê³ÉÈÕÈÎÎñ', '5', 'task_type', 5, 'Î´Íê³ÉµÄÈÕÈÎÎñ')
+('å¹´ä»»åŠ¡', '1', 'task_type', 1, 'å¹´åº¦ä»»åŠ¡'),
+('å­£åº¦ä»»åŠ¡', '2', 'task_type', 2, 'å­£åº¦ä»»åŠ¡'),
+('æœˆä»»åŠ¡', '3', 'task_type', 3, 'æœˆåº¦ä»»åŠ¡'),
+('å‘¨ä»»åŠ¡', '4', 'task_type', 4, 'å‘¨ä»»åŠ¡'),
+('æœªå®Œæˆæ—¥ä»»åŠ¡', '5', 'task_type', 5, 'æœªå®Œæˆçš„æ—¥ä»»åŠ¡')
 ON CONFLICT (dict_key) DO UPDATE SET
 sort_order = EXCLUDED.sort_order, description = EXCLUDED.description;

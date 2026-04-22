@@ -1,8 +1,8 @@
 INSERT INTO task_category (dict_key, dict_value, dict_type, sort_order, description) VALUES
-('дЙхннЯ', '1', 'task_type', 1, 'дЙ╤ххннЯ'),
-('╪╬╤ххннЯ', '2', 'task_type', 2, '╪╬╤ххннЯ'),
-('тбхннЯ', '3', 'task_type', 3, 'тб╤ххннЯ'),
-('жэхннЯ', '4', 'task_type', 4, 'жэхннЯ'),
-('н╢мЙЁихухннЯ', '5', 'task_type', 5, 'н╢мЙЁи╣дхухннЯ')
+('Е╧╢Д╩╩Е┼║', '1', 'task_type', 1, 'Е╧╢Е╨╕Д╩╩Е┼║'),
+('Е╜ёЕ╨╕Д╩╩Е┼║', '2', 'task_type', 2, 'Е╜ёЕ╨╕Д╩╩Е┼║'),
+('Ф°┬Д╩╩Е┼║', '3', 'task_type', 3, 'Ф°┬Е╨╕Д╩╩Е┼║'),
+('Е▒╗Д╩╩Е┼║', '4', 'task_type', 4, 'Е▒╗Д╩╩Е┼║'),
+('Ф°╙Е╝▄Ф┬░Ф≈╔Д╩╩Е┼║', '5', 'task_type', 5, 'Ф°╙Е╝▄Ф┬░Г └Ф≈╔Д╩╩Е┼║')
 ON DUPLICATE KEY UPDATE
 sort_order = VALUES(sort_order), description = VALUES(description);

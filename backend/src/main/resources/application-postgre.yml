@@ -15,6 +15,13 @@ spring:
     init:
       mode: always
       schema-locations: classpath:db/postgre-init.sql
-      data-locations: classpath:db/postgre-init.sql
       continue-on-error: true
-      platform: postgresql
+
+mybatis:
+  mapper-locations:
+    - classpath:mapper/postgre/*.xml
+  type-aliases-package: com.lifeplan.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: true

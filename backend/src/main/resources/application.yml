@@ -17,13 +17,6 @@ server:
   servlet:
     context-path: /api
 
-mybatis:
-  mapper-locations: classpath:mapper/${spring.profiles.active}/*.xml
-  type-aliases-package: com.lifeplan.entity
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    cache-enabled: true
 
 logging:
   level:

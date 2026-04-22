@@ -17,3 +17,12 @@ spring:
       mode: always
       schema-locations: classpath:db/mysql-init.sql
       continue-on-error: true
+
+mybatis:
+  mapper-locations:
+    - classpath:mapper/mysql/*.xml
+  type-aliases-package: com.lifeplan.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: true

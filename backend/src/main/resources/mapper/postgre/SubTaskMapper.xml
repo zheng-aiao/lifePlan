@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lifeplan.mapper.SubTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.lifeplan.entity.SubTask">
+        <id column="id" property="id"/>
+        <result column="sub_task_group" property="subTaskGroup"/>
+        <result column="title" property="title"/>
+        <result column="status" property="status"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="finish_time" property="finishTime"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, sub_task_group, title, status, sort_order, finish_time, created_at, updated_at
+    </sql>
+
+    <select id="selectBySubTaskGroup" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM sub_task
+        WHERE sub_task_group = #{subTaskGroup}
+        ORDER BY status ASC, sort_order ASC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE sub_task
+        SET status = #{status},
+            finish_time = CASE WHEN #{status} = 1 THEN CURRENT_TIMESTAMP ELSE NULL END,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+</mapper>

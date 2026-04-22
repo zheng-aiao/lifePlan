@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lifeplan.mapper.TaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.lifeplan.entity.Task">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="category" property="category"/>
+        <result column="task_type" property="taskType"/>
+        <result column="task_status" property="taskStatus"/>
+        <result column="task_group" property="taskGroup"/>
+        <result column="task_priority" property="taskPriority"/>
+        <result column="task_progress" property="taskProgress"/>
+        <result column="sub_task_group" property="subTaskGroup"/>
+        <result column="planned_start_time" property="plannedStartTime"/>
+        <result column="planned_end_time" property="plannedEndTime"/>
+        <result column="actual_start_time" property="actualStartTime"/>
+        <result column="actual_end_time" property="actualEndTime"/>
+        <result column="actual_duration" property="actualDuration"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="user_id" property="userId"/>
+        <result column="is_delay_processed" property="isDelayProcessed"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, title, description, category, task_type, task_status, task_group, task_priority,
+        task_progress, sub_task_group, planned_start_time, planned_end_time, actual_start_time,
+        actual_end_time, actual_duration, parent_id, user_id, is_delay_processed, is_deleted, created_at, updated_at
+    </sql>
+
+    <select id="selectByDate" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM task
+        WHERE user_id = #{userId}
+          AND is_deleted = 0
+          AND DATE(planned_start_time) = #{date}::date
+        ORDER BY planned_start_time ASC
+    </select>
+
+    <select id="selectByTypeAndStatus" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM task
+        WHERE user_id = #{userId}
+          AND is_deleted = 0
+        <if test="taskType != null">
+            AND task_type = #{taskType}
+        </if>
+        <if test="taskStatus != null">
+            AND task_status = #{taskStatus}
+        </if>
+        ORDER BY planned_start_time ASC
+    </select>
+
+    <select id="selectByTypeAndDateRange" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM task
+        WHERE user_id = #{userId}
+          AND is_deleted = 0
+          AND task_type = #{taskType}
+          AND planned_start_time &lt;= #{date}::timestamp + INTERVAL '23 hours 59 minutes 59 seconds'
+          AND planned_end_time &gt;= #{date}::timestamp
+        ORDER BY task_priority DESC
+    </select>
+
+    <update id="updateTaskStatus">
+        UPDATE task
+        SET task_status = #{taskStatus},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <update id="batchUpdateUncompletedTasks">
+        UPDATE task
+        SET task_status = 4,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE is_deleted = 0
+          AND task_status &lt; 3
+          AND DATE(planned_end_time) = CURRENT_DATE
+    </update>
+
+    <select id="selectIncompleteDailyTasks" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM task
+        WHERE is_deleted = 0
+          AND task_type = 5
+          AND task_status = 4
+          AND is_delay_processed = 0
+          AND user_id = #{userId}
+        ORDER BY planned_end_time ASC
+    </select>
+
+</mapper>

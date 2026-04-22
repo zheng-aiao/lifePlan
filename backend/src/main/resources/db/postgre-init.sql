@@ -10,13 +10,13 @@ CREATE TABLE IF NOT EXISTS "user" (
     status SMALLINT DEFAULT 1 COMMENT '状态：0-禁用 1-启用',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     CONSTRAINT idx_username UNIQUE (username),
     CONSTRAINT idx_email UNIQUE (email)
 ) COMMENT='用户表';
 
 -- 创建更新时间触发器
-CREATE OR REPLACE FUNCTION update_modified_column() 
+CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = CURRENT_TIMESTAMP;
@@ -41,21 +41,21 @@ CREATE TABLE IF NOT EXISTS task (
     task_priority SMALLINT DEFAULT 1 COMMENT '优先级：1-低 2-中 3-高',
     task_progress INT DEFAULT 0 COMMENT '进度百分比 0-100',
     sub_task_group VARCHAR(50) DEFAULT '' COMMENT '子任务组别',
-    
+
     planned_start_time TIMESTAMP COMMENT '计划开始时间',
     planned_end_time TIMESTAMP COMMENT '计划结束时间',
     actual_start_time TIMESTAMP COMMENT '实际开始时间',
     actual_end_time TIMESTAMP COMMENT '实际结束时间',
     actual_duration INT COMMENT '实际用时（分钟）',
-    
+
     parent_id BIGINT COMMENT '父任务ID，用于任务层级',
     user_id BIGINT NOT NULL COMMENT '所属用户ID',
-    
+
     is_deleted SMALLINT DEFAULT 0 COMMENT '是否删除：0-否 1-是',
     is_delayed SMALLINT DEFAULT 0 COMMENT '是否延时：0-否 1-是',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-    
+
     CONSTRAINT idx_user_type UNIQUE (user_id, task_type),
     CONSTRAINT idx_status UNIQUE (task_status),
     CONSTRAINT idx_time UNIQUE (planned_start_time, planned_end_time),
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS sub_task (
     finish_time TIMESTAMP COMMENT '实际完成时间',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     CONSTRAINT idx_sub_task_group UNIQUE (sub_task_group)
 ) COMMENT='子任务表';
 
@@ -94,12 +94,12 @@ CREATE TABLE IF NOT EXISTS task_status_change (
     change_type SMALLINT NOT NULL COMMENT '变更类型：1-开始 2-暂停 3-恢复 4-完成 5-放弃 6-延时完成',
     feedback_content TEXT COMMENT '反馈内容/原因',
     duration INT COMMENT '持续时间（分钟）',
-    
+
     user_id BIGINT NOT NULL COMMENT '操作用户ID',
-    
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-    
+
     CONSTRAINT fk_task FOREIGN KEY (task_id) REFERENCES task(id) ON DELETE CASCADE,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE,
     CONSTRAINT idx_task_type UNIQUE (task_id, change_type),
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS task_category (
     description VARCHAR(500) COMMENT '描述',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-    
+
     CONSTRAINT idx_dict_type UNIQUE (dict_type),
     CONSTRAINT idx_dict_key UNIQUE (dict_key)
 ) COMMENT='任务类别表';
@@ -131,18 +131,3 @@ CREATE TRIGGER update_task_category_modtime
 BEFORE UPDATE ON task_category
 FOR EACH ROW
 EXECUTE FUNCTION update_modified_column();
-
--- 插入任务类别初始化数据
-INSERT INTO task_category (dict_key, dict_value, dict_type, sort_order, description)
-VALUES
-('年任务', '1', 'task_type', 1, '年度任务'),
-('季度任务', '2', 'task_type', 2, '季度任务'),
-('月任务', '3', 'task_type', 3, '月度任务'),
-('周任务', '4', 'task_type', 4, '周任务'),
-('未完成日任务', '5', 'task_type', 5, '未完成的日任务')
-ON CONFLICT (dict_key, dict_type) DO NOTHING;
-
--- 插入默认用户（如果不存在）
-INSERT INTO "user" (username, password_hash, nickname, status) 
-VALUES ('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '管理员', 1)
-ON CONFLICT (username) DO NOTHING;

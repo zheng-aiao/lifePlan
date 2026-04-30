@@ -14,12 +14,12 @@ spring:
   sql:
     init:
       mode: always
-      schema-locations: classpath:db/postgre-init.sql
+      schema-locations: classpath:db/init-table/postgre-init.sql
       continue-on-error: true
 
-mybatis:
+mybatis-plus:
   mapper-locations:
-    - classpath:mapper/postgre/*.xml
+    - classpath:mapper/postgre-mapper/*.xml
   type-aliases-package: com.lifeplan.entity
   configuration:
     map-underscore-to-camel-case: true

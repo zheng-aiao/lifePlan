@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS task (
     user_id BIGINT NOT NULL COMMENT '所属用户ID',
 
     is_deleted SMALLINT DEFAULT 0 COMMENT '是否删除：0-否 1-是',
-    is_delayed SMALLINT DEFAULT 0 COMMENT '是否延时：0-否 1-是',
+    is_delay_processed SMALLINT DEFAULT 0 COMMENT '是否延时：0-否 1-是',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 

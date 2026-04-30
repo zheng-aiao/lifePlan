@@ -1,7 +1,3 @@
--- 创建数据库
-CREATE DATABASE IF NOT EXISTS life_plan DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-USE life_plan;
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS user (
@@ -43,7 +39,7 @@ CREATE TABLE IF NOT EXISTS task (
     user_id BIGINT NOT NULL COMMENT '所属用户ID',
 
     is_deleted TINYINT DEFAULT 0 COMMENT '是否删除：0-否 1-是',
-    is_delayed TINYINT DEFAULT 0 COMMENT '是否延时：0-否 1-是',
+    is_delay_processed TINYINT DEFAULT 0 COMMENT '是否延时：0-否 1-是',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
